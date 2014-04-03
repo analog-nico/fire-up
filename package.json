@@ -1,8 +1,8 @@
 {
   "name": "fire-up",
   "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
+  "description": "Noninvasive dependency injector designed specifically for node.js.",
+  "main": "lib/index.js",
   "scripts": {
     "test": "node_modules/.bin/grunt ci"
   },
@@ -10,7 +10,7 @@
     "type": "git",
     "url": ""
   },
-  "keywords": [],
+  "keywords": ["dependency injection", "dependency", "injection", "di", "injector", "inversion of control", "ioc", "plugin system", "architecture", "extensibility"],
   "author": "analog-nico <nicolai.kamenzky@testrails.org>",
   "license": "MIT",
   "bugs": {
