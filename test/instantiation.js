@@ -16,4 +16,17 @@ describe("Regarding its instantiation, FireUp", function () {
 
   });
 
+  it('should validate the options for a new injector', function (done) {
+
+    expect(function () { fireUpLib.newInjector();               }).not.toThrow();
+    expect(function () { fireUpLib.newInjector(false);          }).toThrow();
+    expect(function () { fireUpLib.newInjector(1);              }).toThrow();
+    expect(function () { fireUpLib.newInjector(null);           }).toThrow();
+    expect(function () { fireUpLib.newInjector(function () {}); }).toThrow();
+    expect(function () { fireUpLib.newInjector({});             }).not.toThrow();
+
+    done();
+
+  });
+
 });

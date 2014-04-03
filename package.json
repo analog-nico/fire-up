@@ -10,8 +10,7 @@
     "type": "git",
     "url": ""
   },
-  "keywords": [
-  ],
+  "keywords": [],
   "author": "analog-nico <nicolai.kamenzky@testrails.org>",
   "license": "MIT",
   "bugs": {
@@ -21,8 +20,9 @@
     "node": ">=0.10.0"
   },
   "dependencies": {
-    "lodash": "~2.4.1",
-    "bluebird": "^1.2.0"
+    "bluebird": "^1.2.0",
+    "glob": "^3.2.9",
+    "lodash": "~2.4.1"
   },
   "devDependencies": {
     "grunt": "~0.4.4",
