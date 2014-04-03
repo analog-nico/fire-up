@@ -8,7 +8,7 @@ describe("Regarding its instantiation, FireUp", function () {
 
   var minimalOptions = {
     basePath: __dirname,
-    include: ['test']
+    modules: ['test']
   };
 
 
@@ -32,73 +32,57 @@ describe("Regarding its instantiation, FireUp", function () {
     expect(function () { fireUpLib.newInjector(minimalOptions); }).not.toThrow();
 
     expect(function () { fireUpLib.newInjector({
-      include: ['test']
+      modules: ['test']
     }); }).toThrow();
     expect(function () { fireUpLib.newInjector({
-      include: ['test'], basePath: null
+      modules: ['test'], basePath: null
     }); }).toThrow();
     expect(function () { fireUpLib.newInjector({
-      include: ['test'], basePath: 42
+      modules: ['test'], basePath: 42
     }); }).toThrow();
     expect(function () { fireUpLib.newInjector({
-      include: ['test'], basePath: function () {}
+      modules: ['test'], basePath: function () {}
     }); }).toThrow();
     expect(function () { fireUpLib.newInjector({
-      include: ['test'], basePath: ''
+      modules: ['test'], basePath: ''
     }); }).toThrow();
     expect(function () { fireUpLib.newInjector({
-      include: ['test'], basePath: 'unknown'
+      modules: ['test'], basePath: 'unknown'
     }); }).toThrow();
     expect(function () { fireUpLib.newInjector({
-      include: ['test'], basePath: __dirname
+      modules: ['test'], basePath: __dirname
     }); }).not.toThrow();
 
     expect(function () { fireUpLib.newInjector({
-      basePath: __dirname, include: null
+      basePath: __dirname, modules: null
     }); }).toThrow();
     expect(function () { fireUpLib.newInjector({
-      basePath: __dirname, include: 42
+      basePath: __dirname, modules: 42
     }); }).toThrow();
     expect(function () { fireUpLib.newInjector({
-      basePath: __dirname, include: []
+      basePath: __dirname, modules: []
     }); }).toThrow();
     expect(function () { fireUpLib.newInjector({
-      basePath: __dirname, include: [true]
+      basePath: __dirname, modules: [true]
     }); }).toThrow();
     expect(function () { fireUpLib.newInjector({
-      basePath: __dirname, include: ['test', 42]
-    }); }).toThrow();
-
-    expect(function () { fireUpLib.newInjector({
-      basePath: __dirname, include: ['test'], exclude: null
-    }); }).toThrow();
-    expect(function () { fireUpLib.newInjector({
-      basePath: __dirname, include: ['test'], exclude: 42
-    }); }).toThrow();
-    expect(function () { fireUpLib.newInjector({
-      basePath: __dirname, include: ['test'], exclude: []
-    }); }).not.toThrow();
-    expect(function () { fireUpLib.newInjector({
-      basePath: __dirname, include: ['test'], exclude: [true]
-    }); }).toThrow();
-    expect(function () { fireUpLib.newInjector({
-      basePath: __dirname, include: ['test'], exclude: ['test', 42]
+      basePath: __dirname, modules: ['test', 42]
     }); }).toThrow();
 
     expect(function () { fireUpLib.newInjector({
-      basePath: __dirname, include: ['test'], exclude: ['test'], use: null
+      basePath: __dirname, modules: ['test'], use: null
     }); }).toThrow();
     expect(function () { fireUpLib.newInjector({
-      basePath: __dirname, include: ['test'], exclude: ['test'], use: 42
+      basePath: __dirname, modules: ['test'], use: 42
     }); }).toThrow();
     expect(function () { fireUpLib.newInjector({
-      basePath: __dirname, include: ['test'], exclude: ['test'], use: []
+      basePath: __dirname, modules: ['test'], use: []
     }); }).not.toThrow();
     expect(function () { fireUpLib.newInjector({
-      basePath: __dirname, include: ['test'], exclude: ['test'], use: [true]
+      basePath: __dirname, modules: ['test'], use: [true]
     }); }).toThrow();
     expect(function () { fireUpLib.newInjector({
-      basePath: __dirname, include: ['test'], exclude: ['test'], use: ['test', 42]
+      basePath: __dirname, modules: ['test'], use: ['test', 42]
     }); }).toThrow();
 
     done();

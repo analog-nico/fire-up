@@ -10,7 +10,18 @@
     "type": "git",
     "url": ""
   },
-  "keywords": ["dependency injection", "dependency", "injection", "di", "injector", "inversion of control", "ioc", "plugin system", "architecture", "extensibility"],
+  "keywords": [
+    "dependency injection",
+    "dependency",
+    "injection",
+    "di",
+    "injector",
+    "inversion of control",
+    "ioc",
+    "plugin system",
+    "architecture",
+    "extensibility"
+  ],
   "author": "analog-nico <nicolai.kamenzky@testrails.org>",
   "license": "MIT",
   "bugs": {
@@ -21,8 +32,8 @@
   },
   "dependencies": {
     "bluebird": "^1.2.0",
-    "glob": "^3.2.9",
-    "lodash": "~2.4.1"
+    "lodash": "~2.4.1",
+    "simple-glob": "^0.1.0"
   },
   "devDependencies": {
     "grunt": "~0.4.4",
