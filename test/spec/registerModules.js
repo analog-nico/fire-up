@@ -14,8 +14,14 @@ describe('Regarding module registration, FireUp', function () {
       modules: ['../fixtures/modules/simple/**/*.js']
     });
 
-    expect(_.isPlainObject(fireUp._internal.registry.files[path.join(__dirname, '../fixtures/modules/simple/simple.js')])).toBe(true);
-    expect(_.isPlainObject(fireUp._internal.registry.files[path.join(__dirname, '../fixtures/modules/simple/notToFireUp.js')])).toBe(true);
+    var filePathToLoad = path.join(__dirname, '../fixtures/modules/simple/simple.js');
+    var filePathToIgnore = path.join(__dirname, '../fixtures/modules/simple/notToFireUp.js');
+
+    expect(_.isPlainObject(fireUp._internal.registry.files[filePathToLoad])).toBe(true);
+    expect(_.isPlainObject(fireUp._internal.registry.files[filePathToIgnore])).toBe(true);
+
+    expect(fireUp._internal.registry.files[filePathToLoad].status).toBe(fireUp.constants.FILE_STATUS_TO_LOAD);
+    expect(fireUp._internal.registry.files[filePathToIgnore].status).toBe(fireUp.constants.FILE_STATUS_TO_IGNORE);
 
     done();
 
