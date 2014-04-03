@@ -20,7 +20,7 @@ describe('Regarding module registration, FireUp', function () {
     expect(_.isPlainObject(fireUp._internal.registry.files[filePathToLoad])).toBe(true);
     expect(_.isPlainObject(fireUp._internal.registry.files[filePathToIgnore])).toBe(true);
 
-    expect(fireUp._internal.registry.files[filePathToLoad].status).toBe(fireUp.constants.FILE_STATUS_LOADED);
+    expect(fireUp._internal.registry.files[filePathToLoad].status).toBe(fireUp.constants.FILE_STATUS_REGISTERED);
     expect(fireUp._internal.registry.files[filePathToIgnore].status).toBe(fireUp.constants.FILE_STATUS_TO_IGNORE);
 
     expect(_.isFunction(fireUp._internal.registry.files[filePathToLoad].cache)).toBe(true);
