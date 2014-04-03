@@ -28,7 +28,7 @@ module.exports = function (grunt) {
       },
       options: {
         matchall: true,
-        specFolders: ['test/'],
+        specFolders: ['test/spec/'],
         isVerbose: true
       }
     },
@@ -36,7 +36,7 @@ module.exports = function (grunt) {
       coverage: false,
       options: {
         matchall: true,
-        specFolders: ['test/'],
+        specFolders: ['test/spec/'],
         isVerbose: true
       }
     },
