@@ -42,7 +42,7 @@ module.exports = function (grunt) {
     },
     watch: {
       js: {
-        files: ['**/*.js', '!node_modules/**/*.js'],
+        files: ['**/*.js', '!node_modules/**/*.js', '!coverage/**/*.js'],
         tasks: ['default'],
         options: {
           spawn: true // Since livereload seems not to be working we spawn to require the latest index.js
