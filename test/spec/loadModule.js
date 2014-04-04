@@ -15,9 +15,14 @@ describe('Regarding injection, FireUp', function () {
     var moduleFolder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/direct/'));
     var pathNoDependenciesJs = path.join(moduleFolder, 'noDependencies.js');
 
-    expect(fireUp('injection/direct/noDependencies')).toEqual(pathNoDependenciesJs);
-
-    done();
+    fireUp('injection/direct/noDependencies')
+        .then(function (instance) {
+          expect(instance).toEqual(pathNoDependenciesJs);
+          done();
+        })
+        .catch(function (e) {
+          done(e);
+        });
 
   });
 

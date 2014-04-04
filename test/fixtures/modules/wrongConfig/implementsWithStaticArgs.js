@@ -3,7 +3,7 @@
 // Fire me up!
 
 module.exports = function () {
-  return 'wrongConfig/implementsWithStaticArgs.js';
+  return require('path').relative(process.cwd(), __filename);
 };
 
 module.exports.__module = {
