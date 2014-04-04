@@ -26,4 +26,14 @@ describe('Regarding injection, FireUp', function () {
 
   });
 
+  xit('should load modules with cascading dependencies');
+
+  xit('should initialize singletons just once');
+
+  xit('should load multiple instances and not share them');
+
+  xit('should load modules with static arguments');
+
+  xit('should throw an error on circular dependencies');
+
 });
