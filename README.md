@@ -1,6 +1,6 @@
 # Fire Up! Dependency Injector
 
-Fire Up! is a dependency injection container specifically designed for node.js with a powerful but uncluttered API.
+Fire Up! is a dependency injection container specifically designed for node.js with a powerful but sleek API.
 
 ## Why yet another dependency injection container for node.js?
 

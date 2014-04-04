@@ -7,5 +7,5 @@ module.exports = function () {
 };
 
 module.exports.__module = {
-  implements: ['interfaces/nested/baseInterface1:subInterface2']
+  implements: 'injection/direct/noDependencies'
 };

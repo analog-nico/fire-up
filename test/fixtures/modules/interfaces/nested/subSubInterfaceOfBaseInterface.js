@@ -3,7 +3,7 @@
 // Fire me up!
 
 module.exports = function () {
-  return 'interfaces/nested/subSubInterfaceOfBaseInterface.js';
+  return require('path').relative(process.cwd(), __dirname);
 };
 
 module.exports.__module = {

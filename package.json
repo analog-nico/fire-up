@@ -1,7 +1,7 @@
 {
   "name": "fire-up",
   "version": "0.0.1",
-  "description": "Fire Up! is a dependency injection container specifically designed for node.js with a powerful but uncluttered API.",
+  "description": "Fire Up! is a dependency injection container specifically designed for node.js with a powerful but sleek API.",
   "main": "lib/index.js",
   "scripts": {
     "test": "node_modules/.bin/grunt ci"
