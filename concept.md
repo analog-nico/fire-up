@@ -3,7 +3,7 @@
 require('fire-up').newInjector(options)
   - options: include, exclude, use, logLevel
 
-fireUp(moduleName) -> Promise
+fireUp(moduleReference) -> Promise
 
 Flag comment
 
@@ -28,7 +28,7 @@ require plugin as di wrapper
   - logLevel (defined as constants)
   - parentInjector
 
-## fireUp(moduleName) -> Promise
+## fireUp(moduleReference) -> Promise
 
   - 'foo/bar'
   - 'foo/bar:mock'
@@ -73,7 +73,7 @@ See https://docs.google.com/document/d/1fTR4TcTGbmExa5w2SRNAkM1fsB9kYeOvfuiI99Fg
 
 ## Live reload in Production
 
-fireUp.again(moduleName) ?
+fireUp.again(moduleReference) ?
 fireUp.reload(includeDirs, excludeDirs) ?
 
 
