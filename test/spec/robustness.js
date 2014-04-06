@@ -6,7 +6,7 @@ describe('Regarding its robustness, FireUp', function () {
   var Promise = require('bluebird');
   var fireUpLib = require('../../lib/index.js');
 
-  it('should throw an InitializationError when creating a module instance fails', function (done) {
+  it('should throw an InstanceInitializationError when creating a module instance fails', function (done) {
 
     var fireUp = fireUpLib.newInjector({
       basePath: __dirname,
@@ -24,7 +24,7 @@ describe('Regarding its robustness, FireUp', function () {
         .then(function () {
           done(new Error('fireUp should have rejected the promise.'));
         })
-        .catch(fireUp.errors.InitializationError, function (e) {
+        .catch(fireUp.errors.InstanceInitializationError, function (e) {
           expect(e.thrownError.message).toEqual(path.join(folder, 'throwError.js'));
         })
         .catch(function (e) {
