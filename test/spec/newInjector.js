@@ -177,8 +177,8 @@ describe("Regarding its instantiation, FireUp", function () {
     expect(fireUp._internal.registry.interfaces['interfaces/nested/baseAndSubInterface3'].interfaces['subInterface'].interfaces['subInterface'].file).toEqual(pathBaseAndSubInterfaceJs);
     expect(fireUp._internal.registry.interfaces['interfaces/nested/baseAndSubInterface4'].interfaces['subInterface'].interfaces['subInterface'].file).toEqual(pathBaseAndSubInterfaceJs);
     expect(fireUp._internal.registry.interfaces['interfaces/nested/baseAndSubInterface4'].file).toEqual(pathBaseAndSubInterfaceJs);
-    expect(fireUp._internal.registry.interfaces['interfaces/nested/baseAndSubInterface3'].interfaces['subInterface'].file).not.toBeDefined();
-    expect(fireUp._internal.registry.interfaces['interfaces/nested/baseAndSubInterface4'].interfaces['subInterface'].file).not.toBeDefined();
+    expect(fireUp._internal.registry.interfaces['interfaces/nested/baseAndSubInterface3'].interfaces['subInterface'].file).toBe(null);
+    expect(fireUp._internal.registry.interfaces['interfaces/nested/baseAndSubInterface4'].interfaces['subInterface'].file).toBe(null);
 
     expect(fireUp._internal.registry.interfaces['interfaces/nested/baseInterface1'].file).toEqual(pathBaseInterface1Js);
 
@@ -189,18 +189,18 @@ describe("Regarding its instantiation, FireUp", function () {
     expect(fireUp._internal.registry.interfaces['interfaces/nested/baseInterface1'].interfaces['subInterface2'].file).toEqual(pathSubInterface2Js);
 
     expect(fireUp._internal.registry.interfaces['interfaces/nested/noBaseInterface1'].interfaces['subInterface1'].file).toEqual(pathSubInterfaceWithoutBase1Js);
-    expect(fireUp._internal.registry.interfaces['interfaces/nested/noBaseInterface1'].file).not.toBeDefined();
+    expect(fireUp._internal.registry.interfaces['interfaces/nested/noBaseInterface1'].file).toBe(null);
 
     expect(fireUp._internal.registry.interfaces['interfaces/nested/noBaseInterface1'].interfaces['subInterface2'].file).toEqual(pathSubInterfaceWithoutBase2Js);
 
     expect(fireUp._internal.registry.interfaces['interfaces/nested/baseInterface2'].interfaces['subInterface'].interfaces['subSubInterface'].file).toEqual(pathSubSubInterfaceOfBaseInterfaceJs);
-    expect(fireUp._internal.registry.interfaces['interfaces/nested/baseInterface2'].interfaces['subInterface'].file).not.toBeDefined();
+    expect(fireUp._internal.registry.interfaces['interfaces/nested/baseInterface2'].interfaces['subInterface'].file).toBe(null);
 
     expect(fireUp._internal.registry.interfaces['interfaces/nested/baseInterface1'].interfaces['subInterface1'].interfaces['subSubInterface'].file).toEqual(pathSubSubInterfaceOfSubInterfaceJs);
 
     expect(fireUp._internal.registry.interfaces['interfaces/nested/noBaseInterface2'].interfaces['subInterface'].interfaces['subInterface'].file).toEqual(pathSubSubInterfaceWithoutBaseJs);
-    expect(fireUp._internal.registry.interfaces['interfaces/nested/noBaseInterface2'].interfaces['subInterface'].file).not.toBeDefined();
-    expect(fireUp._internal.registry.interfaces['interfaces/nested/noBaseInterface2'].file).not.toBeDefined();
+    expect(fireUp._internal.registry.interfaces['interfaces/nested/noBaseInterface2'].interfaces['subInterface'].file).toBe(null);
+    expect(fireUp._internal.registry.interfaces['interfaces/nested/noBaseInterface2'].file).toBe(null);
 
     done();
 
