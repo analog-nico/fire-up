@@ -241,6 +241,10 @@ describe("Regarding its instantiation, FireUp", function () {
     expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/implementsWithStaticArgsAsArray.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
     expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/implementsContainsDuplicates.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
 
+    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/injectConfigWrongType.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
+    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/injectInvalidRefAsString.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
+    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/injectInvalidRefAsArray.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
+
     done();
 
   });

@@ -85,7 +85,7 @@ describe('Regarding injection, FireUp', function () {
 
   xit('should load modules with cascading dependencies');
 
-  xit('should initialize singletons just once'); // TODO: Load one singleton by one of its implementing interfaces and agein by another of its implementing interfaces.
+  xit('should initialize singletons just once'); // TODO: Load one singleton by one of its implementing interfaces and again by another of its implementing interfaces.
 
   xit('should load multiple instances and not share them');
 
