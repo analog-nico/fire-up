@@ -75,6 +75,17 @@ describe('Regarding injection, FireUp', function () {
           ]);
         })
         .then(function () {
+
+          return fireUp('injection/direct/takesStaticArgs(staticArg)');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual([
+            path.join(folderInterfaces, 'unnested/singleAsList.js'),
+            'staticArg'
+          ]);
+        })
+        .then(function () {
           done();
         })
         .catch(function (e) {
