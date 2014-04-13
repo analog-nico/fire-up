@@ -4,6 +4,7 @@ describe("Regarding its instantiation, FireUp", function () {
 
   var _ = require('lodash');
   var path = require('path');
+  var matchers = require('../matchers.js');
 
   var fireUpLib = require('../../lib/index.js');
 
@@ -11,6 +12,11 @@ describe("Regarding its instantiation, FireUp", function () {
     basePath: __dirname,
     modules: ['test']
   };
+
+
+  beforeEach(function () {
+    this.addMatchers(matchers);
+  });
 
 
   it('should provide a newInjector function', function (done) {
@@ -24,67 +30,73 @@ describe("Regarding its instantiation, FireUp", function () {
 
   it('should validate the options for a new injector', function (done) {
 
-    expect(function () { fireUpLib.newInjector();               }).toThrow();
-    expect(function () { fireUpLib.newInjector(false);          }).toThrow();
-    expect(function () { fireUpLib.newInjector(1);              }).toThrow();
-    expect(function () { fireUpLib.newInjector(null);           }).toThrow();
-    expect(function () { fireUpLib.newInjector(function () {}); }).toThrow();
-    expect(function () { fireUpLib.newInjector({});             }).toThrow();
+    expect(function () { fireUpLib.newInjector();               }).toThrowOfType(fireUpLib.errors.ConfigError);
+    expect(function () { fireUpLib.newInjector(false);          }).toThrowOfType(fireUpLib.errors.ConfigError);
+    expect(function () { fireUpLib.newInjector(1);              }).toThrowOfType(fireUpLib.errors.ConfigError);
+    expect(function () { fireUpLib.newInjector(null);           }).toThrowOfType(fireUpLib.errors.ConfigError);
+    expect(function () { fireUpLib.newInjector(function () {}); }).toThrowOfType(fireUpLib.errors.ConfigError);
+    expect(function () { fireUpLib.newInjector({});             }).toThrowOfType(fireUpLib.errors.ConfigError);
     expect(function () { fireUpLib.newInjector(minimalOptions); }).not.toThrow();
 
     expect(function () { fireUpLib.newInjector({
       modules: ['test']
-    }); }).toThrow();
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
     expect(function () { fireUpLib.newInjector({
       modules: ['test'], basePath: null
-    }); }).toThrow();
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
     expect(function () { fireUpLib.newInjector({
       modules: ['test'], basePath: 42
-    }); }).toThrow();
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
     expect(function () { fireUpLib.newInjector({
       modules: ['test'], basePath: function () {}
-    }); }).toThrow();
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
     expect(function () { fireUpLib.newInjector({
       modules: ['test'], basePath: ''
-    }); }).toThrow();
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
     expect(function () { fireUpLib.newInjector({
       modules: ['test'], basePath: 'unknown'
-    }); }).toThrow();
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
     expect(function () { fireUpLib.newInjector({
       modules: ['test'], basePath: __dirname
     }); }).not.toThrow();
 
     expect(function () { fireUpLib.newInjector({
       basePath: __dirname, modules: null
-    }); }).toThrow();
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
     expect(function () { fireUpLib.newInjector({
       basePath: __dirname, modules: 42
-    }); }).toThrow();
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
     expect(function () { fireUpLib.newInjector({
       basePath: __dirname, modules: []
-    }); }).toThrow();
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
     expect(function () { fireUpLib.newInjector({
       basePath: __dirname, modules: [true]
-    }); }).toThrow();
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
     expect(function () { fireUpLib.newInjector({
       basePath: __dirname, modules: ['test', 42]
-    }); }).toThrow();
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
 
     expect(function () { fireUpLib.newInjector({
       basePath: __dirname, modules: ['test'], use: null
-    }); }).toThrow();
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
     expect(function () { fireUpLib.newInjector({
       basePath: __dirname, modules: ['test'], use: 42
-    }); }).toThrow();
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
     expect(function () { fireUpLib.newInjector({
       basePath: __dirname, modules: ['test'], use: []
     }); }).not.toThrow();
     expect(function () { fireUpLib.newInjector({
       basePath: __dirname, modules: ['test'], use: [true]
-    }); }).toThrow();
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
     expect(function () { fireUpLib.newInjector({
-      basePath: __dirname, modules: ['test'], use: ['test', 42]
-    }); }).toThrow();
+      basePath: __dirname, modules: ['test'], use: ['test:mock', 42]
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname, modules: ['test'], use: ['test:mock', 'test']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname, modules: ['test'], use: ['test:mock', 'test:mock2']
+    }); }).not.toThrow();
 
     done();
 
