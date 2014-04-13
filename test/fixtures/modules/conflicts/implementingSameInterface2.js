@@ -7,5 +7,5 @@ module.exports = function () {
 };
 
 module.exports.__module = {
-  implements: ['wrongConfig/implementsDefinedTwice']
+  implements: ['conflicts/implementingSameInterface']
 };

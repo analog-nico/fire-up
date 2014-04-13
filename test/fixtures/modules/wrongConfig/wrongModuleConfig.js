@@ -4,6 +4,4 @@
 
 module.exports = function () { };
 
-module.exports.__module = {
-  implements: 42
-};
+module.exports.__module = [];

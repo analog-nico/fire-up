@@ -95,6 +95,12 @@ describe("Regarding its instantiation, FireUp", function () {
       basePath: __dirname, modules: ['test'], use: ['test:mock', 'test']
     }); }).toThrowOfType(fireUpLib.errors.ConfigError);
     expect(function () { fireUpLib.newInjector({
+      basePath: __dirname, modules: ['test'], use: ['test:mock', 'te st']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname, modules: ['test'], use: ['test:mock', 'test()']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+    expect(function () { fireUpLib.newInjector({
       basePath: __dirname, modules: ['test'], use: ['test:mock', 'test:mock2']
     }); }).not.toThrow();
 
@@ -213,6 +219,27 @@ describe("Regarding its instantiation, FireUp", function () {
     expect(fireUp._internal.registry.interfaces['interfaces/nested/noBaseInterface2'].interfaces['subInterface'].interfaces['subInterface'].file).toEqual(pathSubSubInterfaceWithoutBaseJs);
     expect(fireUp._internal.registry.interfaces['interfaces/nested/noBaseInterface2'].interfaces['subInterface'].file).toBe(null);
     expect(fireUp._internal.registry.interfaces['interfaces/nested/noBaseInterface2'].file).toBe(null);
+
+    done();
+
+  });
+
+  it('should validate the modules', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/*.js']
+    });
+
+    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/notAFactory.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
+    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/noModuleConfig.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
+    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/wrongModuleConfig.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
+    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/emptyModuleConfig.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
+    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/implementsNotAString.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
+    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/implementsNotAllStrings.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
+    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/implementsWithStaticArgsAsString.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
+    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/implementsWithStaticArgsAsArray.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
+    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/implementsContainsDuplicates.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
 
     done();
 
