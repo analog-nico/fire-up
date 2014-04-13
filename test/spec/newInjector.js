@@ -226,24 +226,82 @@ describe("Regarding its instantiation, FireUp", function () {
 
   it('should validate the modules', function (done) {
 
-    var fireUp = fireUpLib.newInjector({
+    expect(function () { fireUpLib.newInjector({
       basePath: __dirname,
-      modules: ['../fixtures/modules/wrongConfig/*.js']
-    });
+      modules: ['../fixtures/modules/wrongConfig/crashesOnLoad.js']
+    }); }).toThrowOfType(fireUpLib.errors.ModuleLoadingError);
 
-    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/notAFactory.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
-    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/noModuleConfig.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
-    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/wrongModuleConfig.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
-    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/emptyModuleConfig.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
-    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/implementsNotAString.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
-    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/implementsNotAllStrings.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
-    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/implementsWithStaticArgsAsString.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
-    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/implementsWithStaticArgsAsArray.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
-    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/implementsContainsDuplicates.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
 
-    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/injectConfigWrongType.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
-    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/injectInvalidRefAsString.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
-    expect(fireUp._internal.registry.modules['test/fixtures/modules/wrongConfig/injectInvalidRefAsArray.js'].status).toBe(fireUp.constants.FILE_STATUS_LOAD_FAILED);
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/notAFactory.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/noModuleConfig.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/wrongModuleConfig.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/emptyModuleConfig.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/implementsNotAString.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/implementsNotAllStrings.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/implementsWithStaticArgsAsString.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/implementsWithStaticArgsAsArray.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/implementsContainsDuplicates.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/injectConfigWrongType.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/injectInvalidRefAsString.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/injectInvalidRefAsArray.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/injectEmptyRefAsString.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/injectEmptyRefAsArray.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
 
     done();
 
