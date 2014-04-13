@@ -322,19 +322,19 @@ describe("Regarding its instantiation, FireUp", function () {
 
     expect(function () { fireUpLib.newInjector({
       basePath: __dirname,
-      modules: ['../fixtures/modules/conflicts/implementingSameInterface{1,2}.js']
+      modules: ['../fixtures/modules/interfaces/conflicts/implementingSameInterface{1,2}.js']
     }); }).toThrowOfType(fireUpLib.errors.InterfaceRegistrationConflictError);
 
     // Use internal calls to force more than two conflicting files.
     var fireUp = fireUpLib.newInjector({
       basePath: __dirname,
-      modules: ['../fixtures/modules/conflicts/implementingSameInterface1.js']
+      modules: ['../fixtures/modules/interfaces/conflicts/implementingSameInterface1.js']
     });
     expect(function () {
-      fireUp._internal.registry.registerInterface('test/fixtures/modules/conflicts/implementingSameInterface2.js', 'conflicts/implementingSameInterface');
+      fireUp._internal.registry.registerInterface('test/fixtures/modules/interfaces/conflicts/implementingSameInterface2.js', 'interfaces/conflicts/implementingSameInterface');
     }).toThrowOfType(fireUpLib.errors.InterfaceRegistrationConflictError);
     expect(function () {
-      fireUp._internal.registry.registerInterface('test/fixtures/modules/conflicts/implementingSameInterface3.js', 'conflicts/implementingSameInterface');
+      fireUp._internal.registry.registerInterface('test/fixtures/modules/interfaces/conflicts/implementingSameInterface3.js', 'interfaces/conflicts/implementingSameInterface');
     }).toThrowOfType(fireUpLib.errors.InterfaceRegistrationConflictError);
 
     done();

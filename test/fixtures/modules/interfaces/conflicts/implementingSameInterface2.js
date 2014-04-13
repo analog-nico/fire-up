@@ -7,5 +7,5 @@ module.exports = function () {
 };
 
 module.exports.__module = {
-  implements: ['conflicts/implementingSameInterface']
+  implements: ['interfaces/conflicts/implementingSameInterface']
 };
