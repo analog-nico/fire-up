@@ -96,9 +96,206 @@ describe('Regarding injection, FireUp', function () {
 
   xit('should load modules with cascading dependencies');
 
-  xit('should initialize singletons just once'); // TODO: Load one singleton by one of its implementing interfaces and again by another of its implementing interfaces.
+  it('should initialize modules according to their type', function (done) {
 
-  xit('should load multiple instances and not share them');
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/instantiation/type/*.js']
+    });
+
+    var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/type/'));
+
+    Promise.resolve()
+        .then(function () {
+
+          return fireUp('instantiation/type/singleton/interface1');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual([path.join(folder, 'singleton.js'), 1]);
+        })
+        .then(function () {
+
+          return fireUp('instantiation/type/singleton/interface1');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual([path.join(folder, 'singleton.js'), 1]);
+        })
+        .then(function () {
+
+          return fireUp('instantiation/type/singleton/interface2');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual([path.join(folder, 'singleton.js'), 1]);
+        })
+        .then(function () {
+
+          return fireUp('instantiation/type/multiInstances/interface1');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual([path.join(folder, 'multiInstances.js'), 1]);
+        })
+        .then(function () {
+
+          return fireUp('instantiation/type/multiInstances/interface1');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual([path.join(folder, 'multiInstances.js'), 2]);
+        })
+        .then(function () {
+
+          return fireUp('instantiation/type/multiInstances/interface2');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual([path.join(folder, 'multiInstances.js'), 3]);
+        })
+        .then(function () {
+
+          return fireUp('instantiation/type/injectAllTypes');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual([
+            [path.join(folder, 'singleton.js'), 1],
+            [path.join(folder, 'singleton.js'), 1],
+            [path.join(folder, 'singleton.js'), 1],
+            [path.join(folder, 'multiInstances.js'), 4],
+            [path.join(folder, 'multiInstances.js'), 5],
+            [path.join(folder, 'multiInstances.js'), 6]
+          ]);
+        })
+        .then(function () {
+
+          return fireUp('instantiation/type/singletonAsync/interface1');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual([path.join(folder, 'singletonAsync.js'), 1]);
+        })
+        .then(function () {
+
+          return fireUp('instantiation/type/singletonAsync/interface1');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual([path.join(folder, 'singletonAsync.js'), 1]);
+        })
+        .then(function () {
+
+          return fireUp('instantiation/type/singletonAsync/interface2');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual([path.join(folder, 'singletonAsync.js'), 1]);
+        })
+        .then(function () {
+
+          return fireUp('instantiation/type/multiInstancesAsync/interface1');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual([path.join(folder, 'multiInstancesAsync.js'), 1]);
+        })
+        .then(function () {
+
+          return fireUp('instantiation/type/multiInstancesAsync/interface1');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual([path.join(folder, 'multiInstancesAsync.js'), 2]);
+        })
+        .then(function () {
+
+          return fireUp('instantiation/type/multiInstancesAsync/interface2');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual([path.join(folder, 'multiInstancesAsync.js'), 3]);
+        })
+        .then(function () {
+
+          return fireUp('instantiation/type/injectAllTypesAsync');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual([
+            [path.join(folder, 'singletonAsync.js'), 1],
+            [path.join(folder, 'singletonAsync.js'), 1],
+            [path.join(folder, 'singletonAsync.js'), 1],
+            [path.join(folder, 'multiInstancesAsync.js'), 4],
+            [path.join(folder, 'multiInstancesAsync.js'), 5],
+            [path.join(folder, 'multiInstancesAsync.js'), 6]
+          ]);
+        })
+        .then(function () {
+
+          return fireUp('instantiation/type/injectAllTypesMixed');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual([
+            [path.join(folder, 'singletonAsync.js'), 1],
+            [path.join(folder, 'singleton.js'), 1],
+            [path.join(folder, 'singletonAsync.js'), 1],
+            [path.join(folder, 'multiInstancesAsync.js'), 7],
+            [path.join(folder, 'multiInstances.js'), 7],
+            [path.join(folder, 'multiInstancesAsync.js'), 8]
+          ]);
+        })
+        .then(function () {
+
+          return fireUp('instantiation/type/injectAllTypesMixedCascading');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual([
+            [path.join(folder, 'singletonAsync.js'), 1],
+            [path.join(folder, 'singleton.js'), 1],
+            [path.join(folder, 'multiInstancesAsync.js'), 9],
+            [path.join(folder, 'multiInstances.js'), 8],
+            [
+              [path.join(folder, 'singletonAsync.js'), 1],
+              [path.join(folder, 'singleton.js'), 1],
+              [path.join(folder, 'singletonAsync.js'), 1],
+              [path.join(folder, 'multiInstancesAsync.js'), 10],
+              [path.join(folder, 'multiInstances.js'), 9],
+              [path.join(folder, 'multiInstancesAsync.js'), 11]
+            ],
+            [
+              [path.join(folder, 'singleton.js'), 1],
+              [path.join(folder, 'singleton.js'), 1],
+              [path.join(folder, 'singleton.js'), 1],
+              [path.join(folder, 'multiInstances.js'), 10],
+              [path.join(folder, 'multiInstances.js'), 11],
+              [path.join(folder, 'multiInstances.js'), 12]
+            ],
+            [
+              [path.join(folder, 'singletonAsync.js'), 1],
+              [path.join(folder, 'singletonAsync.js'), 1],
+              [path.join(folder, 'singletonAsync.js'), 1],
+              [path.join(folder, 'multiInstancesAsync.js'), 12],
+              [path.join(folder, 'multiInstancesAsync.js'), 13],
+              [path.join(folder, 'multiInstancesAsync.js'), 14]
+            ],
+            [path.join(folder, 'singletonAsync.js'), 1],
+            [path.join(folder, 'singleton.js'), 1],
+            [path.join(folder, 'multiInstancesAsync.js'), 15],
+            [path.join(folder, 'multiInstances.js'), 13]
+          ]);
+        })
+        .then(function () {
+          done();
+        })
+        .catch(function (e) {
+          done(e);
+        });
+
+  });
 
   xit('should load modules with static arguments');
 
