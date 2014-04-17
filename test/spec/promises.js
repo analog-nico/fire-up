@@ -11,7 +11,8 @@ describe('Regarding promises, FireUp', function () {
 
     var fireUp = fireUpLib.newInjector({
       basePath: __dirname,
-      modules: ['../fixtures/modules/instantiation/returnValue/*.js']
+      modules: ['../fixtures/modules/instantiation/returnValue/*.js'],
+      require: require
     });
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/returnValue/'));
