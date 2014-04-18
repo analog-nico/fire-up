@@ -289,6 +289,19 @@ describe('Regarding injection, FireUp', function () {
           ]);
         })
         .then(function () {
+
+          return fireUp('instantiation/type/injectAndFireUp');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual([
+            [path.join(folder, 'singleton.js'), 1],
+            [path.join(folder, 'singleton.js'), 1],
+            [path.join(folder, 'multiInstances.js'), 14],
+            [path.join(folder, 'multiInstances.js'), 15]
+          ]);
+        })
+        .then(function () {
           done();
         })
         .catch(function (e) {
