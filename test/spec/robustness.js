@@ -50,6 +50,34 @@ describe('Regarding its robustness, FireUp', function () {
           done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
         })
         .then(function () {
+
+          return fireUp('fireUp/unknown');
+
+        })
+        .then(function () {
+          done(new Error('fireUp should have rejected the promise.'));
+        })
+        .catch(fireUp.errors.NoImplementationError, function (e) {
+          // This is expected to be called.
+        })
+        .catch(function (e) {
+          done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+        })
+        .then(function () {
+
+          return fireUp('instantiation/failing/misspelledFireUpDependency');
+
+        })
+        .then(function () {
+          done(new Error('fireUp should have rejected the promise.'));
+        })
+        .catch(fireUp.errors.NoImplementationError, function (e) {
+          // This is expected to be called.
+        })
+        .catch(function (e) {
+          done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+        })
+        .then(function () {
           done();
         });
 
