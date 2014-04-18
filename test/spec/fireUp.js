@@ -312,6 +312,34 @@ describe('Regarding injection, FireUp', function () {
 
   xit('should load modules with static arguments');
 
+  it('should reject injections with static args for singletons', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/interfaces/unnested/*.js', '../fixtures/modules/wrongConfig/staticArgsForSingleton.js']
+    });
+
+    Promise.resolve()
+        .then(function () {
+
+          return fireUp('wrongConfig/staticArgsForSingleton');
+
+        })
+        .then(function () {
+          done(new Error('fireUp should have rejected the promise.'));
+        })
+        .catch(fireUp.errors.ConfigError, function (e) {
+          // This is expected to be called.
+        })
+        .catch(function (e) {
+          done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+        })
+        .then(function () {
+          done();
+        });
+
+  });
+
   xit('should throw an error on circular dependencies');
 
 });
