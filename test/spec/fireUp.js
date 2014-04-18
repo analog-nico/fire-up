@@ -340,6 +340,26 @@ describe('Regarding injection, FireUp', function () {
 
   });
 
-  xit('should throw an error on circular dependencies');
+  it('should throw an error on circular dependencies with singletons', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/injection/circular/small/*.js']
+    });
+
+    fireUp('injection/circular/small/moduleADependingOnB')
+        .then(function () {
+          done(new Error('fireUp should have rejected the promise.'));
+        })
+        .catch(fireUp.errors.CircularDependencyError, function (e) {
+          done();
+        })
+        .catch(function (e) {
+          done(e);
+        });
+
+  });
+
+  xit('should throw an error on circular dependencies with modules of type multiple instances');
 
 });
