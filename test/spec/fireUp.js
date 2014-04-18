@@ -302,6 +302,31 @@ describe('Regarding injection, FireUp', function () {
           ]);
         })
         .then(function () {
+
+          return fireUp('instantiation/type/injectAllTypesTwiceSync');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual([
+            [
+              [path.join(folder, 'singleton.js'), 1],
+              [path.join(folder, 'singleton.js'), 1],
+              [path.join(folder, 'singleton.js'), 1],
+              [path.join(folder, 'multiInstances.js'), 16],
+              [path.join(folder, 'multiInstances.js'), 17],
+              [path.join(folder, 'multiInstances.js'), 18]
+            ],
+            [
+              [path.join(folder, 'singleton.js'), 1],
+              [path.join(folder, 'singleton.js'), 1],
+              [path.join(folder, 'singleton.js'), 1],
+              [path.join(folder, 'multiInstances.js'), 19],
+              [path.join(folder, 'multiInstances.js'), 20],
+              [path.join(folder, 'multiInstances.js'), 21]
+            ]
+          ]);
+        })
+        .then(function () {
           done();
         })
         .catch(function (e) {
