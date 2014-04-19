@@ -96,6 +96,8 @@ describe('Regarding injection, FireUp', function () {
 
   xit('should load modules with cascading dependencies');
 
+  xit('should load modules with static arguments');
+
   it('should initialize modules according to their type 1', function (done) {
 
     var fireUp = fireUpLib.newInjector({
@@ -506,58 +508,6 @@ describe('Regarding injection, FireUp', function () {
 
   });
 
-  xit('should load modules with static arguments');
-
-  it('should reject injections with static args for singletons', function (done) {
-
-    var fireUp = fireUpLib.newInjector({
-      basePath: __dirname,
-      modules: ['../fixtures/modules/interfaces/unnested/*.js', '../fixtures/modules/wrongConfig/staticArgsForSingleton.js']
-    });
-
-    Promise.resolve()
-        .then(function () {
-
-          return fireUp('wrongConfig/staticArgsForSingleton');
-
-        })
-        .then(function () {
-          done(new Error('fireUp should have rejected the promise.'));
-        })
-        .catch(fireUp.errors.ConfigError, function (e) {
-          // This is expected to be called.
-        })
-        .catch(function (e) {
-          done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
-        })
-        .then(function () {
-          done();
-        });
-
-  });
-
-  it('should throw an error on circular dependencies with singletons', function (done) {
-
-    var fireUp = fireUpLib.newInjector({
-      basePath: __dirname,
-      modules: ['../fixtures/modules/injection/circular/small/*.js']
-    });
-
-    fireUp('injection/circular/small/moduleADependingOnB')
-        .then(function () {
-          done(new Error('fireUp should have rejected the promise.'));
-        })
-        .catch(fireUp.errors.CircularDependencyError, function (e) {
-          done();
-        })
-        .catch(function (e) {
-          done(e);
-        });
-
-  });
-
-  xit('should throw an error on circular dependencies with modules of type multiple instances');
-
   it('should inject options', function (done) {
 
     var fireUp = fireUpLib.newInjector({
@@ -582,5 +532,9 @@ describe('Regarding injection, FireUp', function () {
         });
 
   });
+
+  xit('should inject the current injector');
+
+  xit('should inject the injectionRequest');
 
 });

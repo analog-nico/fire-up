@@ -113,4 +113,54 @@ describe('Regarding its robustness, FireUp', function () {
 
   });
 
+  it('should reject injections with static args for singletons', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/interfaces/unnested/*.js', '../fixtures/modules/wrongConfig/staticArgsForSingleton.js']
+    });
+
+    Promise.resolve()
+        .then(function () {
+
+          return fireUp('wrongConfig/staticArgsForSingleton');
+
+        })
+        .then(function () {
+          done(new Error('fireUp should have rejected the promise.'));
+        })
+        .catch(fireUp.errors.ConfigError, function (e) {
+          // This is expected to be called.
+        })
+        .catch(function (e) {
+          done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+        })
+        .then(function () {
+          done();
+        });
+
+  });
+
+  it('should throw an error on circular dependencies with singletons', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/injection/circular/small/*.js']
+    });
+
+    fireUp('injection/circular/small/moduleADependingOnB')
+        .then(function () {
+          done(new Error('fireUp should have rejected the promise.'));
+        })
+        .catch(fireUp.errors.CircularDependencyError, function (e) {
+          done();
+        })
+        .catch(function (e) {
+          done(e);
+        });
+
+  });
+
+  xit('should throw an error on circular dependencies with modules of type multiple instances');
+
 });
