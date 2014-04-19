@@ -116,6 +116,8 @@ describe('The descriptor module', function () {
     expect(descriptor.validateModuleReference("test:t:t")).toBe(true);
     expect(descriptor.validateModuleReference("test/foo:test/bar")).toBe(true);
     expect(descriptor.validateModuleReference("€")).toBe(true);
+    expect(descriptor.validateModuleReference("test('')")).toBe(true);
+    expect(descriptor.validateModuleReference('test("")')).toBe(true);
     expect(descriptor.validateModuleReference("test(x)")).toBe(true);
     expect(descriptor.validateModuleReference("test/test(x)")).toBe(true);
     expect(descriptor.validateModuleReference("test:test(x)")).toBe(true);
@@ -137,6 +139,7 @@ describe('The descriptor module', function () {
     expect(descriptor.parseModuleReference("test/foo:test/bar")).toEqual({ segments: ["test/foo", "test/bar"], args: [] });
     expect(descriptor.parseModuleReference("€")).toEqual({ segments: ["€"], args: [] });
     expect(descriptor.parseModuleReference("test(x)")).toEqual({ segments: ["test"], args: ["x"] });
+    expect(descriptor.parseModuleReference("test('')")).toEqual({ segments: ["test"], args: [""] });
     expect(descriptor.parseModuleReference("test/test(x)")).toEqual({ segments: ["test/test"], args: ["x"] });
     expect(descriptor.parseModuleReference("test:test(x)")).toEqual({ segments: ["test", "test"], args: ["x"] });
     expect(descriptor.parseModuleReference("test:t:t(x)")).toEqual({ segments: ["test", "t", "t"], args: ["x"] });

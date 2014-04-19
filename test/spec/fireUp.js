@@ -558,4 +558,29 @@ describe('Regarding injection, FireUp', function () {
 
   xit('should throw an error on circular dependencies with modules of type multiple instances');
 
+  it('should inject options', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/injection/fireup/*.js'],
+      option1: 'option1',
+      option2: 'option2'
+    });
+
+    fireUp('injection/fireUp/options', { option2: 'overwritten' })
+        .then(function (instance) {
+          var options = {
+            option1: instance.option1,
+            option2: instance.option2
+          };
+          expect(options).toEqual({
+            option1: 'option1',
+            option2: 'overwritten'
+          });
+
+          done();
+        });
+
+  });
+
 });
