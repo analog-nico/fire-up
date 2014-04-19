@@ -564,7 +564,30 @@ describe('Regarding injection, FireUp', function () {
 
   });
 
-  xit('should inject the current injector');
+  it('should inject the current injector', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/injection/fireup/*.js']
+    });
+
+    Promise.resolve()
+        .then(function () {
+
+          return fireUp('injection/fireUp/currentInjector');
+
+        })
+        .then(function (instance) {
+          expect(instance).toBe(fireUp);
+        })
+        .then(function () {
+          done();
+        })
+        .catch(function (e) {
+          done(e);
+        });
+
+  });
 
   xit('should inject the injectionRequest');
 

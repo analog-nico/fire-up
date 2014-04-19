@@ -51,7 +51,7 @@ describe('Regarding its robustness, FireUp', function () {
         })
         .then(function () {
 
-          return fireUp('fireUp/unknown');
+          return fireUp('fireUp/currentInjector');
 
         })
         .then(function () {
