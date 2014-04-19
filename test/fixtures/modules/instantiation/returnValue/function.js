@@ -4,10 +4,11 @@
 
 module.exports = function () {
   return function () {
-    require('path').relative(process.cwd(), __filename);
+    return require('path').relative(process.cwd(), __filename);
   };
 };
 
 module.exports.__module = {
-  implements: 'instantiation/returnValue/function'
+  implements: 'instantiation/returnValue/function',
+  type: 'multiple instances'
 };

@@ -7,5 +7,6 @@ module.exports = function () {
 };
 
 module.exports.__module = {
-  implements: 'instantiation/returnValue/simpleValue'
+  implements: 'instantiation/returnValue/simpleValue',
+  type: 'multiple instances'
 };

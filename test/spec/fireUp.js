@@ -585,6 +585,90 @@ describe('Regarding injection, FireUp', function () {
 
   });
 
+  it('should return module instances of different type', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/instantiation/returnValue/*.js']
+    });
+
+    var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/returnValue/'));
+
+    Promise.resolve()
+        .then(function () {
+
+          return fireUp('instantiation/returnValue/simpleValue')
+              .then(function (instance) {
+                expect(instance).toEqual(path.join(folder, 'simpleValue.js'));
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('instantiation/returnValue/simpleValueAsync')
+              .then(function (instance) {
+                expect(instance).toEqual(path.join(folder, 'simpleValueAsync.js'));
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('instantiation/returnValue/object')
+              .then(function (instance) {
+                expect(instance).toEqual({ path: path.join(folder, 'object.js') });
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('instantiation/returnValue/objectAsync')
+              .then(function (instance) {
+                expect(instance).toEqual({ path: path.join(folder, 'objectAsync.js') });
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('instantiation/returnValue/function')
+              .then(function (instance) {
+                expect(instance()).toEqual(path.join(folder, 'function.js'));
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('instantiation/returnValue/functionAsync')
+              .then(function (instance) {
+                expect(instance()).toEqual(path.join(folder, 'functionAsync.js'));
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('instantiation/returnValue/loadAll')
+              .then(function (instance) {
+                instance[4] = instance[4]();
+                instance[5] = instance[5]();
+                expect(instance).toEqual([
+                  path.join(folder, 'simpleValue.js'),
+                  path.join(folder, 'simpleValueAsync.js'),
+                  { path: path.join(folder, 'object.js') },
+                  { path: path.join(folder, 'objectAsync.js') },
+                  path.join(folder, 'function.js'),
+                  path.join(folder, 'functionAsync.js')
+                ]);
+              });
+
+        })
+        .then(function () {
+          done();
+        })
+        .catch(function (e) {
+          done(e);
+        });
+
+  });
+
   it('should inject options', function (done) {
 
     var fireUp = fireUpLib.newInjector({
