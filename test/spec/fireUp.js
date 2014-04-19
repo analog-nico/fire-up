@@ -94,7 +94,53 @@ describe('Regarding injection, FireUp', function () {
 
   });
 
-  xit('should load modules with cascading dependencies');
+  it('should load modules with cascading dependencies', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/interfaces/**/*.js', '!../fixtures/modules/interfaces/conflicts/*.js', '../fixtures/modules/injection/direct/*.js', '../fixtures/modules/injection/cascading/*.js']
+    });
+
+    var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/direct/'));
+    var folderInterfaces = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/interfaces/'));
+
+    fireUp('injection/cascading/injectAllDirect')
+        .then(function (instance) {
+          expect(instance).toEqual([
+            path.join(folderInjection, 'noDependencies.js'),
+            [path.join(folderInterfaces, 'unnested/singleAsString.js')],
+            [path.join(folderInterfaces, 'unnested/singleAsList.js')],
+            [
+              path.join(folderInterfaces, 'unnested/singleAsList.js'),
+              path.join(folderInterfaces, 'unnested/multiple.js'),
+              path.join(folderInterfaces, 'nested/baseAndSubInterface.js'),
+              path.join(folderInterfaces, 'nested/baseAndSubInterface.js'),
+              path.join(folderInterfaces, 'nested/baseInterface1.js'),
+              path.join(folderInterfaces, 'nested/baseInterface2.js'),
+              path.join(folderInterfaces, 'nested/subSubInterfaceWithoutBase.js')
+            ],
+            [
+              path.join(folderInterfaces, 'nested/baseAndSubInterface.js'),
+              path.join(folderInterfaces, 'nested/baseAndSubInterface.js'),
+              path.join(folderInterfaces, 'nested/baseAndSubInterface.js'),
+              path.join(folderInterfaces, 'nested/subInterface1.js'),
+              path.join(folderInterfaces, 'nested/subInterface2.js'),
+              path.join(folderInterfaces, 'nested/subInterfaceWithoutBase1.js'),
+              path.join(folderInterfaces, 'nested/subSubInterfaceWithoutBase.js'),
+              path.join(folderInterfaces, 'nested/subSubInterfaceWithoutBase.js')
+            ],
+            [
+              path.join(folderInterfaces, 'unnested/singleAsList.js'),
+              43
+            ]
+          ]);
+          done();
+        })
+        .catch(function (e) {
+          done(e);
+        });
+
+  });
 
   it('should load modules with static arguments', function (done) {
 
