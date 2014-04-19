@@ -23,7 +23,7 @@ module.exports = function(Promise, mode, id) {
 };
 
 module.exports.__module = {
-  implements: 'instantiation/returnValue/bluebirdPromise',
+  implements: 'instantiation/promises/bluebird',
   inject: 'require(bluebird)',
   type: 'multiple instances'
 };

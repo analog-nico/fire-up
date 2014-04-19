@@ -1,21 +1,3 @@
-# First version
-
-require('fire-up').newInjector(options)
-  - options: include, exclude, use, logLevel
-
-fireUp(moduleReference) -> Promise
-
-Flag comment
-
-__module property
-  - implements, inject
-  - type: multiple instances, singleton
-
-Factory style with 'staticArgs'
-
-require plugin as di wrapper
-"fireup/currentInjector" to check di wrapper implementation feasibility
-
 # API
 
 ## require('fire-up').newInjector(options)
