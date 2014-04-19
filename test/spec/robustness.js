@@ -108,6 +108,48 @@ describe('Regarding its robustness, FireUp', function () {
           done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
         })
         .then(function () {
+
+          return fireUp('instantiation/failing/throwErrorAsync');
+
+        })
+        .then(function () {
+          done(new Error('fireUp should have rejected the promise.'));
+        })
+        .catch(fireUp.errors.InstanceInitializationError, function (e) {
+          expect(e.thrownError.message).toEqual(path.join(folder, 'throwErrorAsync.js'));
+        })
+        .catch(function (e) {
+          done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+        })
+        .then(function () {
+
+          return fireUp('instantiation/failing/injectThrowError');
+
+        })
+        .then(function () {
+          done(new Error('fireUp should have rejected the promise.'));
+        })
+        .catch(fireUp.errors.InstanceInitializationError, function (e) {
+          expect(e.thrownError.message).toEqual(path.join(folder, 'throwError.js'));
+        })
+        .catch(function (e) {
+          done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+        })
+        .then(function () {
+
+          return fireUp('instantiation/failing/injectThrowErrorAsync');
+
+        })
+        .then(function () {
+          done(new Error('fireUp should have rejected the promise.'));
+        })
+        .catch(fireUp.errors.InstanceInitializationError, function (e) {
+          expect(e.thrownError.message).toEqual(path.join(folder, 'throwErrorAsync.js'));
+        })
+        .catch(function (e) {
+          done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+        })
+        .then(function () {
           done();
         });
 

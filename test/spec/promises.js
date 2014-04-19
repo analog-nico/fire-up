@@ -37,8 +37,11 @@ describe('Regarding promises, FireUp', function () {
         .then(function (instance) {
           done(new Error('bluebirdPromise(1) should have thrown an error.'));
         })
+        .catch(fireUp.errors.InstanceInitializationError, function (e) {
+          expect(e.thrownError.message).toEqual(path.join(folder, 'bluebirdPromise.js_2'));
+        })
         .catch(function (e) {
-          expect(e.message).toEqual(path.join(folder, 'bluebirdPromise.js_2'));
+          done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
         })
         .then(function () {
 
@@ -48,8 +51,11 @@ describe('Regarding promises, FireUp', function () {
         .then(function (instance) {
           done(new Error('bluebirdPromise(2) should have thrown an error.'));
         })
+        .catch(fireUp.errors.InstanceInitializationError, function (e) {
+          expect(e.thrownError).toEqual(path.join(folder, 'bluebirdPromise.js_3'));
+        })
         .catch(function (e) {
-          expect(e).toEqual(path.join(folder, 'bluebirdPromise.js_3'));
+          done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
         })
         .then(function () {
           done();
