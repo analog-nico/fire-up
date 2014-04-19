@@ -96,7 +96,38 @@ describe('Regarding injection, FireUp', function () {
 
   xit('should load modules with cascading dependencies');
 
-  xit('should load modules with static arguments');
+  it('should load modules with static arguments', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/instantiation/staticargs/*.js']
+    });
+
+    Promise.resolve()
+        .then(function () {
+
+          return fireUp('instantiation/staticargs/takesStaticArgs(a string, false, 1, 1.5)');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual(['a string', false, 1, 1.5]);
+        })
+        .then(function () {
+
+          return fireUp('instantiation/staticargs/injectWithStaticArgs');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual(['string', true, 0, 0.5]);
+        })
+        .then(function () {
+          done();
+        })
+        .catch(function (e) {
+          done(e);
+        });
+
+  });
 
   it('should initialize modules according to their type 1', function (done) {
 
