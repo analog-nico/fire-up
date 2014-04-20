@@ -13,7 +13,47 @@ describe('Regarding its robustness, FireUp', function () {
   });
 
 
-  it('should reject with an NoImplementationError when no implementation error is found', function (done) {
+  it('should reject with an ConfigError when passing an invalid module reference', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/instantiation/failing/*.js']
+    });
+
+    fireUp('inv(al)id')
+        .then(function () {
+          done(new Error('fireUp should have rejected the promise.'));
+        })
+        .catch(fireUp.errors.ConfigError, function (e) {
+          done();
+        })
+        .catch(function (e) {
+          done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+        });
+
+  });
+
+  it('should reject with an ConfigError when passing options of invalid type', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/instantiation/failing/*.js']
+    });
+
+    fireUp('test', 'options of invalid type')
+        .then(function () {
+          done(new Error('fireUp should have rejected the promise.'));
+        })
+        .catch(fireUp.errors.ConfigError, function (e) {
+          done();
+        })
+        .catch(function (e) {
+          done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+        });
+
+  });
+
+  it('should reject with an NoImplementationError when no implementation is found', function (done) {
 
     var fireUp = fireUpLib.newInjector({
       basePath: __dirname,
