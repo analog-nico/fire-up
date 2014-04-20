@@ -102,7 +102,7 @@ describe('Regarding its robustness, FireUp', function () {
           done(new Error('fireUp should have rejected the promise.'));
         })
         .catch(fireUp.errors.InstanceInitializationError, function (e) {
-          expect(e.thrownError.message).toEqual(path.join(folder, 'throwError.js'));
+          expect(e.cause.message).toEqual(path.join(folder, 'throwError.js'));
         })
         .catch(function (e) {
           done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
@@ -116,7 +116,7 @@ describe('Regarding its robustness, FireUp', function () {
           done(new Error('fireUp should have rejected the promise.'));
         })
         .catch(fireUp.errors.InstanceInitializationError, function (e) {
-          expect(e.thrownError.message).toEqual(path.join(folder, 'throwErrorAsync.js'));
+          expect(e.cause.message).toEqual(path.join(folder, 'throwErrorAsync.js'));
         })
         .catch(function (e) {
           done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
@@ -130,7 +130,7 @@ describe('Regarding its robustness, FireUp', function () {
           done(new Error('fireUp should have rejected the promise.'));
         })
         .catch(fireUp.errors.InstanceInitializationError, function (e) {
-          expect(e.thrownError.message).toEqual(path.join(folder, 'throwError.js'));
+          expect(e.cause.message).toEqual(path.join(folder, 'throwError.js'));
         })
         .catch(function (e) {
           done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
@@ -144,7 +144,7 @@ describe('Regarding its robustness, FireUp', function () {
           done(new Error('fireUp should have rejected the promise.'));
         })
         .catch(fireUp.errors.InstanceInitializationError, function (e) {
-          expect(e.thrownError.message).toEqual(path.join(folder, 'throwErrorAsync.js'));
+          expect(e.cause.message).toEqual(path.join(folder, 'throwErrorAsync.js'));
         })
         .catch(function (e) {
           done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
