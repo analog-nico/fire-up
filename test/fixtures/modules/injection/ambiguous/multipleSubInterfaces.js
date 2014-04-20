@@ -8,5 +8,5 @@ module.exports = function (noBaseInterface2) {
 
 module.exports.__module = {
   implements: 'injection/ambiguous/multipleSubInterfaces',
-  inject: 'interfaces/nested/noBaseInterface2'
+  inject: 'interfaces/nested/noBaseInterface1'
 };

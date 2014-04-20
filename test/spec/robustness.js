@@ -123,7 +123,7 @@ describe('Regarding its robustness, FireUp', function () {
 
   });
 
-  it('should ignore module for parent interface when subinterface is requested', function (done) {
+  it('should ignore a module for a parent interface when sub interface is requested', function (done) {
 
     var fireUp = fireUpLib.newInjector({
       basePath: __dirname,
@@ -162,6 +162,100 @@ describe('Regarding its robustness, FireUp', function () {
         .then(function () {
 
           return fireUp('injection/ambiguous/injectNonExistentSubInterface')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.NoImplementationError, function (e) {
+                // This is expected to be called.
+              })
+              .catch(function (e) {
+                done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+              });
+
+        })
+        .then(function () {
+          done();
+        });
+
+  });
+
+  it('should ignore conflicting implementations that would otherwise match the requested module reference', function (done) {
+
+    // Use internal calls to force creating the injector with a registry containing conflicts.
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: [
+        '../fixtures/modules/interfaces/conflicts/implementingSameInterface1.js',
+        '../fixtures/modules/interfaces/conflicts/implementingSameSubInterface1.js'
+      ]
+    });
+    expect(function () {
+      fireUp._internal.registry.registerInterface('test/fixtures/modules/interfaces/conflicts/implementingSameInterface2.js', 'interfaces/conflicts/implementingSameInterface');
+    }).toThrowOfType(fireUpLib.errors.InterfaceRegistrationConflictError);
+    expect(function () {
+      fireUp._internal.registry.registerInterface('test/fixtures/modules/interfaces/conflicts/implementingSameSubInterface2.js', 'interfaces/conflicts/implementingSameSubInterface:sub');
+    }).toThrowOfType(fireUpLib.errors.InterfaceRegistrationConflictError);
+
+    Promise.resolve()
+        .then(function () {
+
+          return fireUp('interfaces/conflicts/implementingSameInterface')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.NoImplementationError, function (e) {
+                // This is expected to be called.
+              })
+              .catch(function (e) {
+                done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('interfaces/conflicts/implementingSameSubInterface')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.NoImplementationError, function (e) {
+                // This is expected to be called.
+              })
+              .catch(function (e) {
+                done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+              });
+
+        })
+        .then(function () {
+          done();
+        });
+
+  });
+
+  it('should not load a more specific implementation if it is ambiguous', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/interfaces/unnested/*.js', '../fixtures/modules/interfaces/nested/*.js', '../fixtures/modules/injection/ambiguous/*.js']
+    });
+
+    Promise.resolve()
+        .then(function () {
+
+          return fireUp('interfaces/nested/noBaseInterface1')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.NoImplementationError, function (e) {
+                // This is expected to be called.
+              })
+              .catch(function (e) {
+                done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('injection/ambiguous/multipleSubInterfaces')
               .then(function () {
                 done(new Error('fireUp should have rejected the promise.'));
               })
