@@ -123,6 +123,62 @@ describe('Regarding its robustness, FireUp', function () {
 
   });
 
+  it('should ignore module for parent interface when subinterface is requested', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/interfaces/unnested/*.js', '../fixtures/modules/interfaces/nested/*.js', '../fixtures/modules/injection/ambiguous/*.js']
+    });
+
+    Promise.resolve()
+        .then(function () {
+
+          return fireUp('interfaces/unnested/singleAsString:sub')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.NoImplementationError, function (e) {
+                // This is expected to be called.
+              })
+              .catch(function (e) {
+                done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('interfaces/nested/noBaseInterface1:subInterface1:sub1:sub2')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.NoImplementationError, function (e) {
+                // This is expected to be called.
+              })
+              .catch(function (e) {
+                done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('injection/ambiguous/injectNonExistentSubInterface')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.NoImplementationError, function (e) {
+                // This is expected to be called.
+              })
+              .catch(function (e) {
+                done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+              });
+
+        })
+        .then(function () {
+          done();
+        });
+
+  });
+
   it('should throw an InstanceInitializationError when creating a module instance fails', function (done) {
 
     var fireUp = fireUpLib.newInjector({
