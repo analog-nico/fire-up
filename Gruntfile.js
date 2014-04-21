@@ -22,6 +22,14 @@ module.exports = function (grunt) {
         jshintrc: '.jshintrc'
       }
     },
+    jasmine_node_no_coverage: {
+      coverage: false,
+      options: {
+        matchall: true,
+        specFolders: ['test/spec/'],
+        isVerbose: true
+      }
+    },
     jasmine_node_with_coverage: {
       coverage: {
         excludes: ['test/**', 'coverage/**', 'Gruntfile.js']
@@ -32,12 +40,9 @@ module.exports = function (grunt) {
         isVerbose: true
       }
     },
-    jasmine_node_no_coverage: {
-      coverage: false,
+    coveralls: {
       options: {
-        matchall: true,
-        specFolders: ['test/spec/'],
-        isVerbose: true
+        src: './coverage/lcov.info'
       }
     },
     watch: {
@@ -55,15 +60,16 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-jasmine-node-coverage');
+  grunt.loadNpmTasks('grunt-coveralls');
   grunt.loadNpmTasks('grunt-contrib-watch');
-
-  grunt.registerTask('jasmine_node_with_coverage', 'Unit testing with coverage report', function () {
-    grunt.config.set('jasmine_node', grunt.config.get('jasmine_node_with_coverage'));
-    grunt.task.run('jasmine_node');
-  });
 
   grunt.registerTask('jasmine_node_no_coverage', 'Just unit testing', function () {
     grunt.config.set('jasmine_node', grunt.config.get('jasmine_node_no_coverage'));
+    grunt.task.run('jasmine_node');
+  });
+
+  grunt.registerTask('jasmine_node_with_coverage', 'Unit testing with coverage report', function () {
+    grunt.config.set('jasmine_node', grunt.config.get('jasmine_node_with_coverage'));
     grunt.task.run('jasmine_node');
   });
 
@@ -74,7 +80,7 @@ module.exports = function (grunt) {
 
   // 'jasmine-node' needs to run in a separate task the second time it is executed so that es-sequence freshly required.
   // The unit tests assume that es-sequence is not initialized in the beginning.
-  grunt.registerTask('ci', ['clean', 'jshint', 'jasmine_node_no_coverage', 'run:jasmine_node_with_coverage']);
+  grunt.registerTask('ci', ['clean', 'jshint', 'jasmine_node_no_coverage', 'run:jasmine_node_with_coverage', 'coveralls']);
 
   grunt.registerTask('default', ['test']);
 };
