@@ -1,5 +1,7 @@
 # Fire Up! Dependency Injector
 
+[![Build Status](https://travis-ci.org/analog-nico/fire-up.svg?branch=master)](https://travis-ci.org/analog-nico/fire-up) [![Dependencies up to date](https://david-dm.org/analog-nico/fire-up.png)](https://david-dm.org/analog-nico/fire-up)
+
 Fire Up! is a dependency injection container specifically designed for node.js with a powerful but sleek API.
 
 ## What you can expect

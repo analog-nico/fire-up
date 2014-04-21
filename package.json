@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/analog-nico/fire-up"
   },
   "keywords": [
     "dependency injection",
@@ -25,7 +25,7 @@
   "author": "analog-nico <nicolai.kamenzky@testrails.org>",
   "license": "MIT",
   "bugs": {
-    "url": ""
+    "url": "https://github.com/analog-nico/fire-up/issues"
   },
   "engines": {
     "node": ">=0.10.0"
