@@ -107,6 +107,26 @@ describe('The require standard module', function () {
 
   });
 
+  it('should throw an error if the required local file is not found', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/injection/require/*.js']
+    });
+
+    fireUp('injection/require/requireNonexistingLocalFile')
+        .then(function () {
+          done(new Error('fireUp should have rejected the promise.'));
+        })
+        .catch(fireUp.errors.InstanceInitializationError, function (e) {
+          done();
+        })
+        .catch(function (e) {
+          done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+        });
+
+  });
+
   it('should be able to require standard node modules', function (done) {
 
     var fireUp = fireUpLib.newInjector({
@@ -144,6 +164,26 @@ describe('The require standard module', function () {
         })
         .catch(function (e) {
           done(e);
+        });
+
+  });
+
+  it('should be able to require installed node modules', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/injection/require/*.js']
+    });
+
+    fireUp('injection/require/requireNonexistingModule')
+        .then(function () {
+          done(new Error('fireUp should have rejected the promise.'));
+        })
+        .catch(fireUp.errors.InstanceInitializationError, function (e) {
+          done();
+        })
+        .catch(function (e) {
+          done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
         });
 
   });
