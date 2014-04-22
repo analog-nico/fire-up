@@ -75,6 +75,17 @@ describe('Regarding its robustness, FireUp', function () {
 
         })
         .then(function () {
+
+          return fireUp('test', { use: 'invalid type' })
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.ConfigError, function (e) {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
           done();
         })
         .catch(function (e) {
