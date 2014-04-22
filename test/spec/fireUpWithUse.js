@@ -612,4 +612,101 @@ describe('Regarding injection with use, FireUp', function () {
 
   });
 
+  it('should inject the parent interface implementation into a wrapper', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/interfaces/**/*.js', '!../fixtures/modules/interfaces/conflicts/*.js', '../fixtures/modules/injection/use/*.js']
+    });
+
+    var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/use/'));
+    var folderInterfaces = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/interfaces/'));
+
+    Promise.resolve()
+        .then(function () {
+
+          return fireUp('injection/use/injectBaseInterface1:wrapper')
+              .then(function (instance) {
+                expect(instance).toEqual([path.join(folderInterfaces, 'nested/baseInterface1.js'), path.join(folderInjection, 'injectBaseInterface1Wrapper.js')]);
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('injection/use/injectInjectBaseInterface1Wrapper')
+              .then(function (instance) {
+                expect(instance).toEqual([path.join(folderInterfaces, 'nested/baseInterface1.js'), path.join(folderInjection, 'injectBaseInterface1Wrapper.js')]);
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('injection/use/injectBaseInterface1:wrapper:wrapper')
+              .then(function (instance) {
+                expect(instance).toEqual([[path.join(folderInterfaces, 'nested/baseInterface1.js'), path.join(folderInjection, 'injectBaseInterface1Wrapper.js')], path.join(folderInjection, 'injectBaseInterface1WrapperWrapper.js')]);
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('injection/use/injectBaseInterface1', { use: ['injection/use/injectBaseInterface1:wrapper'] })
+              .then(function (instance) {
+                expect(instance).toEqual([path.join(folderInterfaces, 'nested/baseInterface1.js'), path.join(folderInjection, 'injectBaseInterface1Wrapper.js')]);
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('injection/use/injectBaseInterface1', { use: ['injection/use/injectBaseInterface1:wrapper:wrapper'] })
+              .then(function (instance) {
+                expect(instance).toEqual([[path.join(folderInterfaces, 'nested/baseInterface1.js'), path.join(folderInjection, 'injectBaseInterface1Wrapper.js')], path.join(folderInjection, 'injectBaseInterface1WrapperWrapper.js')]);
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('injection/use/injectInjectBaseInterface1Wrapper', { use: ['injection/use/injectBaseInterface1:wrapper:wrapper'] })
+              .then(function (instance) {
+                expect(instance).toEqual([[path.join(folderInterfaces, 'nested/baseInterface1.js'), path.join(folderInjection, 'injectBaseInterface1Wrapper.js')], path.join(folderInjection, 'injectBaseInterface1WrapperWrapper.js')]);
+              });
+
+        })
+        .then(function () {
+          done();
+        })
+        .catch(function (e) {
+          done(e);
+        });
+
+  });
+
+  it('should allow wrapper to inject parent interface even if wrapper was requested by an unrelated interface', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/interfaces/**/*.js', '!../fixtures/modules/interfaces/conflicts/*.js', '../fixtures/modules/injection/use/*.js'],
+      use: ['interfaces/nested/baseInterface1:subInterface1']
+    });
+
+    var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/use/'));
+    var folderInterfaces = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/interfaces/'));
+
+    Promise.resolve()
+        .then(function () {
+
+          return fireUp('injection/use/injectBaseInterface1Wrapper2')
+              .then(function (instance) {
+                expect(instance).toEqual(path.join(folderInterfaces, 'nested/baseInterface1.js'));
+              });
+
+        })
+        .then(function () {
+          done();
+        })
+        .catch(function (e) {
+          done(e);
+        });
+
+  });
+
 });
