@@ -4,7 +4,7 @@ describe('The descriptor module', function () {
 
   var descriptor = require('../../lib/core/descriptor.js');
 
-  it('should validate interface names', function (done) {
+  it('should validate interface names', function () {
 
     expect(descriptor.validateInterfaceName()).toBe(false);
     expect(descriptor.validateInterfaceName(null)).toBe(false);
@@ -50,11 +50,9 @@ describe('The descriptor module', function () {
     expect(descriptor.validateInterfaceName("test/foo:test/bar")).toBe(true);
     expect(descriptor.validateInterfaceName("€")).toBe(true);
 
-    done();
-
   });
 
-  it('should parse interface names', function (done) {
+  it('should parse interface names', function () {
 
     expect(descriptor.parseInterfaceName("test")).toEqual(["test"]);
     expect(descriptor.parseInterfaceName("test/test")).toEqual(["test/test"]);
@@ -63,11 +61,24 @@ describe('The descriptor module', function () {
     expect(descriptor.parseInterfaceName("test/foo:test/bar")).toEqual(["test/foo", "test/bar"]);
     expect(descriptor.parseInterfaceName("€")).toEqual(["€"]);
 
-    done();
+  });
+
+  it('should format interface names', function () {
+
+    function check(interfaceName) {
+      expect(descriptor.formatInterfaceName(descriptor.parseInterfaceName(interfaceName))).toEqual(interfaceName);
+    }
+
+    check("test");
+    check("test/test");
+    check("test:test");
+    check("test:t:t");
+    check("test/foo:test/bar");
+    check("€");
 
   });
 
-  it('should validate module references', function (done) {
+  it('should validate module references', function () {
 
     expect(descriptor.validateModuleReference()).toBe(false);
     expect(descriptor.validateModuleReference(null)).toBe(false);
@@ -126,11 +137,9 @@ describe('The descriptor module', function () {
     expect(descriptor.validateModuleReference("€(x)")).toBe(true);
     expect(descriptor.validateModuleReference("test(\"test\",'test' ,true, false, 0, 0.5, hello world!,hello world!, hello world! )")).toBe(true);
 
-    done();
-
   });
 
-  it('should parse module references', function (done) {
+  it('should parse module references', function () {
 
     expect(descriptor.parseModuleReference("test")).toEqual({ segments: ["test"], args: [] });
     expect(descriptor.parseModuleReference("test/test")).toEqual({ segments: ["test/test"], args: [] });
@@ -147,7 +156,51 @@ describe('The descriptor module', function () {
     expect(descriptor.parseModuleReference("€(x)")).toEqual({ segments: ["€"], args: ["x"] });
     expect(descriptor.parseModuleReference("test(\"test\",'test' ,true, false, 0, 0.5, hello world!,hello world!, hello world! )")).toEqual({ segments: ["test"], args: ["test", "test", true, false, 0, 0.5, "hello world!", "hello world!", "hello world!"] });
 
-    done();
+  });
+
+  it('should format modules references', function () {
+
+    function check(moduleReference, expectedResult) {
+      expect(descriptor.formatModuleReference(descriptor.parseModuleReference(moduleReference))).toEqual(expectedResult ? expectedResult : moduleReference);
+    }
+
+    check("test");
+    check("test/test");
+    check("test:test");
+    check("test:t:t");
+    check("test/foo:test/bar");
+    check("€");
+    check("test('x')");
+    check("test('')");
+    check("test/test('x')");
+    check("test:test('x')");
+    check("test:t:t('x')");
+    check("test/foo:test/bar('x')");
+    check("€('x')");
+    check("test(\"test\",'test' ,true, false, 0, 0.5, hello world!,hello world!, hello world! )", "test('test', 'test', true, false, 0, 0.5, 'hello world!', 'hello world!', 'hello world!')");
+
+  });
+
+  it('should convert modules references to interface names', function () {
+
+    function check(moduleReference, expectedResult) {
+      expect(descriptor.convertModuleReferenceToInterfaceName(moduleReference)).toEqual(expectedResult ? expectedResult : moduleReference);
+    }
+
+    check("test");
+    check("test/test");
+    check("test:test");
+    check("test:t:t");
+    check("test/foo:test/bar");
+    check("€");
+    check("test('x')", "test");
+    check("test('')", "test");
+    check("test/test('x')", "test/test");
+    check("test:test('x')", "test:test");
+    check("test:t:t('x')", "test:t:t");
+    check("test/foo:test/bar('x')", "test/foo:test/bar");
+    check("€('x')", "€");
+    check("test(\"test\",'test' ,true, false, 0, 0.5, hello world!,hello world!, hello world! )", "test");
 
   });
 
