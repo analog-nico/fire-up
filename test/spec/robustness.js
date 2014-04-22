@@ -33,18 +33,48 @@ describe('Regarding its robustness, FireUp', function () {
 
   });
 
-  it('should reject with an ConfigError when passing options of invalid type', function (done) {
+  it('should reject with an ConfigError when passing invalid options', function (done) {
 
     var fireUp = fireUpLib.newInjector({
       basePath: __dirname,
       modules: ['../fixtures/modules/instantiation/failing/*.js']
     });
 
-    fireUp('test', 'options of invalid type')
+    Promise.resolve()
         .then(function () {
-          done(new Error('fireUp should have rejected the promise.'));
+
+          return fireUp('test', 'options of invalid type')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.ConfigError, function (e) {
+                // This is expected to be called.
+              });
+
         })
-        .catch(fireUp.errors.ConfigError, function (e) {
+        .then(function () {
+
+          return fireUp('test', { basePath: 'not allowed' })
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.ConfigError, function (e) {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('test', { modules: 'not allowed' })
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.ConfigError, function (e) {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
           done();
         })
         .catch(function (e) {
