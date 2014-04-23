@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/analog-nico/fire-up.svg?branch=master)](https://travis-ci.org/analog-nico/fire-up) [![Coverage Status](https://coveralls.io/repos/analog-nico/fire-up/badge.png?branch=master)](https://coveralls.io/r/analog-nico/fire-up?branch=master) [![Dependencies up to date](https://david-dm.org/analog-nico/fire-up.png)](https://david-dm.org/analog-nico/fire-up)
 
-Fire Up! is a dependency injection container specifically designed for node.js with a powerful but sleek API.
+Fire Up! is a dependency injection container designed specifically for node.js with a powerful but sleek API.
 
 ## What you can expect
 
@@ -15,11 +15,17 @@ Fire Up! is a dependency injection container specifically designed for node.js w
 
 ## Why I decided to write my own dependency injector
 
-I was prepping for a new project that aimed to support [continuous deployment](http://puppetlabs.com/blog/continuous-delivery-vs-continuous-deployment-whats-diff). So fully automated testing is a must. However, my ambitions would soon falter by paralyzing bad testability without proper dependency injection. ([quick](http://csausdev.wordpress.com/2010/12/17/dependency-injection-in-node-js/) / [sophisticated](https://www.youtube.com/watch?v=JjqKQ8ezwKQ) explanation)
+In March 2014 I was prepping for a new project that aims for [continuous deployment](http://puppetlabs.com/blog/continuous-delivery-vs-continuous-deployment-whats-diff). Without proper dependency injection, however, I would have a hard time to implement fully automated tests. ([quick](http://csausdev.wordpress.com/2010/12/17/dependency-injection-in-node-js/) / [sophisticated](https://www.youtube.com/watch?v=JjqKQ8ezwKQ) elaboration) When I searched for dependency injection (di) containers for node.js I was surprised by the difficult choice to make. There are plenty of di containers that are still used by only a few people or some more widely adopted ones which are, however, designed to work in the browser as well / primarily. In my opinion there is a fundamental difference if you design a di container for node.js compared to one for the browser: In the browser you cannot require just all module source files regardless of whether you later need them for injection or not. Someone browsing your site on a slow internet connection will just get sad. In node.js, though, this is not an issue. Thus you can make the module registration phase a lot easier for the developers. Thinking about a large application it will make a difference in the maintenance required. So what I needed was a di container designed specifically for node.js.
 
-Arguments forthcoming.
+If you are currently looking for the right di container for your own new project you may go through the same pain as I did. If you happen to choose the wrong di container and realize you have to switch to another one a year later you will face a huge refactoring task. So you want to choose wisely. At the time I was looking for a di container none of the available ones met enough of my requirements at once:
 
-Great inspiration came from the [existing di containers](http://www.mariocasciaro.me/dependency-injection-in-node-js-and-other-architectural-patterns) and the [mastermind of AngaularJS' dependency injector](https://www.youtube.com/watch?v=_OGGsf1ZXMs).
+- Ideally a sound user base which indicates that the di container has matured and the code base is still maintained
+- A well designed and simple API
+- Each source file should represent a module and does not need extra configuration files sprinkled across my project
+- Helpful documentation
+- Helpful debug output if the injection does not work as intended
+
+I have to admit by implementing my own dependency injector I have the advantage that I don't need helpful documentation and don't have to worry about continued maintenance. Anyhow, I hope that Fire Up! will gradually meet all those requirements and it will become an easy choice for you to use it in your own project. However, if you are not convinced I can recommend [a great article on di containers for node.js](http://www.mariocasciaro.me/dependency-injection-in-node-js-and-other-architectural-patterns) to you that helped me choosing one and later to get inspiration for the design of Fire Up! If you want to dig deeper into the design of a di container you have to watch the [impressive talk](https://www.youtube.com/watch?v=_OGGsf1ZXMs) of the mastermind of AngularJS' dependency injector.
 
 ## Installation
 
