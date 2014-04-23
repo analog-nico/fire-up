@@ -259,6 +259,17 @@ fireUp('expressApp')                    // interface implemented by app.js.
 
 To run the server type `node server_fireup.js` into the shell.
 
+The console output will the injected dependencies as a tree:
+
+```
+fireUp# INFO  Requested: expressApp, implemented in: example/lib/app.js
+fireUp# INFO  |-- Requested: require(bluebird)
+fireUp# INFO  |-- Requested: require(express)
+fireUp# INFO  |-- Requested: config, implemented in: example/lib/config.js
+fireUp# INFO      |-- Requested: require(morgan)
+fireUp# INFO  |-- Requested: routes, implemented in: example/lib/routes.js
+```
+
 ### Switching implementations, e.g. to introduce a mock for testing
 
 Dependency injection is for loose coupling. And loose coupling is only loose if you can easily switch the implementation that is used for injection. The most common use case is to replace a module by a mock during testing. Regarding our example let us say we want to replace the `routes.js` module by a mock. The mock, of course, has to implement the same interface as the original `routes.js` module does. Otherwise the mock would not be compatible. Additionally, the mock would also implement some extra feature that are needed for testing. Thus the interface the mock implements is an extended version of the interface implemented by the `routes.js` module.
@@ -324,6 +335,21 @@ fireUp('expressApp', { use: ['routes:mock'] })  // The 'use' option tells Fire U
 ```
 
 To run the mocked server type `node ./test/server_fireup_test.js` into the shell.
+
+The console output will now show that the mock is injected (see last line):
+
+```
+fireUp# INFO  Requested: expressApp, implemented in: example/lib/app.js
+fireUp# INFO  |-- Requested: require(bluebird)
+fireUp# INFO  |-- Requested: require(express)
+fireUp# INFO  |-- Requested: config, implemented in: example/lib/config.js
+fireUp# INFO      |-- Requested: require(morgan)
+fireUp# INFO  |-- Requested: routes, but using: routes:mock, implemented in: example/test/fixtures/routes_mock.js
+```
+
+## API
+
+Description forthcoming.
 
 ## What you should know about Fire Up!'s own dependencies
 
