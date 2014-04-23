@@ -174,7 +174,7 @@ module.exports.__module = {
 };
 ```
 
-Note that the factory method returns a function. That function is the actual module instance injected into `app.js`. Consequently that function can be called in `app.js`:
+Note that the factory method returns a function. That function is the actual module instance injected into `app.js`. Consequently that function can be called in the factory method of `app.js`:
 
 ``` js
 // app.js
@@ -221,7 +221,7 @@ module.exports.__module = {
 The three modules above represent the complete express server logic. We now only need some code to fire the whole thing up! For that Fire Up! has two API methods which we use like this:
 
 ``` js
-var fireUpLib = require('fire-up');     // Should be the only require call you will ever need again.
+var fireUpLib = require('fire-up');     // Should be the only require call you'll ever need again.
 
 try {
 
@@ -231,19 +231,25 @@ try {
   });
 
 } catch (e) {
-  console.error(e);                     // If something went wrong here this means the developer configured something wrong.
-  process.exit(1);                      // The console output will always give you helpful details.
-}
+  console.error(e);                     // If something went wrong here this means the developer
+  process.exit(1);                      // configured something wrong. The console output will
+}                                       // always give you helpful details.
 
-fireUp('expressApp')                    // FIRES UP THE WHOLE THING. The argument denotes the interface implemented by app.js.
+                                        // FIRES UP THE WHOLE THING. The argument denotes the
+fireUp('expressApp')                    // interface implemented by app.js.
   .then(function(expressApp) {
-    console.log('App initialized');     // If the initialization finished successfully the returned promise is resolved.
-  }).catch(function (e) {
-    console.error(e);                   // If something went wrong here this could either mean that the developer configured
-    process.exit(1);                    // something wrong or the module code inside the factory method failed. In the latter
-  });                                   // case a fireUp.errors.InstanceInitializationError is returned that wraps the causing
-                                        // error. Again, the console output will always give you helpful details.
+                                        // If the initialization finished successfully the
+    console.log('App initialized');     // returned promise is resolved.
+
+  }).catch(function (e) {               // If something went wrong here this could either mean
+                                        // that the developer configured something wrong or the
+    console.error(e);                   // module code inside the factory method failed. In the
+    process.exit(1);                    // latter case a fireUp.errors.InstanceInitializationError
+                                        // is returned that wraps the causing error. Again, the
+  });                                   // console output will always give you helpful details.
 ```
+
+To run the server type `node server_fireup.js` into the shell.
 
 ## What you should know about Fire Up!'s own dependencies
 
@@ -256,10 +262,10 @@ fireUp('expressApp')                    // FIRES UP THE WHOLE THING. The argumen
 The whole point in making Fire Up! public is to let it grow strong through community involvement. So your feedback is highly welcome!
 
 To set up your development environment:
-1. clone the repo to your desktop,
-2. in the shell `cd` to the main folder,
-3. hit `npm install`, and
-4. run `grunt test`.
+  1. clone the repo to your desktop,
+  2. in the shell `cd` to the main folder,
+  3. hit `npm install`, and
+  4. run `grunt test`.
 
 `grunt test` watches all source files and if you save some changes it will lint the code and execute all tests. The test coverage report can be viewed from `./coverage/lcov-report/index.html`.
 
