@@ -60,9 +60,11 @@ Since dependency injection is meant for large applications we think this example
    |-- server_fireup.js  // Main script to run from node and which invokes Fire Up!
 ```
 
+(You can find all sources shown below in the [repo](https://github.com/analog-nico/fire-up/tree/master/example).)
+
 ### app.js - Main module  that starts up the express server
 
-`app.js` is the main module that will be instatiated by `server_fireup.js` by using the API of Fire Up! This means the module has to conform to the Fire Up! module pattern:
+`app.js` is the main module that will be instantiated by `server_fireup.js` by using the API of Fire Up! This means the module has to conform to the Fire Up! module pattern:
 
 ``` js
 // Fire me up!
