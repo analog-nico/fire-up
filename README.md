@@ -251,6 +251,72 @@ fireUp('expressApp')                    // interface implemented by app.js.
 
 To run the server type `node server_fireup.js` into the shell.
 
+### Switching implementations, e.g. to introduce a mock for testing
+
+Dependency injection is for loose coupling. And loose coupling is only loose if you can easily switch the implementation that is used for injection. The most common use case is to replace a module by a mock during testing. Regarding our example let us say we want to replace the `routes.js` module by a mock. The mock, of course, has to implement the same interface as the original `routes.js` module does. Otherwise the mock would not be compatible. Additionally, the mock would also implement some extra feature that are needed for testing. Thus the interface the mock implements is an extended version of the interface implemented by the `routes.js` module.
+
+Fire Up! got the concept of interface hierarchies baked into it. As the `routes.js` module `implements: 'routes'` the mock module in the source file `./test/fixtures/routes_mock.js` will `implement: 'routes:mock'`. The colon `:` denotes the extension of an interface. Since the interface `routes:mock` must be fully compatible with the interface `routes` (however, not vice versa) any module that requests an implementation of the interface `routes` will be also be happy to get an implementation of the interface `routes:mock` injected.
+
+The implementation of `./test/fixtures/routes_mock.js` looks like this:
+
+``` js
+// Fire me up!
+
+module.exports = function () {                // Make sure this implementation is compatible with
+                                              // the routes interface implemented by routes.js.
+  var message = 'You are mocking me!';
+
+  function register(app) {
+    app.get('/easter', function (req, res) {
+      res.send('egg')
+    });
+    app.get('/', function(req, res){
+      res.send(message);
+    });
+  }
+
+  return { register: register };              // Turns out it is compatible. ;)
+
+};
+
+module.exports.__module = {
+  implements: 'routes:mock'                   // Declares the extended interface. That's all.
+};
+```
+
+(Of course this mock would make more sense if the original `routes.js` module would do something more sophisticated like responding with data from a database.)
+
+The test code in the source file `./test/server_fireup_test.js` will fire the mocked express server up like this:
+
+``` js
+var fireUpLib = require('fire-up');
+
+try {
+
+  var fireUp = fireUpLib.newInjector({
+    basePath: __dirname,
+    modules: [
+      '../lib/**/*.js',                         // Extend the search paths so that the mock gets
+      './fixtures/**/*.js'                      // available for injection.
+    ]
+  });
+
+} catch (e) {
+  console.error(e);
+  process.exit(1);
+}
+
+fireUp('expressApp', { use: ['routes:mock'] })  // The 'use' option tells Fire Up! to use the
+  .then(function(expressApp) {                  // the implementation for 'routes:mock' for all
+    console.log('App initialized');             // compatible interfaces. In this case these
+  }).catch(function (e) {                       // are: 'routes' and 'routes:mock'
+    console.error(e);
+    process.exit(1);
+  });
+```
+
+To run the mocked server type `node ./test/server_fireup_test.js` into the shell.
+
 ## What you should know about Fire Up!'s own dependencies
 
 **The promises returned by `fireUp(...)`** are implemented by [bluebird](https://www.npmjs.org/package/bluebird). Nonetheless you may choose to use a different promise library in your modules e.g. to initialize them asynchronously. Any [Promises/A+ compliant](http://promisesaplus.com) library should work. Successful [tests](https://github.com/analog-nico/fire-up/blob/master/test/spec/promises.js) for [rsvp](https://www.npmjs.org/package/rsvp) and [when](https://www.npmjs.org/package/when) exist.
@@ -270,3 +336,25 @@ To set up your development environment:
 `grunt test` watches all source files and if you save some changes it will lint the code and execute all tests. The test coverage report can be viewed from `./coverage/lcov-report/index.html`.
 
 If you want to debug a test you should use `grunt jasmine_node_no_coverage` to run all tests once without obscuring the code by the test coverage instrumentation.
+
+## License (MIT)
+
+Copyright (c) analog-nico
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
