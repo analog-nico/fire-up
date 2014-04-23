@@ -16,7 +16,8 @@ module.exports = function (grunt) {
       all: [
         'Gruntfile.js',
         'test/**/*.js',
-        'lib/**/*.js'
+        'lib/**/*.js',
+        'example/**/*.js'
       ],
       options: {
         jshintrc: '.jshintrc'
@@ -32,7 +33,7 @@ module.exports = function (grunt) {
     },
     jasmine_node_with_coverage: {
       coverage: {
-        excludes: ['test/**', 'coverage/**', 'Gruntfile.js']
+        excludes: ['test/**', 'coverage/**', 'Gruntfile.js', 'example/**']
       },
       options: {
         matchall: true,
