@@ -8,7 +8,7 @@ module.exports = function () {
 
   function register(app) {
     app.get('/easter', function (req, res) {
-      res.send('egg')
+      res.send('egg');
     });
     app.get('/', function(req, res){
       res.send(message);
