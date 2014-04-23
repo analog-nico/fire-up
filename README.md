@@ -29,6 +29,8 @@ I have to admit by implementing my own dependency injector I have the advantage 
 
 ## Installation
 
+[![NPM Stats](https://nodei.co/npm/fire-up.png?downloads=true)](https://npmjs.org/package/fire-up)
+
 This module is installed via npm:
 
 ``` bash
