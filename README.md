@@ -27,7 +27,7 @@ If you are currently looking for the right di container for your own new project
 - A well designed and simple API
 - Each source file should represent a module and does not need extra configuration files sprinkled across my project
 - Helpful documentation
-- Helpful debug output if the injection does not work as intended
+- Helpful debug output if the injection does not work as intended (This is were Fire Up! really stands out.)
 
 I have to admit by implementing my own dependency injector I have the advantage that I don't need helpful documentation and don't have to worry about continued maintenance. Anyhow, I hope that Fire Up! will gradually meet all those requirements and it will become an easy choice for you to use it in your own project. However, if you are not convinced I can recommend [a great article on di containers for node.js](http://www.mariocasciaro.me/dependency-injection-in-node-js-and-other-architectural-patterns) to you that helped me choosing one and later to get inspiration for the design of Fire Up! If you want to dig deeper into the design of a di container you have to watch the [impressive talk](https://www.youtube.com/watch?v=_OGGsf1ZXMs) of the mastermind of AngularJS' dependency injector.
 
@@ -145,7 +145,7 @@ module.exports.__module = {
 };
 ```
 
-(BTW, you can also use another [Promises/A+ compliant](http://promisesaplus.com) library if you prefer.)
+(BTW, instead of [bluebird](https://github.com/petkaantonov/bluebird) you can also use another [Promises/A+ compliant](http://promisesaplus.com) library if you prefer.)
 
 ### config.js - Config module that configures the express app
 
@@ -353,7 +353,69 @@ fireUp# INFO      |-- Requested: require(morgan)
 fireUp# INFO  |-- Requested: routes, but using: routes:mock, implemented in: example/test/fixtures/routes_mock.js
 ```
 
+## Recommended Application Architecture
+
+When I designed Fire Up! I had a certain node.js application architecture in mind which I want to explain in this section. I tried to come up with a design that is as unopinionated as possible. If you ever used [backbone.js](http://backbonejs.org) you will know that it enforces some structure on your web app but is still very open to any direction your development is heading. Fire Up! can be considered as having a similar level of enforcement and openness.
+
+Usually a node.js app is booted like this:
+
+  1. If it is a server of some kind multiple node.js processes get started by [forever](https://github.com/nodejitsu/forever) or [pm2](https://github.com/unitech/pm2). Otherwise just one node.js process is started.
+  2. In each node.js process the main js file requires all resources needed and initializes the app.
+  3. The app enters the servicing phase after the initialization is completed.
+  4. Depending on the app's functionality it initializes subcomponents as they are needed. E.g. establishing a sophisticated session when a user logs in.
+
+With Fire Up! the boot process changes to:
+
+  1. As usual, Node.js processes are started.
+  2. In each node.js process the main js file requires Fire Up!, creates an injector, and fires up the main module. By using the injected dependencies the app initializes.
+  3. As usual, the app enters the servicing phase.
+  4. When needed, subcomponents are initialized by using the Fire Up! injector.
+
+As expected from a dependency injection container the way to instantiate modules and components is changed (for the better) but no enforcement on the actual application logic exists. The described boot process assumes that all instantiation tasks are done through the injector. In particular, this means that `require` is not used anymore. Even though this is recommended it is not enforced to always create instances through Fire Up!
+
+### Migrating your existing node.js app to Fire Up!
+
+If you have a large node.js app that doesn't use a dependency injector yet or does use another one you certainly do not have the option to rewrite your whole app to use Fire Up! at once. Fortunately, Fire Up! does not enforce an all-or-nothing approach. You can just migrate a small area of your app and use an injector for instantiating the code in just that area. It is even possible that the migrated modules still use regular require calls.
+
+If you use a hybrid approach where you just use Fire Up! for certain areas of your app you should, however, pay attention to the modules' singleton nature: In traditional node.js development you are used to getting a singleton instance of a module when you require it. Fire Up! retains that singleton nature per default. For that a Fire Up! injector has a cache which is filled with the object returned by the factory method of a Fire Up! module. Hence, those modules are only singleton within the scope of a single Fire Up! injector instance. If you create multiple Fire Up! injectors or require a Fire Up! module manually you will produce multiple instances of your module. A rule of thumb would be to never require a Fire Up! module manually and if you use multiple Fire Up! injectors make sure they cover distinct groups of the available Fire Up! modules.
+
 ## API
+
+### fireUpLib.newInjector( [options] ) -> fireUp
+
+Description forthcoming.
+
+### fireUp(moduleReference, [options] ) -> Promise
+
+Description forthcoming.
+
+### The Fire Up! module pattern
+
+Description forthcoming.
+
+## Built-in Modules
+
+### require(id)
+
+Description forthcoming.
+
+### require:mock(id)
+
+Not yet implemented.
+
+### fireUp/currentInjector
+
+Description forthcoming.
+
+### fireUp/currentInjector:mock
+
+Not yet implemented.
+
+### fireUp/injectionRequest
+
+Description forthcoming.
+
+### fireUp/options
 
 Description forthcoming.
 
