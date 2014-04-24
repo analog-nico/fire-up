@@ -15,7 +15,7 @@ Fire Up! is a dependency injection container designed specifically for node.js w
 
 However, do not expect:
 
-- Aspect-oriented programming (IMHO being able to inject decorators / wrappers is sufficient)
+- Aspect-oriented programming
 
 ## Why I decided to write my own dependency injector
 
@@ -381,15 +381,54 @@ If you use a hybrid approach where you just use Fire Up! for certain areas of yo
 
 ## API
 
-### fireUpLib.newInjector( [options] ) -> fireUp
+### fireUpLib.newInjector(options) -> fireUp
+
+``` js
+var fireUpLib = require('fire-up');
+
+try {
+
+  var fireUp = fireUpLib.newInjector({
+    basePath: __dirname,
+    modules: [ '../lib/**/*.js' ]
+  });
+
+} catch (e) {
+  console.error(e);
+}
+```
 
 Description forthcoming.
 
 ### fireUp(moduleReference, [options] ) -> Promise
 
+``` js
+fireUp('expressApp', { use: ['routes:mock'] })
+  .then(function(expressApp) {
+    console.log('App initialized');
+  }).catch(function (e) {
+    console.error(e);
+  });
+```
+
 Description forthcoming.
 
 ### The Fire Up! module pattern
+
+``` js
+// Fire me up!
+
+module.exports = function(injectedDependency1, injectedDependency2) {
+
+  // Initialize and return a new module instance
+
+};
+
+module.exports.__module = {
+  implements: 'providedInterface',
+  inject: ['dependency1', 'dependency2']
+};
+```
 
 Description forthcoming.
 
