@@ -432,7 +432,118 @@ module.exports.__module = {
 
 Description forthcoming.
 
+#### // Fire me up!
+
+Description forthcoming.
+
+#### The factory method
+
+Description forthcoming.
+
+#### __module.implements
+
+**Takes either a string or an array of strings** to announce one or multiple interfaces the module implements.
+
+An interface name may contain any character except `:`, `(`, and `)`:
+
+``` js
+'myInterface', 'my-interface'  // Name your interface whatever you like.
+'api/rest/users'               // By convention you may use e.g. a slash to use namespaces.
+```
+
+Using camel case or slashes for namespaces etc. is just a convention you can apply as you like. Fire Up! matches implemented interfaces with module references defined in `__module.inject` with strict equality `===`.
+
+You can declare extended interfaces by using the colon `:`:
+
+``` js
+'db:mongo', 'db:couch'         // For a module that requests the 'db' interface you could choose
+                               // to either inject 'db:mongo' or 'db:couch'.
+
+'api/rest/users:cached'        // This module could replace the one implementing 'api/rest/users'
+                               // and adds caching to it.
+
+'api/rest/users:cached:mock'   // Nest as many extended interfaces you want.
+```
+
+**Important rule for extended interfaces**: A module implementing an extended interface must be fully compatible with the module implementing the base interface. E.g. if a module requests `'api/rest/users'` through `__module.inject` it must work well together with the module implementing the interface `'api/rest/users'` as well as the module implementing the interface `'api/rest/users:cached'` without actually knowing which implementation was injected.
+
+A common use case for extended interfaces are **decorators / wrappers**: For example the module implementing the extended interface `'api/rest/users:cached'`would get the module implementing the base interface `'api/rest/users'`injected and adds caching:
+
+``` js
+// Fire me up!
+
+module.exports = function (users) {
+
+  var cache = {};
+
+  function getUser(username) {
+    if (cache[username] === undefined) {
+      cache[username] = users.getUser(username);
+    }
+    return cache[username];
+  }
+
+  return {
+    getUser: getUser
+    // TODO: Expose the whole API of users to ensure compatibility.
+  };
+
+};
+
+module.exports.__module = {
+  implements: 'api/rest/users:cached',
+  inject: 'api/rest/users'
+};
+```
+
+#### __module.inject
+
+**Takes either a string or an array of strings** to announce which interfaces the module depends on and for which module instances will be injected by Fire Up! The order in this array corresponds to the order of the arguments of the factory method.
+
+Usually you will list interface names following the notation as described above for the `__module.implements` property. In addition you can add so called **static arguments** which are passed as additional arguments to the factory method of the module being injected. The following notation is used for static arguments:
+
+``` js
+'myInterface(static arg)', "myInterface('static arg')", 'myInterface("static arg")'  // strings
+'myInterface(42)', 'myInterface(3.14)'                                               // numbers
+'myInterface(true)', 'myInterface(false)'                                            // booleans
+'myInterface(static arg 1, static arg 2)'                                            // multiple
+'myInterface(static arg 1, true, 42)'                                                // mixed
+```
+
+Unquoted strings get trimmed:
+
+``` js
+'myInterface( static arg 1, static arg 2 )' --> 'static arg 1', 'static arg 2'
+```
+
+A module that allows to be requested including static args must be of type `'multiple instances'` (see __module.type below) and looks like this:
+
+``` js
+// Fire me up!
+
+module.exports = function(injectedDependency1, injectedDependency2, staticArg1, staticArg2) {
+
+  // Initialize and return a new module instance
+
+};
+
+module.exports.__module = {
+  implements: 'example/staticArg',
+  inject: ['dependency1', 'dependency2'],
+  type: 'multiple instances'
+};
+```
+
+This module could be referenced through `'example/staticArg(foo, bar)'`. Since the module announces two dependencies Fire Up! will inject the dependencies as the first and second argument and pass `'foo'` as the third and `'bar'` as the fourth argument into the factory method. If you reference the module through `'example/staticArg(foo)'` the fourth argument will be `undefined`.
+
+#### __module.type
+
+Description forthcoming.
+
+
 ## Built-in Modules
+
+The following interfaces are implemented by modules available out-of-the-box and can be requested by a module through its `__module.inject` property.
 
 ### require(id)
 
