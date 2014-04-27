@@ -429,14 +429,77 @@ describe('Regarding its robustness, FireUp', function () {
 
     var fireUp = fireUpLib.newInjector({
       basePath: __dirname,
-      modules: ['../fixtures/modules/injection/circular/small/*.js']
+      modules: ['../fixtures/modules/injection/circular/singleton/**/*.js']
     });
 
-    fireUp('injection/circular/small/moduleADependingOnB')
+    Promise.resolve()
         .then(function () {
-          done(new Error('fireUp should have rejected the promise.'));
+
+          return fireUp('injection/circular/small/moduleADependingOnB')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.CircularDependencyError, function (e) {
+                // This is expected to be called.
+              });
+
         })
-        .catch(fireUp.errors.CircularDependencyError, function (e) {
+        .then(function () {
+
+          return fireUp('injection/circular/singleton/wrapperWithNoBaseImplementation:sub')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.CircularDependencyError, function (e) {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('injection/circular/singleton/large/moduleBDependingOnC')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.CircularDependencyError, function (e) {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('injection/circular/singleton/large/moduleADependingOnB')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.CircularDependencyError, function (e) {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('injection/circular/singleton/large/moduleADependingOnBWithSecondInterface')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.CircularDependencyError, function (e) {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('injection/circular/singleton/injectWrapperAndBaseImplementation')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.CircularDependencyError, function (e) {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
           done();
         })
         .catch(function (e) {
