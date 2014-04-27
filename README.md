@@ -589,6 +589,13 @@ To set up your development environment:
 
 If you want to debug a test you should use `grunt jasmine_node_no_coverage` to run all tests once without obscuring the code by the test coverage instrumentation.
 
+## Change History
+
+- v0.1.1 (upcoming)
+  - Improved robustness
+- v0.1.0 (2014-04-23)
+  - Initial Version
+
 ## License (MIT)
 
 Copyright (c) analog-nico
