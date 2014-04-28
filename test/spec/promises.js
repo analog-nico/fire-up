@@ -527,6 +527,65 @@ describe('Regarding promises, FireUp', function () {
 
   });
 
+  it('should handle vow promises', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/instantiation/promises/*.js'],
+      require: require
+    });
+
+    var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/promises/'));
+
+    Promise.resolve()
+        .then(function () {
+
+          return fireUp('instantiation/promises/vow(0,1)');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual(path.join(folder, 'vow.js_1'));
+        })
+        .catch(function (e) {
+          done(new Error('vow(1) should not have thrown an error.'));
+        })
+        .then(function () {
+
+          return fireUp('instantiation/promises/vow(1,2)');
+
+        })
+        .then(function (instance) {
+          done(new Error('vow(1) should have thrown an error.'));
+        })
+        .catch(fireUp.errors.InstanceInitializationError, function (e) {
+          expect(e.cause.message).toEqual(path.join(folder, 'vow.js_2'));
+        })
+        .catch(function (e) {
+          done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+        })
+        .then(function () {
+
+          return fireUp('instantiation/promises/vow(2,3)');
+
+        })
+        .then(function (instance) {
+          done(new Error('vow(2) should have thrown an error.'));
+        })
+        .catch(fireUp.errors.InstanceInitializationError, function (e) {
+          expect(e.cause).toEqual(path.join(folder, 'vow.js_3'));
+        })
+        .catch(function (e) {
+          done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+        })
+        .then(function () {
+          done();
+        })
+        .catch(function (e) {
+          done(e);
+        });
+
+  });
+
   it('should handle when promises', function (done) {
 
     var fireUp = fireUpLib.newInjector({
