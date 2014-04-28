@@ -593,6 +593,7 @@ If you want to debug a test you should use `grunt jasmine_node_no_coverage` to r
 
 - v0.1.1 (upcoming)
   - Improved robustness
+  - Updated dependencies
 - v0.1.0 (2014-04-23)
   - Initial Version
 

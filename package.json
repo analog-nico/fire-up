@@ -31,14 +31,14 @@
     "node": ">=0.10.0"
   },
   "dependencies": {
-    "bluebird": "~1.2.3",
+    "bluebird": "~1.2.4",
     "lodash": "~2.4.1",
-    "simple-glob": "~0.1.0"
+    "simple-glob": "~0.1.1"
   },
   "devDependencies": {
-    "deferred": "~0.7.0",
+    "deferred": "~0.7.1",
     "deferreds": "~1.1.0",
-    "express": "^4.0.0",
+    "express": "~4.1.1",
     "grunt": "~0.4.4",
     "grunt-cli": "~0.1.13",
     "grunt-contrib-clean": "~0.5.0",
@@ -49,9 +49,9 @@
     "grunt-run": "~0.2.2",
     "kew": "~0.4.0",
     "morgan": "^1.0.0",
-    "mpromise": "~0.5.1",
+    "mpromise": "~0.5.4",
     "node-promise": "~0.5.10",
-    "promise": "~4.0.0",
+    "promise": "~5.0.0",
     "q": "~1.0.1",
     "rsvp": "~3.0.6",
     "when": "~3.1.0"
