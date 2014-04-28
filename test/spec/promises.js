@@ -125,6 +125,65 @@ describe('Regarding promises, FireUp', function () {
 
   });
 
+  it('should handle Q promises', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/instantiation/promises/*.js'],
+      require: require
+    });
+
+    var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/promises/'));
+
+    Promise.resolve()
+        .then(function () {
+
+          return fireUp('instantiation/promises/q(0,1)');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual(path.join(folder, 'q.js_1'));
+        })
+        .catch(function (e) {
+          done(new Error('q(1) should not have thrown an error.'));
+        })
+        .then(function () {
+
+          return fireUp('instantiation/promises/q(1,2)');
+
+        })
+        .then(function (instance) {
+          done(new Error('q(1) should have thrown an error.'));
+        })
+        .catch(fireUp.errors.InstanceInitializationError, function (e) {
+          expect(e.cause.message).toEqual(path.join(folder, 'q.js_2'));
+        })
+        .catch(function (e) {
+          done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+        })
+        .then(function () {
+
+          return fireUp('instantiation/promises/q(2,3)');
+
+        })
+        .then(function (instance) {
+          done(new Error('q(2) should have thrown an error.'));
+        })
+        .catch(fireUp.errors.InstanceInitializationError, function (e) {
+          expect(e.cause).toEqual(path.join(folder, 'q.js_3'));
+        })
+        .catch(function (e) {
+          done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+        })
+        .then(function () {
+          done();
+        })
+        .catch(function (e) {
+          done(e);
+        });
+
+  });
+
   it('should handle RSVP promises', function (done) {
 
     var fireUp = fireUpLib.newInjector({
