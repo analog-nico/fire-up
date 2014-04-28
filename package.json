@@ -36,6 +36,7 @@
     "simple-glob": "~0.1.1"
   },
   "devDependencies": {
+    "avow": "^2.0.1",
     "deferred": "~0.7.1",
     "deferreds": "~1.1.0",
     "express": "~4.1.1",
