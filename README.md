@@ -383,6 +383,8 @@ If you use a hybrid approach where you just use Fire Up! for certain areas of yo
 
 ### fireUpLib.newInjector(options) -> fireUp
 
+Overview:
+
 ``` js
 var fireUpLib = require('fire-up');
 
@@ -402,6 +404,8 @@ Description forthcoming.
 
 ### fireUp(moduleReference, [options] ) -> Promise
 
+Overview:
+
 ``` js
 fireUp('expressApp', { use: ['routes:mock'] })
   .then(function(expressApp) {
@@ -415,12 +419,14 @@ Description forthcoming.
 
 ### The Fire Up! module pattern
 
+Overview:
+
 ``` js
 // Fire me up!
 
 module.exports = function(injectedDependency1, injectedDependency2) {
 
-  // Initialize and return a new module instance
+  // Initialize and return a new module instance or a promise
 
 };
 
@@ -430,15 +436,47 @@ module.exports.__module = {
 };
 ```
 
-Description forthcoming.
-
 #### // Fire me up!
 
-Description forthcoming.
+Even though you could diligently define in the options of `fireUpLib.newInjector(options)` each and every module file you want to include or exclude this will become very tedious. Therefore every module file must contain the `// Fire me up!` comment in a single line. Then, usually, only the main module folder to be included is provided in the options of `fireUpLib.newInjector(options)`. Fire Up! will check every file for the comment and only load those which contain it.
 
 #### The factory method
 
-Description forthcoming.
+A Fire Up! module must export a function that takes the injected dependencies and static arguments (see __module.inject section below) as arguments and return a new module instance.
+
+The returned module instance can be anything - a simple type like a string, an array, an object, a function etc. If the new module instance needs to be initialized asynchronously a promise must be returned that will be resolved with the new module instance once its initialization is done. Only after the promise is resolved Fire Up! will inject the new module instance into other modules.
+
+Asynchronous initialization by returning a [bluebird](https://github.com/petkaantonov/bluebird) promise is done like this:
+
+``` js
+// Fire me up!
+
+module.exports = function(Promise, express, config, routes) {  // The factory method...
+
+  return new Promise(function (resolve) {                      // ...returns a promise...
+
+    var app = express();
+
+    config(app);
+    routes.register(app);
+
+    app.listen(3000, function () {
+      console.log('Express server started on port 3000');
+      resolve(app);                                            // ...and resolves it with
+    });                                                        // the new module instance.
+
+  });
+
+};
+
+module.exports.__module = {
+  implements: 'expressApp',
+  inject: ['require(bluebird)', 'require(express)', 'config', 'routes']
+};
+```
+
+Instead of [bluebird](https://github.com/petkaantonov/bluebird) you can also use another [Promises/A+ compliant](http://promisesaplus.com) library if you prefer. There are easy to read [tests for all major promise libraries](https://github.com/analog-nico/fire-up/blob/master/test/spec/promises.js) which apply them to initialize a module asynchronously.
+
 
 #### __module.implements
 
