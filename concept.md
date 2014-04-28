@@ -3,6 +3,8 @@
 ## TODO
 
 - Rename the terms parent interface and sub interface to base interface and extended interface in the code and debug output
+- Implement logging adapter
+- Circular dependency detection for modules of type 'multiple instances'
 
 ## Missing Features
 
