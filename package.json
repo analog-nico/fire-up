@@ -49,6 +49,7 @@
     "grunt-jasmine-node-coverage": "~0.1.10",
     "grunt-run": "~0.2.2",
     "kew": "~0.4.0",
+    "lie": "~2.6.0",
     "morgan": "^1.0.0",
     "mpromise": "~0.5.4",
     "node-promise": "~0.5.10",
