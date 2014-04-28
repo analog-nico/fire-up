@@ -576,8 +576,50 @@ This module could be referenced through `'example/staticArg(foo, bar)'`. Since t
 
 #### __module.type
 
-Description forthcoming.
+A Fire Up! module can be either instantiated as a `'singleton'` (default) or as `'multiple instances'`.
 
+The module type `'singleton'` mimics the familiar behavior of `require`. The first time a singleton module is requested for injection Fire Up! will call the factory method to instantiate an instance of the module. For all preceding injection requests the factory method is NOT called again but instead the cached module instance is used for injection.
+
+To configure a module as `'singleton'` the following choices are available:
+
+``` js
+// No type attribute to use the default
+module.exports.__module = {
+  implements: 'mySingletonModule'
+};
+
+// Type attribute as string
+module.exports.__module = {
+  implements: 'mySingletonModule',
+  type: 'singleton'
+};
+
+// Type attribute using the constant
+module.exports.__module = {
+  implements: 'mySingletonModule',
+  type: require('fire-up').constants.MODULE_TYPE_SINGLETON
+};
+```
+
+**Caution**: The module cache is managed by the injector. If you call `fireUpLib.newInstance(options)` multiple times to get multiple injectors those injectors will each have their own cache. In this case it is not guaranteed that for a certain module only a single instance will exist inside the node.js process. The separate injectors may instantiate their own module instances.
+
+The module type `'multiple instances'` allows to inject a new module instance for each injection request. Thus Fire Up! won't use the module cache and instead call the factory method to get a new module instance every time.
+
+To configure a module as `'multiple instances'` the following choices are available:
+
+``` js
+// Type attribute as string
+module.exports.__module = {
+  implements: 'myMultipleInstancesModule',
+  type: 'multiple instances'
+};
+
+// Type attribute using the constant
+module.exports.__module = {
+  implements: 'myMultipleInstancesModule',
+  type: require('fire-up').constants.MODULE_TYPE_MULTIPLE_INSTANCES
+};
+```
 
 ## Built-in Modules
 
@@ -585,7 +627,32 @@ The following interfaces are implemented by modules available out-of-the-box and
 
 ### require(id)
 
-Description forthcoming.
+Even though a Fire Up! module still can use native require calls this is not recommended. To allow switching the required dependencies e.g. for unit testing these dependencies should be injected using the built-in `require(id)` module. The notation reproduces native require calls:
+
+``` js
+module.exports.__module = {
+  implements: 'iUseRequire',
+  inject: 'require("util")', 'require("express")', 'require("./helper.js")', 'require("../log/logger.js")'
+};
+```
+
+The quotes inside the parenthesis can be omitted. E.g. `'require(../log/logger.js)'` works as well.
+
+**Caution**: Due to technical restrictions the lookup of modules installed via npm may not use the [expected paths](http://nodejs.org/api/modules.html#modules_loading_from_node_modules_folders). (This does not affect internal node.js modules like 'util' or local JS files like './helper.js'.) Internally, `require.main.require(id)` is used. Thus those paths are used as if the native require call would be done in the main JS file which was given to startup node.js. Unfortunately, the used main JS file may differ between development / testing e.g. with grunt and production. To ensure predictability before moving to production you should pass a fitting require function through the options of `fireUpLib.newInjector(options)` or `fireUp(moduleReference, options)` that will be used instead of `require.main.require(id)`:
+
+``` js
+var fireUpLib = require('fire-up');
+
+var fireUp = fireUpLib.newInjector({
+  basePath: __dirname,
+  modules: [ '../lib/**/*.js' ],
+  require: require                    // Passes the local require function
+});
+
+fireUp('expressApp', {
+  require: require                    // Overwrites the require function for this fireUp call
+});
+```
 
 ### require:mock(id)
 
