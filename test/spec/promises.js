@@ -409,6 +409,51 @@ describe('Regarding promises, FireUp', function () {
 
   });
 
+  it('should handle p-promise promises', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/instantiation/promises/*.js'],
+      require: require
+    });
+
+    var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/promises/'));
+
+    Promise.resolve()
+        .then(function () {
+
+          return fireUp('instantiation/promises/p(0,1)');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual(path.join(folder, 'p.js_1'));
+        })
+        .catch(function (e) {
+          done(new Error('p(1) should not have thrown an error.'));
+        })
+        .then(function () {
+
+          return fireUp('instantiation/promises/p(2,3)');
+
+        })
+        .then(function (instance) {
+          done(new Error('p(2) should have thrown an error.'));
+        })
+        .catch(fireUp.errors.InstanceInitializationError, function (e) {
+          expect(e.cause).toEqual(path.join(folder, 'p.js_3'));
+        })
+        .catch(function (e) {
+          done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
+        })
+        .then(function () {
+          done();
+        })
+        .catch(function (e) {
+          done(e);
+        });
+
+  });
+
   it('should handle promise promises', function (done) {
 
     var fireUp = fireUpLib.newInjector({

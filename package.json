@@ -53,6 +53,7 @@
     "morgan": "^1.0.0",
     "mpromise": "~0.5.4",
     "node-promise": "~0.5.10",
+    "p-promise": "~0.2.5",
     "promise": "~5.0.0",
     "q": "~1.0.1",
     "rsvp": "~3.0.6",
