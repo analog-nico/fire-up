@@ -314,6 +314,17 @@ describe("Regarding its instantiation, FireUp", function () {
       modules: ['../fixtures/modules/wrongConfig/typeConfigUnknown.js']
     }); }).toThrowOfType(fireUpLib.errors.ConfigError);
 
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/injectOwnInterface1.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/injectOwnInterface2.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
     done();
 
   });
