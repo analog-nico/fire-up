@@ -442,7 +442,7 @@ fireUp('expressApp', {
   });
 ```
 
-**Returns a promise that resolves to an instance of the module qualified by the `moduleReference`.** The `moduleReference` must follow the same notation as the entries in the `__module.inject` property of Fire Up! modules. See the [respective section](#__module-inject) below for details.
+**Returns a promise that resolves to an instance of the module qualified by the `moduleReference`.** The `moduleReference` must follow the same notation as the entries in the `__module.inject` property of Fire Up! modules. See the [respective section](#__moduleinject) below for details.
 
 The returned promise is implemented by [bluebird](https://github.com/petkaantonov/bluebird) which is [Promises/A+ compliant](http://promisesaplus.com). Thus the promise can be processed by any other Promises/A+ compliant library if you choose to. The promise is either resolved with the initialized module instance or rejected with an error. All possible error types are defined within `fireUp.errors` and can be used to choose the error handling strategy:
 
@@ -475,7 +475,7 @@ fireUp('expressApp')
   });
 ```
 
-Optionally, the `use` option and any other custom properties can be passed to the `options` parameter. The `use` option is described in the [section below](#the-use-option). Additional custom properties can be useful when used in conjunction with injecting `'fireUp/options'` into a module. See the [respective section](#fireup-options) below for details.
+Optionally, the `use` option and any other custom properties can be passed to the `options` parameter. The `use` option is described in the [section below](#the-use-option). Additional custom properties can be useful when used in conjunction with injecting `'fireUp/options'` into a module. See the [respective section](#fireupoptions) below for details.
 
 ### The `use` option
 
@@ -506,7 +506,7 @@ Even though you could diligently define in the options of `fireUpLib.newInjector
 
 #### The factory method
 
-A Fire Up! module must export a function that takes the injected dependencies and static arguments (see [__module.inject section](#__module-inject) below) as arguments and return a new module instance.
+A Fire Up! module must export a function that takes the injected dependencies and static arguments (see [__module.inject section](#__moduleinject) below) as arguments and return a new module instance.
 
 The returned module instance can be anything - a simple type like a string, an array, an object, a function etc. If the new module instance needs to be initialized asynchronously a promise must be returned that will be resolved with the new module instance once its initialization is done. Only after the promise is resolved Fire Up! will inject the new module instance into other modules.
 
@@ -618,7 +618,7 @@ Unquoted strings get trimmed:
 'myInterface( static arg 1, static arg 2 )' --> 'static arg 1', 'static arg 2'
 ```
 
-A module that allows to be requested including static args must be of type `'multiple instances'` (see [__module.type section](#__module-type) below) and looks like this:
+A module that allows to be requested including static args must be of type `'multiple instances'` (see [__module.type section](#__moduletype) below) and looks like this:
 
 ``` js
 // Fire me up!
