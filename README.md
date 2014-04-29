@@ -396,161 +396,6 @@ If you use a hybrid approach where you just use Fire Up! for certain areas of yo
 
 ## API
 
-### fireUpLib.newInjector(options) -> fireUp
-
-Overview:
-
-``` js
-var fireUpLib = require('fire-up');
-
-try {
-
-  var fireUp = fireUpLib.newInjector({
-    basePath: __dirname,
-    modules: [ '../lib/**/*.js', '!../lib/templates/**/*.js' ],
-    use: ['config:dev'],
-    myCustomOption: 'Hello world!'
-  });
-
-} catch (e) {
-  console.error(e);
-}
-```
-
-**Returns a Fire Up! injector instance** with the modules registered as configured through the options:
-
-- `basePath`: An absolute path that serves as the base path for the relative paths given in `modules`.
-- `modules`: An array of relative paths to include / exclude source files that are considered to be registered as Fire Up! modules. The notation follows the globbing and include / exclude pattern as known from grunt. See the README of [simple-glob](https://github.com/jedmao/simple-glob) for more details. Fire Up! uses this npm package to resolve the paths given in `modules`. All source files that are included are loaded by Fire Up! if they contain the `// Fire me up!` comment.
-
-The `newInjector(options)` function will throw an error if a configuration error is detected. This may e.g. be some unexpected value in the options object, an incorrect module configuration, or a conflict when registering the modules. The validation is very strong to ensure that any inconsistency is brought to attention. However, some misconfiguration can only be detected during runtime and will be reported by the `fireUp(...)` call.
-
-Additionally, the `use` option and any other custom properties can be passed with options. The options object is later merged with the options passed to a `fireUp(moduleReference, options)` call. This helps reducing duplicated configuration in multiple `fireUp(...)` calls.
-
-### fireUp(moduleReference, [options] ) -> Promise
-
-Overview:
-
-``` js
-fireUp('expressApp', {
-  use: ['routes:mock'],
-  myCustomOption: 'Hello World, again!'
-})
-  .then(function(expressApp) {
-    console.log('App initialized');
-  }).catch(function (e) {
-    console.error(e);
-  });
-```
-
-**Returns a promise that resolves to an instance of the module qualified by the `moduleReference`.** The `moduleReference` must follow the same notation as the entries in the `__module.inject` property of Fire Up! modules. See the [respective section](#__moduleinject) below for details.
-
-The returned promise is implemented by [bluebird](https://github.com/petkaantonov/bluebird) which is [Promises/A+ compliant](http://promisesaplus.com). Thus the promise can be processed by any other Promises/A+ compliant library if you choose to. The promise is either resolved with the initialized module instance or rejected with an error. All possible error types are defined within `fireUp.errors` and can be used to choose the error handling strategy:
-
-``` js
-// Error handling using just the Promises/A+ interface
-fireUp('expressApp')
-  .then(function (expressApp) {
-    console.log('App initialized');
-  },
-  function (err) {
-    if (err instanceof fireUp.errors.InstanceInitializationError) {
-      // err.cause is either an exception thrown by the module code during initialization
-      // or the reason of a rejected promise returned by the module code.
-    } else {
-      // This is most likely a configuration error like a circular dependency etc.
-    }
-  });
-
-// Identical error handling using the extended API of bluebird
-fireUp('expressApp')
-  .then(function (expressApp) {
-    console.log('App initialized');
-  })
-  .catch(fireUp.errors.InstanceInitializationError, function (err) {
-    // err.cause is either an exception thrown by the module code during initialization
-    // or the reason of a rejected promise returned by the module code.
-  })
-  .catch(function (err) {
-    // This is most likely a configuration error like a circular dependency etc.
-  });
-```
-
-Optionally, the `use` option and any other custom properties can be passed to the `options` parameter. The `use` option is described in the [section below](#the-use-option). Additional custom properties can be useful when used in conjunction with injecting `'fireUp/options'` into a module. See the [respective section](#fireupoptions) below for details.
-
-### The `use` option
-
-The `use` option is the most important feature of Fire Up! that distinguishes it from `require` as well as service locators: It allows to switch the "used" implementation for the injected dependencies during runtime. The prevalent use case is to replace a module by a mock for unit testing. However, this mechanism is not restricted to unit testing but may also be used in production to build sub components with varying composition. E.g. a sophisticated user session may be instantiated with an unsecured connection by default. Depending on the circumstances some sessions may be instantiated with a secured connection instead.
-
-To be able to switch implementations, the replacing and replaced implementation must both implement the same interface to ensure that the composed component still works. Thus Fire Up! will replace an implementation for some base interface only by implementations for interfaces that extend the base interface. Following the [notation for interfaces](#__moduleimplements) as used to announce the implementing interfaces of a module through `__module.implements` the following cases explain the use of the `use` option:
-
-- **Straight forward replacement**
-  - The replaced and replacing modules implement 'dbConnector' and 'dbConnector:mock':
-    ``` js
-    // db-connector.js
-    module.exports.__module = {
-      implements: 'dbConnector'
-    };
-
-    // db-connector.mock.js
-    module.exports.__module = {
-      implements: 'dbConnector:mock'
-    };
-    ```
-  - Another module implementing 'statisticsAggregator' requests 'dbConnector' for injection:
-    ``` js
-    // statistics-aggregator.js
-    module.exports.__module = {
-      implements: 'statisticsAggregator',
-      inject: 'dbConnector'
-    };
-    ```
-  - We fire up the 'statisticsAggregator' using 'dbConnector:mock':
-    ``` js
-    fireUp('statisticsAggregator', { use: [ 'dbConnector:mock' ] });
-    ```
-    **Result**: The implementation of 'dbConnector:mock' in db-connector.mock.js is used for injection.
-
-- **Straight forward replacement with overlapping use option entries**
-  - Implementations are available for the following interfaces:
-    - 'api/rest/users:cached'
-    - 'api/rest/users:cached:lazy'
-    - 'api/rest/users:cached:lazy:profiled:likeCrazy'
-  - Another module implementing 'userCache' requests 'api/rest/users:cached' for injection.
-  - We fire up the 'userCache' using 'api/rest/users:cached:lazy' and 'api/rest/users:cached:lazy:profiled:likeCrazy':
-	``` js
-    fireUp('statisticsAggregator', {
-      use: [
-        'api/rest/users:cached:lazy',
-        'api/rest/users:cached:lazy:profiled:likeCrazy'
-      ]
-    });
-    ```
-
-    **Result**: The implementation of 'api/rest/users:cached:lazy:profiled:likeCrazy' is used because this implementation is compatible with both interfaces given in the use option.
-
-- **Straight forward replacement with only an extended interface available**
-  - Implementations are available for the following interfaces:
-    - 'api/rest/users:cached'
-    - 'api/rest/users:cached:lazy'
-    - 'api/rest/users:cached:lazy:profiled:likeCrazy'
-  - Another module implementing 'userCache' requests 'api/rest/users:cached' for injection.
-  - We fire up the 'userCache' using 'api/rest/users:cached:lazy:profiled'.
-
-    **Result**: The implementation of 'api/rest/users:cached:lazy:profiled:likeCrazy' is used for injection since no direct implementation is available for 'api/rest/users:cached:lazy:profiled'.
-
-- **Failing replacement with two extended interfaces available**
-  - Implementations are available for the following interfaces:
-    - 'api/rest/users:cached'
-    - 'api/rest/users:cached:lazy'
-    - 'api/rest/users:cached:lazy:profiled:likeCrazy1'
-    - 'api/rest/users:cached:lazy:profiled:likeCrazy2'
-  - Another module implementing 'userCache' requests 'api/rest/users:cached' for injection.
-  - We fire up the 'userCache' using 'api/rest/users:cached:lazy:profiled'.
-
-    **Result**: The `fireUp(...)` call fails because two compatible implementations ('api/rest/users:cached:lazy:profiled:likeCrazy1' and 'api/rest/users:cached:lazy:profiled:likeCrazy2') exist and Fire Up! does not know which one to choose.
-
-The `use` option is also available in the `fireUpLib.newInjector(options)` call. If an array of interface names is provided through the `newInjector(...)` call as well as through the `fireUp(...)` call both arrays are merged.
-
 ### The Fire Up! module pattern
 
 Overview:
@@ -754,6 +599,161 @@ module.exports.__module = {
   type: require('fire-up').constants.MODULE_TYPE_MULTIPLE_INSTANCES
 };
 ```
+
+### fireUpLib.newInjector(options) -> fireUp
+
+Overview:
+
+``` js
+var fireUpLib = require('fire-up');
+
+try {
+
+  var fireUp = fireUpLib.newInjector({
+    basePath: __dirname,
+    modules: [ '../lib/**/*.js', '!../lib/templates/**/*.js' ],
+    use: ['config:dev'],
+    myCustomOption: 'Hello world!'
+  });
+
+} catch (e) {
+  console.error(e);
+}
+```
+
+**Returns a Fire Up! injector instance** with the modules registered as configured through the options:
+
+- `basePath`: An absolute path that serves as the base path for the relative paths given in `modules`.
+- `modules`: An array of relative paths to include / exclude source files that are considered to be registered as Fire Up! modules. The notation follows the globbing and include / exclude pattern as known from grunt. See the README of [simple-glob](https://github.com/jedmao/simple-glob) for more details. Fire Up! uses this npm package to resolve the paths given in `modules`. All source files that are included are loaded by Fire Up! if they contain the `// Fire me up!` comment.
+
+The `newInjector(options)` function will throw an error if a configuration error is detected. This may e.g. be some unexpected value in the options object, an incorrect module configuration, or a conflict when registering the modules. The validation is very strong to ensure that any inconsistency is brought to attention. However, some misconfiguration can only be detected during runtime and will be reported by the `fireUp(...)` call.
+
+Additionally, the `use` option and any other custom properties can be passed with options. The options object is later merged with the options passed to a `fireUp(moduleReference, options)` call. This helps reducing duplicated configuration in multiple `fireUp(...)` calls.
+
+### fireUp(moduleReference, [options] ) -> Promise
+
+Overview:
+
+``` js
+fireUp('expressApp', {
+  use: ['routes:mock'],
+  myCustomOption: 'Hello World, again!'
+})
+  .then(function(expressApp) {
+    console.log('App initialized');
+  }).catch(function (e) {
+    console.error(e);
+  });
+```
+
+**Returns a promise that resolves to an instance of the module qualified by the `moduleReference`.** The `moduleReference` must follow the same notation as the entries in the `__module.inject` property of Fire Up! modules. See the [respective section](#__moduleinject) below for details.
+
+The returned promise is implemented by [bluebird](https://github.com/petkaantonov/bluebird) which is [Promises/A+ compliant](http://promisesaplus.com). Thus the promise can be processed by any other Promises/A+ compliant library if you choose to. The promise is either resolved with the initialized module instance or rejected with an error. All possible error types are defined within `fireUp.errors` and can be used to choose the error handling strategy:
+
+``` js
+// Error handling using just the Promises/A+ interface
+fireUp('expressApp')
+  .then(function (expressApp) {
+    console.log('App initialized');
+  },
+  function (err) {
+    if (err instanceof fireUp.errors.InstanceInitializationError) {
+      // err.cause is either an exception thrown by the module code during initialization
+      // or the reason of a rejected promise returned by the module code.
+    } else {
+      // This is most likely a configuration error like a circular dependency etc.
+    }
+  });
+
+// Identical error handling using the extended API of bluebird
+fireUp('expressApp')
+  .then(function (expressApp) {
+    console.log('App initialized');
+  })
+  .catch(fireUp.errors.InstanceInitializationError, function (err) {
+    // err.cause is either an exception thrown by the module code during initialization
+    // or the reason of a rejected promise returned by the module code.
+  })
+  .catch(function (err) {
+    // This is most likely a configuration error like a circular dependency etc.
+  });
+```
+
+Optionally, the `use` option and any other custom properties can be passed to the `options` parameter. The `use` option is described in the [section below](#the-use-option). Additional custom properties can be useful when used in conjunction with injecting `'fireUp/options'` into a module. See the [respective section](#fireupoptions) below for details.
+
+### The `use` option
+
+The `use` option is the most important feature of Fire Up! that distinguishes it from `require` as well as service locators: It allows to switch the "used" implementation for the injected dependencies during runtime. The prevalent use case is to replace a module by a mock for unit testing. However, this mechanism is not restricted to unit testing but may also be used in production to build sub components with varying composition. E.g. a sophisticated user session may be instantiated with an unsecured connection by default. Depending on the circumstances some sessions may be instantiated with a secured connection instead.
+
+To be able to switch implementations, the replacing and replaced implementation must both implement the same interface to ensure that the composed component still works. Thus Fire Up! will replace an implementation for some base interface only by implementations for interfaces that extend the base interface. Following the [notation for interfaces](#__moduleimplements) as used to announce the implementing interfaces of a module through `__module.implements` the following cases explain the use of the `use` option:
+
+- **Straight forward replacement**
+  - The replaced and replacing modules implement 'dbConnector' and 'dbConnector:mock':
+    ``` js
+    // db-connector.js
+    module.exports.__module = {
+      implements: 'dbConnector'
+    };
+
+    // db-connector.mock.js
+    module.exports.__module = {
+      implements: 'dbConnector:mock'
+    };
+    ```
+  - Another module implementing 'statisticsAggregator' requests 'dbConnector' for injection:
+    ``` js
+    // statistics-aggregator.js
+    module.exports.__module = {
+      implements: 'statisticsAggregator',
+      inject: 'dbConnector'
+    };
+    ```
+  - We fire up the 'statisticsAggregator' using 'dbConnector:mock':
+    ``` js
+    fireUp('statisticsAggregator', { use: [ 'dbConnector:mock' ] });
+    ```
+    **Result**: The implementation of 'dbConnector:mock' in db-connector.mock.js is used for injection.
+
+- **Straight forward replacement with overlapping use option entries**
+  - Implementations are available for the following interfaces:
+    - 'api/rest/users:cached'
+    - 'api/rest/users:cached:lazy'
+    - 'api/rest/users:cached:lazy:profiled:likeCrazy'
+  - Another module implementing 'userCache' requests 'api/rest/users:cached' for injection.
+  - We fire up the 'userCache' using 'api/rest/users:cached:lazy' and 'api/rest/users:cached:lazy:profiled:likeCrazy':
+	``` js
+    fireUp('statisticsAggregator', {
+      use: [
+        'api/rest/users:cached:lazy',
+        'api/rest/users:cached:lazy:profiled:likeCrazy'
+      ]
+    });
+    ```
+
+    **Result**: The implementation of 'api/rest/users:cached:lazy:profiled:likeCrazy' is used because this implementation is compatible with both interfaces given in the use option.
+
+- **Straight forward replacement with only an extended interface available**
+  - Implementations are available for the following interfaces:
+    - 'api/rest/users:cached'
+    - 'api/rest/users:cached:lazy'
+    - 'api/rest/users:cached:lazy:profiled:likeCrazy'
+  - Another module implementing 'userCache' requests 'api/rest/users:cached' for injection.
+  - We fire up the 'userCache' using 'api/rest/users:cached:lazy:profiled'.
+
+    **Result**: The implementation of 'api/rest/users:cached:lazy:profiled:likeCrazy' is used for injection since no direct implementation is available for 'api/rest/users:cached:lazy:profiled'.
+
+- **Failing replacement with two extended interfaces available**
+  - Implementations are available for the following interfaces:
+    - 'api/rest/users:cached'
+    - 'api/rest/users:cached:lazy'
+    - 'api/rest/users:cached:lazy:profiled:likeCrazy1'
+    - 'api/rest/users:cached:lazy:profiled:likeCrazy2'
+  - Another module implementing 'userCache' requests 'api/rest/users:cached' for injection.
+  - We fire up the 'userCache' using 'api/rest/users:cached:lazy:profiled'.
+
+    **Result**: The `fireUp(...)` call fails because two compatible implementations ('api/rest/users:cached:lazy:profiled:likeCrazy1' and 'api/rest/users:cached:lazy:profiled:likeCrazy2') exist and Fire Up! does not know which one to choose.
+
+The `use` option is also available in the `fireUpLib.newInjector(options)` call. If an array of interface names is provided through the `newInjector(...)` call as well as through the `fireUp(...)` call both arrays are merged.
 
 ## Built-in Modules
 
