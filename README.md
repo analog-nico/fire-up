@@ -407,7 +407,9 @@ try {
 
   var fireUp = fireUpLib.newInjector({
     basePath: __dirname,
-    modules: [ '../lib/**/*.js' ]
+    modules: [ '../lib/**/*.js', '!../lib/templates/**/*.js' ],
+    use: ['config:dev'],
+    myCustomOption: 'Hello world!'
   });
 
 } catch (e) {
@@ -415,20 +417,67 @@ try {
 }
 ```
 
-Description forthcoming.
+**Returns a Fire Up! injector instance** with the modules registered as configured through the options:
+
+- `basePath`: An absolute path that serves as the base path for the relative paths given in `modules`.
+- `modules`: An array of relative paths to include / exclude source files that are considered to be registered as Fire Up! modules. The notation follows the globbing and include / exclude pattern as known from grunt. See the README of [simple-glob](https://github.com/jedmao/simple-glob) for more details. Fire Up! uses this npm package to resolve the paths given in `modules`. All source files that are included are loaded by Fire Up! if they contain the `// Fire me up!` comment.
+
+The `newInjector(options)` function will throw an error if a configuration error is detected. This may e.g. be some unexpected value in the options object, an incorrect module configuration, or a conflict when registering the modules. The validation is very strong to ensure that any inconsistency is brought to attention. However, some misconfiguration can only be detected during runtime and will be reported by the `fireUp(...)` call.
+
+Additionally, the `use` option and any other custom properties can be passed with options. The options object is later merged with the options passed to a `fireUp(moduleReference, options)` call. This helps reducing duplicated configuration in multiple `fireUp(...)` calls.
 
 ### fireUp(moduleReference, [options] ) -> Promise
 
 Overview:
 
 ``` js
-fireUp('expressApp', { use: ['routes:mock'] })
+fireUp('expressApp', {
+  use: ['routes:mock'],
+  myCustomOption: 'Hello World, again!'
+})
   .then(function(expressApp) {
     console.log('App initialized');
   }).catch(function (e) {
     console.error(e);
   });
 ```
+
+**Returns a promise that resolves to an instance of the module qualified by the `moduleReference`.** The `moduleReference` must follow the same notation as the entries in the `__module.inject` property of Fire Up! modules. See the [respective section](#__module-inject) below for details.
+
+The returned promise is implemented by [bluebird](https://github.com/petkaantonov/bluebird) which is [Promises/A+ compliant](http://promisesaplus.com). Thus the promise can be processed by any other Promises/A+ compliant library if you choose to. The promise is either resolved with the initialized module instance or rejected with an error. All possible error types are defined within `fireUp.errors` and can be used to choose the error handling strategy:
+
+``` js
+// Error handling using just the Promises/A+ interface
+fireUp('expressApp')
+  .then(function (expressApp) {
+    console.log('App initialized');
+  },
+  function (err) {
+    if (err instanceof fireUp.errors.InstanceInitializationError) {
+      // err.cause is either an exception thrown by the module code during initialization
+      // or the reason of a rejected promise returned by the module code.
+    } else {
+      // This is most likely a configuration error like a circular dependency etc.
+    }
+  });
+
+// Identical error handling using the extended API of bluebird
+fireUp('expressApp')
+  .then(function (expressApp) {
+    console.log('App initialized');
+  })
+  .catch(fireUp.errors.InstanceInitializationError, function (err) {
+    // err.cause is either an exception thrown by the module code during initialization
+    // or the reason of a rejected promise returned by the module code.
+  })
+  .catch(function (err) {
+    // This is most likely a configuration error like a circular dependency etc.
+  });
+```
+
+Optionally, the `use` option and any other custom properties can be passed to the `options` parameter. The `use` option is described in the [section below](#the-use-option). Additional custom properties can be useful when used in conjunction with injecting `'fireUp/options'` into a module. See the [respective section](#fireup-options) below for details.
+
+### The `use` option
 
 Description forthcoming.
 
@@ -457,7 +506,7 @@ Even though you could diligently define in the options of `fireUpLib.newInjector
 
 #### The factory method
 
-A Fire Up! module must export a function that takes the injected dependencies and static arguments (see __module.inject section below) as arguments and return a new module instance.
+A Fire Up! module must export a function that takes the injected dependencies and static arguments (see [__module.inject section](#__module-inject) below) as arguments and return a new module instance.
 
 The returned module instance can be anything - a simple type like a string, an array, an object, a function etc. If the new module instance needs to be initialized asynchronously a promise must be returned that will be resolved with the new module instance once its initialization is done. Only after the promise is resolved Fire Up! will inject the new module instance into other modules.
 
@@ -569,7 +618,7 @@ Unquoted strings get trimmed:
 'myInterface( static arg 1, static arg 2 )' --> 'static arg 1', 'static arg 2'
 ```
 
-A module that allows to be requested including static args must be of type `'multiple instances'` (see __module.type below) and looks like this:
+A module that allows to be requested including static args must be of type `'multiple instances'` (see [__module.type section](#__module-type) below) and looks like this:
 
 ``` js
 // Fire me up!
@@ -680,7 +729,25 @@ Not yet implemented.
 
 ### fireUp/currentInjector
 
-Description forthcoming.
+The Fire Up! instance is injected that was used to instantiate the module that requested `fireUp/currentInjector`. This Fire Up! instance can be used to fire up another module programmatically:
+
+``` js
+// Fire me up!
+
+module.exports = function (weather, fireUp) {
+
+  if (weather.sunSetsAfterABeautifulSummersDay()) {
+    return fireUp('theGrill');
+  }
+
+  return 'home';
+};
+
+module.exports.__module = {
+  implements: 'relaxingDay:atTheBeach',
+  inject: ['weather(local)', 'fireUp/currentInjector']
+};
+```
 
 ### fireUp/currentInjector:mock
 
@@ -692,7 +759,9 @@ Description forthcoming.
 
 ### fireUp/options
 
-Description forthcoming.
+An object is injected that contains the **cloned** and merged properties of the options passed to `fireUpLib.newInjector(options)` and `fireUp(moduleReference, options)`.
+
+If the same property was provided through `newInjector(...)` and `fireUp(...)` the injected object contains the value provided through the `fireUp(...)` call for that property (with the exception of `use` for which both arrays are merged).
 
 ## What you should know about Fire Up!'s own dependencies
 
