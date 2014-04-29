@@ -4,6 +4,21 @@
 
 Fire Up! is a dependency injection container designed specifically for node.js with a powerful but sleek API.
 
+**Table of Contents**
+
+- [What you can expect](#what-you-can-expect)
+- [Why I decided to write my own dependency injector](#why-i-decided-to-write-my-own-dependency-injector)
+- [Installation](#installation)
+- [Getting Started](#getting-started)
+- [Recommended Application Architecture](#recommended-application-architecture)
+  - [Migrating your existing node.js app to Fire Up!](#migrating-your-existing-nodejs-app-to-fire-up!)
+- [API](#api)
+- [Built-in Modules](#built-in-modules)
+- [What you should know about Fire Up!'s own dependencies](#what-you-should-know-about-fire-up!s-own-dependencies)
+- [Contributing](#contributing)
+- [Change History](#change-history)
+- [License (MIT)](#license-mit)
+
 ## What you can expect
 
 - Fire Up! has a well designed API that allows you to get rid of any hardcoded require call.
