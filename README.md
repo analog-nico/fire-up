@@ -13,6 +13,10 @@ Fire Up! is a dependency injection container designed specifically for node.js w
 - [Recommended Application Architecture](#recommended-application-architecture)
   - [Migrating your existing node.js app to Fire Up!](#migrating-your-existing-nodejs-app-to-fire-up)
 - [API](#api)
+  - [The Fire Up! module pattern](#the-fire-up-module-pattern)
+  - [fireUpLib.newInjector(options) -> fireUp](#fireuplibnewinjectoroptions---fireup)
+  - [fireUp(moduleReference, [options] ) -> Promise](#fireupmodulereference-options----promise)
+  - [The "use" option](#the-use-option)
 - [Built-in Modules](#built-in-modules)
 - [What you should know about Fire Up!'s own dependencies](#what-you-should-know-about-fire-ups-own-dependencies)
 - [Contributing](#contributing)
@@ -646,7 +650,7 @@ fireUp('expressApp', {
   });
 ```
 
-**Returns a promise that resolves to an instance of the module qualified by the `moduleReference`.** The `moduleReference` must follow the same notation as the entries in the `__module.inject` property of Fire Up! modules. See the [respective section](#__moduleinject) below for details.
+**Returns a promise that resolves to an instance of the module qualified by the `moduleReference`.** The `moduleReference` must follow the same notation as the entries in the `__module.inject` property of Fire Up! modules. See the [respective section](#__moduleinject) above for details.
 
 The returned promise is implemented by [bluebird](https://github.com/petkaantonov/bluebird) which is [Promises/A+ compliant](http://promisesaplus.com). Thus the promise can be processed by any other Promises/A+ compliant library if you choose to. The promise is either resolved with the initialized module instance or rejected with an error. All possible error types are defined within `fireUp.errors` and can be used to choose the error handling strategy:
 
@@ -681,7 +685,7 @@ fireUp('expressApp')
 
 Optionally, the `use` option and any other custom properties can be passed to the `options` parameter. The `use` option is described in the [section below](#the-use-option). Additional custom properties can be useful when used in conjunction with injecting `'fireUp/options'` into a module. See the [respective section](#fireupoptions) below for details.
 
-### The `use` option
+### The "use" option
 
 The `use` option is the most important feature of Fire Up! that distinguishes it from `require` as well as service locators: It allows to switch the "used" implementation for the injected dependencies during runtime. The prevalent use case is to replace a module by a mock for unit testing. However, this mechanism is not restricted to unit testing but may also be used in production to build sub components with varying composition. E.g. a sophisticated user session may be instantiated with an unsecured connection by default. Depending on the circumstances some sessions may be instantiated with a secured connection instead.
 
