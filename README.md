@@ -632,7 +632,12 @@ Even though a Fire Up! module still can use native require calls this is not rec
 ``` js
 module.exports.__module = {
   implements: 'iUseRequire',
-  inject: 'require("util")', 'require("express")', 'require("./helper.js")', 'require("../log/logger.js")'
+  inject: [
+    'require("util")',             // Internal node.js module
+    'require("express")',          // Module installed via npm
+    'require("./helper.js")',      // Local JS file with './' prefix
+    'require("../log/logger.js")'  // Local JS file with '../' prefix
+  ]
 };
 ```
 
