@@ -479,7 +479,77 @@ Optionally, the `use` option and any other custom properties can be passed to th
 
 ### The `use` option
 
-Description forthcoming.
+The `use` option is the most important feature of Fire Up! that distinguishes it from `require` as well as service locators: It allows to switch the "used" implementation for the injected dependencies during runtime. The prevalent use case is to replace a module by a mock for unit testing. However, this mechanism is not restricted to unit testing but may also be used in production to build sub components with varying composition. E.g. a sophisticated user session may be instantiated with an unsecured connection by default. Depending on the circumstances some sessions may be instantiated with a secured connection instead.
+
+To be able to switch implementations, the replacing and replaced implementation must both implement the same interface to ensure that the composed component still works. Thus Fire Up! will replace an implementation for some base interface only by implementations for interfaces that extend the base interface. Following the [notation for interfaces](#__moduleimplements) as used to announce the implementing interfaces of a module through `__module.implements` the following cases explain the use of the `use` option:
+
+- **Straight forward replacement**
+  - The replaced and replacing modules implement 'dbConnector' and 'dbConnector:mock':
+    ``` js
+    // db-connector.js
+    module.exports.__module = {
+      implements: 'dbConnector'
+    };
+
+    // db-connector.mock.js
+    module.exports.__module = {
+      implements: 'dbConnector:mock'
+    };
+    ```
+  - Another module implementing 'statisticsAggregator' requests 'dbConnector' for injection:
+    ``` js
+    // statistics-aggregator.js
+    module.exports.__module = {
+      implements: 'statisticsAggregator',
+      inject: 'dbConnector'
+    };
+    ```
+  - We fire up the 'statisticsAggregator' using 'dbConnector:mock':
+    ``` js
+    fireUp('statisticsAggregator', { use: [ 'dbConnector:mock' ] });
+    ```
+    **Result**: The implementation of 'dbConnector:mock' in db-connector.mock.js is used for injection.
+
+- **Straight forward replacement with overlapping use option entries**
+  - Implementations are available for the following interfaces:
+    - 'api/rest/users:cached'
+    - 'api/rest/users:cached:lazy'
+    - 'api/rest/users:cached:lazy:profiled:likeCrazy'
+  - Another module implementing 'userCache' requests 'api/rest/users:cached' for injection.
+  - We fire up the 'userCache' using 'api/rest/users:cached:lazy' and 'api/rest/users:cached:lazy:profiled:likeCrazy':
+	``` js
+    fireUp('statisticsAggregator', {
+      use: [
+        'api/rest/users:cached:lazy',
+        'api/rest/users:cached:lazy:profiled:likeCrazy'
+      ]
+    });
+    ```
+
+    **Result**: The implementation of 'api/rest/users:cached:lazy:profiled:likeCrazy' is used because this implementation is compatible with both interfaces given in the use option.
+
+- **Straight forward replacement with only an extended interface available**
+  - Implementations are available for the following interfaces:
+    - 'api/rest/users:cached'
+    - 'api/rest/users:cached:lazy'
+    - 'api/rest/users:cached:lazy:profiled:likeCrazy'
+  - Another module implementing 'userCache' requests 'api/rest/users:cached' for injection.
+  - We fire up the 'userCache' using 'api/rest/users:cached:lazy:profiled'.
+
+    **Result**: The implementation of 'api/rest/users:cached:lazy:profiled:likeCrazy' is used for injection since no direct implementation is available for 'api/rest/users:cached:lazy:profiled'.
+
+- **Failing replacement with two extended interfaces available**
+  - Implementations are available for the following interfaces:
+    - 'api/rest/users:cached'
+    - 'api/rest/users:cached:lazy'
+    - 'api/rest/users:cached:lazy:profiled:likeCrazy1'
+    - 'api/rest/users:cached:lazy:profiled:likeCrazy2'
+  - Another module implementing 'userCache' requests 'api/rest/users:cached' for injection.
+  - We fire up the 'userCache' using 'api/rest/users:cached:lazy:profiled'.
+
+    **Result**: The `fireUp(...)` call fails because two compatible implementations ('api/rest/users:cached:lazy:profiled:likeCrazy1' and 'api/rest/users:cached:lazy:profiled:likeCrazy2') exist and Fire Up! does not know which one to choose.
+
+The `use` option is also available in the `fireUpLib.newInjector(options)` call. If an array of interface names is provided through the `newInjector(...)` call as well as through the `fireUp(...)` call both arrays are merged.
 
 ### The Fire Up! module pattern
 
