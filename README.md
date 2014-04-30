@@ -1,6 +1,6 @@
 # Fire Up! Dependency Injector
 
-[![Build Status](https://travis-ci.org/analog-nico/fire-up.svg?branch=master)](https://travis-ci.org/analog-nico/fire-up) [![Coverage Status](https://coveralls.io/repos/analog-nico/fire-up/badge.png?branch=master)](https://coveralls.io/r/analog-nico/fire-up?branch=master) [![Dependencies up to date](https://david-dm.org/analog-nico/fire-up.png)](https://david-dm.org/analog-nico/fire-up)
+[![Build Status](https://travis-ci.org/analog-nico/fire-up.svg?branch=master)](https://travis-ci.org/analog-nico/fire-up) [![Coverage Status](http://img.shields.io/badge/coverage-far%20beyond%20100%25-brightgreen.svg)](https://coveralls.io/r/analog-nico/fire-up?branch=master) [![Dependencies up to date](https://david-dm.org/analog-nico/fire-up.png)](https://david-dm.org/analog-nico/fire-up)
 
 Fire Up! is a dependency injection container designed specifically for node.js with a powerful but sleek API.
 
@@ -399,6 +399,10 @@ If you have a large node.js app that doesn't use a dependency injector yet or do
 If you use a hybrid approach where you just use Fire Up! for certain areas of your app you should, however, pay attention to the modules' singleton nature: In traditional node.js development you are used to getting a singleton instance of a module when you require it. Fire Up! retains that singleton nature per default. For that a Fire Up! injector has a cache which is filled with the object returned by the factory method of a Fire Up! module. Hence, those modules are only singleton within the scope of a single Fire Up! injector instance. If you create multiple Fire Up! injectors or require a Fire Up! module manually you will produce multiple instances of your module. A rule of thumb would be to never require a Fire Up! module manually and if you use multiple Fire Up! injectors make sure they cover distinct groups of the available Fire Up! modules.
 
 ## API
+
+[![unstable](http://badges.github.io/stability-badges/dist/unstable.svg)](http://github.com/badges/stability-badges)
+
+The API is in the process of settling, but has not yet had sufficient real-world testing to be considered stable. Backwards-compatibility will be maintained if reasonable.
 
 ### The Fire Up! module pattern
 
