@@ -2,11 +2,11 @@
 
 // Fire me up!
 
-module.exports = function (singleAsList) {
-  return [singleAsList];
-};
-
-module.exports.__module = {
+module.exports = {
   implements: 'injection/direct/singleDependencyAsList',
   inject: ['interfaces/unnested/singleAsList']
+};
+
+module.exports.factory = function (singleAsList) {
+  return [singleAsList];
 };

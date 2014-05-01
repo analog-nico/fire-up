@@ -2,11 +2,11 @@
 
 // Fire me up!
 
-module.exports = function (noBaseInterface2) {
-  return [noBaseInterface2];
-};
-
-module.exports.__module = {
+module.exports = {
   implements: 'injection/ambiguous/multipleSubInterfaces',
   inject: 'interfaces/nested/noBaseInterface1'
+};
+
+module.exports.factory = function (noBaseInterface2) {
+  return [noBaseInterface2];
 };

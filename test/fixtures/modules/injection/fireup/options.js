@@ -2,11 +2,11 @@
 
 // Fire me up!
 
-module.exports = function (options) {
-  return options;
-};
-
-module.exports.__module = {
+module.exports = {
   implements: 'injection/fireUp/options',
   inject: 'fireUp/options'
+};
+
+module.exports.factory = function (options) {
+  return options;
 };

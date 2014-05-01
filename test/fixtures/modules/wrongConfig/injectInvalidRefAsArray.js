@@ -2,9 +2,9 @@
 
 // Fire me up!
 
-module.exports = function () { };
-
-module.exports.__module = {
+module.exports = {
   implements: 'wrongConfig',
   inject: ['correct', 'no spaces allowed']
 };
+
+module.exports.factory = function () { };

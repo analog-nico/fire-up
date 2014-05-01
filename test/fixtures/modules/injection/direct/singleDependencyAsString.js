@@ -2,11 +2,11 @@
 
 // Fire me up!
 
-module.exports = function (singleAsString) {
-  return [singleAsString];
-};
-
-module.exports.__module = {
+module.exports = {
   implements: 'injection/direct/singleDependencyAsString',
   inject: 'interfaces/unnested/singleAsString'
+};
+
+module.exports.factory = function (singleAsString) {
+  return [singleAsString];
 };

@@ -2,7 +2,13 @@
 
 // Fire me up!
 
-module.exports = function(P, mode, id) {
+module.exports = {
+  implements: 'instantiation/promises/p',
+  inject: 'require(p-promise)',
+  type: 'multiple instances'
+};
+
+module.exports.factory = function(P, mode, id) {
 
   var def = P.defer();
 
@@ -16,10 +22,4 @@ module.exports = function(P, mode, id) {
 
   return def.promise;
 
-};
-
-module.exports.__module = {
-  implements: 'instantiation/promises/p',
-  inject: 'require(p-promise)',
-  type: 'multiple instances'
 };

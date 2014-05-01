@@ -2,11 +2,11 @@
 
 // Fire me up!
 
-module.exports = function (currentInjector) {
-  return currentInjector;
-};
-
-module.exports.__module = {
+module.exports = {
   implements: 'injection/fireUp/currentInjector',
   inject: 'fireUp/currentInjector'
+};
+
+module.exports.factory = function (currentInjector) {
+  return currentInjector;
 };

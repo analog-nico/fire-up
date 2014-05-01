@@ -2,11 +2,11 @@
 
 // Fire me up!
 
-module.exports = function (module) {
-  return module;
-};
-
-module.exports.__module = {
+module.exports = {
   implements: 'injection/require/requireNonexistingModule',
   inject: 'require(notinstalled)'
+};
+
+module.exports.factory = function (module) {
+  return module;
 };

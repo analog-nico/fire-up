@@ -124,7 +124,7 @@ describe("Regarding its instantiation, FireUp", function () {
     expect(fireUp._internal.registry.modules[filePathToLoad].status).toBe(fireUp.constants.FILE_STATUS_REGISTERED);
     expect(fireUp._internal.registry.modules[filePathToIgnore].status).toBe(fireUp.constants.FILE_STATUS_TO_IGNORE);
 
-    expect(_.isFunction(fireUp._internal.registry.modules[filePathToLoad].cache.module)).toBe(true);
+    expect(_.isFunction(fireUp._internal.registry.modules[filePathToLoad].cache.module.factory)).toBe(true);
 
     expect(fireUp._internal.registry.interfaces['simple'].file).toEqual(filePathToLoad);
 
@@ -239,7 +239,7 @@ describe("Regarding its instantiation, FireUp", function () {
 
     expect(function () { fireUpLib.newInjector({
       basePath: __dirname,
-      modules: ['../fixtures/modules/wrongConfig/noModuleConfig.js']
+      modules: ['../fixtures/modules/wrongConfig/noFactory.js']
     }); }).toThrowOfType(fireUpLib.errors.ConfigError);
 
     expect(function () { fireUpLib.newInjector({

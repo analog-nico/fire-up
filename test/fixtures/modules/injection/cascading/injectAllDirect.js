@@ -2,11 +2,7 @@
 
 // Fire me up!
 
-module.exports = function (noDependencies, singleDependencyAsString, singleDependencyAsList, injectBaseInterfaces, injectSubInterfaces, takesStaticArgs) {
-  return [noDependencies, singleDependencyAsString, singleDependencyAsList, injectBaseInterfaces, injectSubInterfaces, takesStaticArgs];
-};
-
-module.exports.__module = {
+module.exports = {
   implements: ['injection/cascading/injectAllDirect'],
   inject: [
     'injection/direct/noDependencies',
@@ -17,4 +13,8 @@ module.exports.__module = {
     'injection/direct/takesStaticArgs(43)'
   ],
   type: require('../../../../../lib/index.js').constants.MODULE_TYPE_MULTIPLE_INSTANCES
+};
+
+module.exports.factory = function (noDependencies, singleDependencyAsString, singleDependencyAsList, injectBaseInterfaces, injectSubInterfaces, takesStaticArgs) {
+  return [noDependencies, singleDependencyAsString, singleDependencyAsList, injectBaseInterfaces, injectSubInterfaces, takesStaticArgs];
 };

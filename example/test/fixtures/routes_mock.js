@@ -2,7 +2,11 @@
 
 // Fire me up!
 
-module.exports = function () {
+module.exports = {
+  implements: 'routes:mock'
+};
+
+module.exports.factory = function () {
 
   var message = 'You are mocking me!';
 
@@ -17,8 +21,4 @@ module.exports = function () {
 
   return { register: register };
 
-};
-
-module.exports.__module = {
-  implements: 'routes:mock'
 };

@@ -2,7 +2,13 @@
 
 // Fire me up!
 
-module.exports = function(avow, mode, id) {
+module.exports = {
+  implements: 'instantiation/promises/avow',
+  inject: 'require(avow)',
+  type: 'multiple instances'
+};
+
+module.exports.factory = function(avow, mode, id) {
 
   return avow(function (resolve, reject) {
 
@@ -20,10 +26,4 @@ module.exports = function(avow, mode, id) {
 
   });
 
-};
-
-module.exports.__module = {
-  implements: 'instantiation/promises/avow',
-  inject: 'require(avow)',
-  type: 'multiple instances'
 };

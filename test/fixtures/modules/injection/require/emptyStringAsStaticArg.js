@@ -2,11 +2,11 @@
 
 // Fire me up!
 
-module.exports = function () {
-  return require('path').relative(process.cwd(), __filename);
-};
-
-module.exports.__module = {
+module.exports = {
   implements: 'injection/require/emptyStringAsStaticArg',
   inject: 'require("")'
+};
+
+module.exports.factory = function () {
+  return require('path').relative(process.cwd(), __filename);
 };

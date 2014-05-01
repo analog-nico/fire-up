@@ -2,8 +2,8 @@
 
 // Fire me up!
 
-module.exports = function () { };
-
-module.exports.__module = {
+module.exports = {
   implements: [ 'wrongConfig/implementsNotAllStrings', 42 ]
 };
+
+module.exports.factory = function () { };

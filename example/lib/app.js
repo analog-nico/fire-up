@@ -2,7 +2,12 @@
 
 // Fire me up!
 
-module.exports = function(Promise, express, config, routes) {
+module.exports = {
+  implements: 'expressApp',
+  inject: ['require(bluebird)', 'require(express)', 'config', 'routes']
+};
+
+module.exports.factory = function(Promise, express, config, routes) {
 
   return new Promise(function (resolve) {
 
@@ -18,9 +23,4 @@ module.exports = function(Promise, express, config, routes) {
 
   });
 
-};
-
-module.exports.__module = {
-  implements: 'expressApp',
-  inject: ['require(bluebird)', 'require(express)', 'config', 'routes']
 };

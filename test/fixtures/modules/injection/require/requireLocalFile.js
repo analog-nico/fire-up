@@ -2,11 +2,11 @@
 
 // Fire me up!
 
-module.exports = function (localFile) {
-  return localFile;
-};
-
-module.exports.__module = {
+module.exports = {
   implements: 'injection/require/requireLocalFile',
   inject: 'require(./localFile.js)'
+};
+
+module.exports.factory = function (localFile) {
+  return localFile;
 };

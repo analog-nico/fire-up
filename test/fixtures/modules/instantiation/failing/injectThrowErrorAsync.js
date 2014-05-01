@@ -2,11 +2,11 @@
 
 // Fire me up!
 
-module.exports = function(throwError) {
-  return require('path').relative(process.cwd(), __filename);
-};
-
-module.exports.__module = {
+module.exports = {
   implements: 'instantiation/failing/injectThrowErrorAsync',
   inject: 'instantiation/failing/throwErrorAsync'
+};
+
+module.exports.factory = function(throwError) {
+  return require('path').relative(process.cwd(), __filename);
 };

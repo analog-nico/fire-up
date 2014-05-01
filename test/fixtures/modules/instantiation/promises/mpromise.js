@@ -2,7 +2,13 @@
 
 // Fire me up!
 
-module.exports = function(Promise, mode, id) {
+module.exports = {
+  implements: 'instantiation/promises/mpromise',
+  inject: 'require(mpromise)',
+  type: 'multiple instances'
+};
+
+module.exports.factory = function(Promise, mode, id) {
 
   var promise = new Promise();
 
@@ -16,10 +22,4 @@ module.exports = function(Promise, mode, id) {
 
   return promise;
 
-};
-
-module.exports.__module = {
-  implements: 'instantiation/promises/mpromise',
-  inject: 'require(mpromise)',
-  type: 'multiple instances'
 };

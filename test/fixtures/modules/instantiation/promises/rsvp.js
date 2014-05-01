@@ -2,7 +2,13 @@
 
 // Fire me up!
 
-module.exports = function(RSVP, mode, id) {
+module.exports = {
+  implements: 'instantiation/promises/rsvp',
+  inject: 'require(rsvp)',
+  type: 'multiple instances'
+};
+
+module.exports.factory = function(RSVP, mode, id) {
 
   return new RSVP.Promise(function (resolve, reject) {
 
@@ -20,10 +26,4 @@ module.exports = function(RSVP, mode, id) {
 
   });
 
-};
-
-module.exports.__module = {
-  implements: 'instantiation/promises/rsvp',
-  inject: 'require(rsvp)',
-  type: 'multiple instances'
 };

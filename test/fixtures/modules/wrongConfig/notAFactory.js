@@ -2,4 +2,8 @@
 
 // Fire me up!
 
-module.exports = {};
+module.exports = {
+  implements: 'wrongConfig/notAFactory'
+};
+
+module.exports.factory = {};

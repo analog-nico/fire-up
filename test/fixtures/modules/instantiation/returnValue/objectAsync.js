@@ -4,7 +4,12 @@
 
 var Promise = require('bluebird');
 
-module.exports = function () {
+module.exports = {
+  implements: 'instantiation/returnValue/objectAsync',
+  type: 'multiple instances'
+};
+
+module.exports.factory = function () {
 
   return new Promise(function (resolve) {
     setTimeout(function () {
@@ -12,9 +17,4 @@ module.exports = function () {
     }, 10);
   });
 
-};
-
-module.exports.__module = {
-  implements: 'instantiation/returnValue/objectAsync',
-  type: 'multiple instances'
 };

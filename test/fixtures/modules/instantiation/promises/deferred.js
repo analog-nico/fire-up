@@ -2,7 +2,13 @@
 
 // Fire me up!
 
-module.exports = function(deferred, mode, id) {
+module.exports = {
+  implements: 'instantiation/promises/deferred',
+  inject: 'require(deferred)',
+  type: 'multiple instances'
+};
+
+module.exports.factory = function(deferred, mode, id) {
 
   var def = deferred();
 
@@ -16,10 +22,4 @@ module.exports = function(deferred, mode, id) {
 
   return def.promise;
 
-};
-
-module.exports.__module = {
-  implements: 'instantiation/promises/deferred',
-  inject: 'require(deferred)',
-  type: 'multiple instances'
 };

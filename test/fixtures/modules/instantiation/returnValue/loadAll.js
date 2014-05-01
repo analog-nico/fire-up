@@ -2,11 +2,7 @@
 
 // Fire me up!
 
-module.exports = function (simpleValue, simpleValueAsync, object, objectAsync, functionSync, functionAsync) {
-  return [simpleValue, simpleValueAsync, object, objectAsync, functionSync, functionAsync];
-};
-
-module.exports.__module = {
+module.exports = {
   implements: 'instantiation/returnValue/loadAll',
   inject: [
     'instantiation/returnValue/simpleValue',
@@ -16,4 +12,8 @@ module.exports.__module = {
     'instantiation/returnValue/function',
     'instantiation/returnValue/functionAsync'
   ]
+};
+
+module.exports.factory = function (simpleValue, simpleValueAsync, object, objectAsync, functionSync, functionAsync) {
+  return [simpleValue, simpleValueAsync, object, objectAsync, functionSync, functionAsync];
 };

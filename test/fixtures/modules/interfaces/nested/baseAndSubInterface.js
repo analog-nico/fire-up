@@ -2,11 +2,7 @@
 
 // Fire me up!
 
-module.exports = function () {
-  return require('path').relative(process.cwd(), __filename);
-};
-
-module.exports.__module = {
+module.exports = {
   implements: [
     'interfaces/nested/baseAndSubInterface1',
     'interfaces/nested/baseAndSubInterface1:subInterface',
@@ -17,4 +13,8 @@ module.exports.__module = {
     'interfaces/nested/baseAndSubInterface4:subInterface:subInterface',
     'interfaces/nested/baseAndSubInterface4'
   ]
+};
+
+module.exports.factory = function () {
+  return require('path').relative(process.cwd(), __filename);
 };

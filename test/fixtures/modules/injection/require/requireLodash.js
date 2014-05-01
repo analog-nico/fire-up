@@ -2,11 +2,11 @@
 
 // Fire me up!
 
-module.exports = function (lodash) {
-  return lodash;
-};
-
-module.exports.__module = {
+module.exports = {
   implements: 'injection/require/requireLodash',
   inject: 'require(lodash)'
+};
+
+module.exports.factory = function (lodash) {
+  return lodash;
 };

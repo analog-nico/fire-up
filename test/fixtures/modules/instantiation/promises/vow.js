@@ -2,7 +2,13 @@
 
 // Fire me up!
 
-module.exports = function(vow, mode, id) {
+module.exports = {
+  implements: 'instantiation/promises/vow',
+  inject: 'require(vow)',
+  type: 'multiple instances'
+};
+
+module.exports.factory = function(vow, mode, id) {
 
   return new vow.Promise(function (resolve, reject) {
 
@@ -20,10 +26,4 @@ module.exports = function(vow, mode, id) {
 
   });
 
-};
-
-module.exports.__module = {
-  implements: 'instantiation/promises/vow',
-  inject: 'require(vow)',
-  type: 'multiple instances'
 };

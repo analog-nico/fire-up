@@ -2,7 +2,13 @@
 
 // Fire me up!
 
-module.exports = function(Lie, mode, id) {
+module.exports = {
+  implements: 'instantiation/promises/lie',
+  inject: 'require(lie)',
+  type: 'multiple instances'
+};
+
+module.exports.factory = function(Lie, mode, id) {
 
   return new Lie(function (resolve, reject) {
 
@@ -20,10 +26,4 @@ module.exports = function(Lie, mode, id) {
 
   });
 
-};
-
-module.exports.__module = {
-  implements: 'instantiation/promises/lie',
-  inject: 'require(lie)',
-  type: 'multiple instances'
 };

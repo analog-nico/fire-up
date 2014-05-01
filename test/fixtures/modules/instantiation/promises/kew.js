@@ -2,7 +2,13 @@
 
 // Fire me up!
 
-module.exports = function(Q, mode, id) {
+module.exports = {
+  implements: 'instantiation/promises/kew',
+  inject: 'require(kew)',
+  type: 'multiple instances'
+};
+
+module.exports.factory = function(Q, mode, id) {
 
   var def = Q.defer();
 
@@ -16,10 +22,4 @@ module.exports = function(Q, mode, id) {
 
   return def.promise;
 
-};
-
-module.exports.__module = {
-  implements: 'instantiation/promises/kew',
-  inject: 'require(kew)',
-  type: 'multiple instances'
 };

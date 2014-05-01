@@ -2,7 +2,13 @@
 
 // Fire me up!
 
-module.exports = function(Q, mode, id) {
+module.exports = {
+  implements: 'instantiation/promises/q',
+  inject: 'require(q)',
+  type: 'multiple instances'
+};
+
+module.exports.factory = function(Q, mode, id) {
 
   return new Q.Promise(function (resolve, reject) {
 
@@ -20,10 +26,4 @@ module.exports = function(Q, mode, id) {
 
   });
 
-};
-
-module.exports.__module = {
-  implements: 'instantiation/promises/q',
-  inject: 'require(q)',
-  type: 'multiple instances'
 };

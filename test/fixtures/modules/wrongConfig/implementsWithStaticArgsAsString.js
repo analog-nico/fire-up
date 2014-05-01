@@ -2,8 +2,8 @@
 
 // Fire me up!
 
-module.exports = function () { };
-
-module.exports.__module = {
+module.exports = {
   implements: 'wrongConfig/implementsWithStaticArgsAsString(not allowed)'
 };
+
+module.exports.factory = function () { };

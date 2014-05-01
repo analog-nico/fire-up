@@ -2,11 +2,11 @@
 
 // Fire me up!
 
-module.exports = function (unknown) {
-  return require('path').relative(process.cwd(), __filename);
-};
-
-module.exports.__module = {
+module.exports = {
   implements: 'instantiation/failing/misspelledFireUpDependency',
   inject: 'fireUp/misspelled'
+};
+
+module.exports.factory = function (unknown) {
+  return require('path').relative(process.cwd(), __filename);
 };

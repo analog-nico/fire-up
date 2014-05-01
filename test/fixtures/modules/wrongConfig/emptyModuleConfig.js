@@ -2,6 +2,6 @@
 
 // Fire me up!
 
-module.exports = function () { };
+module.exports = { };
 
-module.exports.__module = { };
+module.exports.factory = function () { };

@@ -2,7 +2,13 @@
 
 // Fire me up!
 
-module.exports = function(Promise, mode, id) {
+module.exports = {
+  implements: 'instantiation/promises/bluebird',
+  inject: 'require(bluebird)',
+  type: 'multiple instances'
+};
+
+module.exports.factory = function(Promise, mode, id) {
 
   return new Promise(function (resolve, reject) {
 
@@ -20,10 +26,4 @@ module.exports = function(Promise, mode, id) {
 
   });
 
-};
-
-module.exports.__module = {
-  implements: 'instantiation/promises/bluebird',
-  inject: 'require(bluebird)',
-  type: 'multiple instances'
 };

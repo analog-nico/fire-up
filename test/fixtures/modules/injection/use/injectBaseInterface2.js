@@ -2,11 +2,11 @@
 
 // Fire me up!
 
-module.exports = function (baseInterface2) {
-  return baseInterface2;
-};
-
-module.exports.__module = {
+module.exports = {
   implements: 'injection/use/injectBaseInterface2',
   inject: 'interfaces/nested/baseInterface2'
+};
+
+module.exports.factory = function (baseInterface2) {
+  return baseInterface2;
 };

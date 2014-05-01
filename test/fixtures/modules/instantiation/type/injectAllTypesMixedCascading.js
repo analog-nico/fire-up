@@ -2,11 +2,7 @@
 
 // Fire me up!
 
-module.exports = function (singleton1, singleton2, multi1, multi2, mixed, sync, async, singleton3, singleton4, multi3, multi4) {
-  return [singleton1, singleton2, multi1, multi2, mixed, sync, async, singleton3, singleton4, multi3, multi4];
-};
-
-module.exports.__module = {
+module.exports = {
   implements: 'instantiation/type/injectAllTypesMixedCascading',
   inject: [
     'instantiation/type/singletonAsync/interface1',
@@ -21,4 +17,8 @@ module.exports.__module = {
     'instantiation/type/multiInstancesAsync/interface1',
     'instantiation/type/multiInstances/interface1'
   ]
+};
+
+module.exports.factory = function (singleton1, singleton2, multi1, multi2, mixed, sync, async, singleton3, singleton4, multi3, multi4) {
+  return [singleton1, singleton2, multi1, multi2, mixed, sync, async, singleton3, singleton4, multi3, multi4];
 };

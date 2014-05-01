@@ -2,7 +2,13 @@
 
 // Fire me up!
 
-module.exports = function(when, mode, id) {
+module.exports = {
+  implements: 'instantiation/promises/when',
+  inject: 'require(when)',
+  type: 'multiple instances'
+};
+
+module.exports.factory = function(when, mode, id) {
 
   return new when.Promise(function (resolve, reject) {
 
@@ -20,10 +26,4 @@ module.exports = function(when, mode, id) {
 
   });
 
-};
-
-module.exports.__module = {
-  implements: 'instantiation/promises/when',
-  inject: 'require(when)',
-  type: 'multiple instances'
 };

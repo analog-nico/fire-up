@@ -2,11 +2,11 @@
 
 // Fire me up!
 
-module.exports = function () {
-  return require('path').relative(process.cwd(), __filename);
-};
-
-module.exports.__module = {
+module.exports = {
   implements: 'injection/circular/small/moduleBDependingOnA',
   inject: 'injection/circular/small/moduleADependingOnB'
+};
+
+module.exports.factory = function () {
+  return require('path').relative(process.cwd(), __filename);
 };

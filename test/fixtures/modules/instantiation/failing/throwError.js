@@ -2,10 +2,10 @@
 
 // Fire me up!
 
-module.exports = function () {
-  throw new Error(require('path').relative(process.cwd(), __filename));
+module.exports = {
+  implements: 'instantiation/failing/throwError'
 };
 
-module.exports.__module = {
-  implements: 'instantiation/failing/throwError'
+module.exports.factory = function () {
+  throw new Error(require('path').relative(process.cwd(), __filename));
 };

@@ -2,7 +2,11 @@
 
 // Fire me up!
 
-module.exports = function () {
+module.exports = {
+  implements: 'routes'
+};
+
+module.exports.factory = function () {
 
   var message = 'Hello World';
 
@@ -14,8 +18,4 @@ module.exports = function () {
 
   return { register: register };
 
-};
-
-module.exports.__module = {
-  implements: 'routes'
 };
