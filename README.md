@@ -100,24 +100,24 @@ Since dependency injection is meant for large applications we think this example
 ``` js
 // Fire me up!
 
-module.exports = function(Promise, express, config, routes) {
+module.exports = {
+  implements: 'expressApp',
+  inject: ['require(bluebird)', 'require(express)', 'config', 'routes']
+};
+
+module.exports.factory = function(Promise, express, config, routes) {
 
   // The module code goes here.
 
 };
-
-module.exports.__module = {
-  implements: 'expressApp',
-  inject: ['require(bluebird)', 'require(express)', 'config', 'routes']
-};
 ```
 
-The module must export a function that takes the injected dependencies as parameters and returns an instance of the module. (**Factory pattern**) Secondly, the module must export a `__module` property that states the interface it provides through `implements` and references the dependencies to be injected through `inject`. Finally, the code must contain the `// Fire me up!` comment to announce the source file as a Fire Up! module.
+The module must export an object with a `factory` property which is a function that takes the injected dependencies as parameters and returns an instance of the module. (**Factory pattern**) Secondly, the module must export additional properties that state the interface it provides through `implements` and references the dependencies to be injected through `inject`. Finally, the code must contain the `// Fire me up!` comment to announce the source file as a Fire Up! module.
 
 The module code inside the factory method looks like this:
 
 ``` js
-module.exports = function(Promise, express, config, routes) {
+module.exports.factory = function(Promise, express, config, routes) {
 
   var app = express();
 
@@ -140,7 +140,12 @@ The **final module code** looks like this:
 ``` js
 // Fire me up!
 
-module.exports = function(Promise, express, config, routes) {
+module.exports = {
+  implements: 'expressApp',
+  inject: ['require(bluebird)', 'require(express)', 'config', 'routes']
+};
+
+module.exports.factory = function(Promise, express, config, routes) {
 
   return new Promise(function (resolve) {
 
@@ -157,11 +162,6 @@ module.exports = function(Promise, express, config, routes) {
   });
 
 };
-
-module.exports.__module = {
-  implements: 'expressApp',
-  inject: ['require(bluebird)', 'require(express)', 'config', 'routes']
-};
 ```
 
 (BTW, instead of [bluebird](https://github.com/petkaantonov/bluebird) you can also use another [Promises/A+ compliant](http://promisesaplus.com) library if you prefer.)
@@ -172,7 +172,7 @@ module.exports.__module = {
 
 ``` js
 // app.js
-module.exports.__module = {
+module.exports = {
   // ...
   inject: [ /* ... */  'config'  /* ... */ ]
 };
@@ -181,7 +181,7 @@ module.exports.__module = {
 `config.js` implements the interface `config` and thus has to state:
 ``` js
 // config.js
-module.exports.__module = {
+module.exports = {
   implements: 'config'
   // ...
 };
@@ -192,7 +192,12 @@ The **complete module code** of `config.js` looks like this:
 ``` js
 // Fire me up!
 
-module.exports = function (logger) {
+module.exports = {
+  implements: 'config',
+  inject: ['require(morgan)']
+};
+
+module.exports.factory = function (logger) {
 
   return function (app) {
     app.use(logger());
@@ -200,18 +205,13 @@ module.exports = function (logger) {
   };
 
 };
-
-module.exports.__module = {
-  implements: 'config',
-  inject: ['require(morgan)']
-};
 ```
 
 Note that the factory method returns a function. That function is the actual module instance injected into `app.js`. Consequently that function can be called in the factory method of `app.js`:
 
 ``` js
 // app.js
-module.exports = function( /* ... */  config  /* ... */ ) {
+module.exports.factory = function( /* ... */  config  /* ... */ ) {
 
   // ...
 
@@ -230,7 +230,11 @@ There is not much to say about `routes.js` except that is a good example for usi
 ``` js
 // Fire me up!
 
-module.exports = function () {
+module.exports = {
+  implements: 'routes'
+};
+
+module.exports.factory = function () {
 
   var message = 'Hello World';
 
@@ -242,10 +246,6 @@ module.exports = function () {
 
   return { register: register };
 
-};
-
-module.exports.__module = {
-  implements: 'routes'
 };
 ```
 
@@ -306,7 +306,11 @@ The implementation of `./test/fixtures/routes_mock.js` looks like this:
 ``` js
 // Fire me up!
 
-module.exports = function () {                // Make sure this implementation is compatible with
+module.exports = {
+  implements: 'routes:mock'                   // Declares the extended interface. That's all.
+};
+
+module.exports.factory = function () {        // Make sure this implementation is compatible with
                                               // the routes interface implemented by routes.js.
   var message = 'You are mocking me!';
 
@@ -321,10 +325,6 @@ module.exports = function () {                // Make sure this implementation i
 
   return { register: register };              // Turns out it is compatible. ;)
 
-};
-
-module.exports.__module = {
-  implements: 'routes:mock'                   // Declares the extended interface. That's all.
 };
 ```
 
@@ -411,15 +411,15 @@ Overview:
 ``` js
 // Fire me up!
 
-module.exports = function(injectedDependency1, injectedDependency2) {
+module.exports = {
+  implements: 'providedInterface',
+  inject: ['dependency1', 'dependency2']
+};
+
+module.exports.factory = function(injectedDependency1, injectedDependency2) {
 
   // Initialize and return a new module instance or a promise
 
-};
-
-module.exports.__module = {
-  implements: 'providedInterface',
-  inject: ['dependency1', 'dependency2']
 };
 ```
 
@@ -427,45 +427,7 @@ module.exports.__module = {
 
 Even though you could diligently define in the options of `fireUpLib.newInjector(options)` each and every module file you want to include or exclude this will become very tedious. Therefore every module file must contain the `// Fire me up!` comment in a single line. Then, usually, only the main module folder to be included is provided in the options of `fireUpLib.newInjector(options)`. Fire Up! will check every file for the comment and only load those which contain it.
 
-#### The factory method
-
-A Fire Up! module must export a function that takes the injected dependencies and static arguments (see [__module.inject section](#__moduleinject) below) as arguments and return a new module instance.
-
-The returned module instance can be anything - a simple type like a string, an array, an object, a function etc. If the new module instance needs to be initialized asynchronously a promise must be returned that will be resolved with the new module instance once its initialization is done. Only after the promise is resolved Fire Up! will inject the new module instance into other modules.
-
-Asynchronous initialization by returning a [bluebird](https://github.com/petkaantonov/bluebird) promise is done like this:
-
-``` js
-// Fire me up!
-
-module.exports = function(Promise, express, config, routes) {  // The factory method...
-
-  return new Promise(function (resolve) {                      // ...returns a promise...
-
-    var app = express();
-
-    config(app);
-    routes.register(app);
-
-    app.listen(3000, function () {
-      console.log('Express server started on port 3000');
-      resolve(app);                                            // ...and resolves it with
-    });                                                        // the new module instance.
-
-  });
-
-};
-
-module.exports.__module = {
-  implements: 'expressApp',
-  inject: ['require(bluebird)', 'require(express)', 'config', 'routes']
-};
-```
-
-Instead of [bluebird](https://github.com/petkaantonov/bluebird) you can also use another [Promises/A+ compliant](http://promisesaplus.com) library if you prefer. There are easy to read [tests for all major promise libraries](https://github.com/analog-nico/fire-up/blob/master/test/spec/promises.js) which apply them to initialize a module asynchronously.
-
-
-#### __module.implements
+#### exports.implements
 
 **Takes either a string or an array of strings** to announce one or multiple interfaces the module implements.
 
@@ -476,7 +438,7 @@ An interface name may contain any character except `:`, `(`, and `)`:
 'api/rest/users'               // By convention you may use e.g. a slash to use namespaces.
 ```
 
-Using camel case or slashes for namespaces etc. is just a convention you can apply as you like. Fire Up! matches implemented interfaces with module references defined in `__module.inject` with strict equality `===`.
+Using camel case or slashes for namespaces etc. is just a convention you can apply as you like. Fire Up! matches implemented interfaces with module references defined in `exports.inject` with strict equality `===`.
 
 You can declare extended interfaces by using the colon `:`:
 
@@ -490,14 +452,19 @@ You can declare extended interfaces by using the colon `:`:
 'api/rest/users:cached:mock'   // Nest as many extended interfaces you want.
 ```
 
-**Important rule for extended interfaces**: A module implementing an extended interface must be fully compatible with the module implementing the base interface. E.g. if a module requests `'api/rest/users'` through `__module.inject` it must work well together with the module implementing the interface `'api/rest/users'` as well as the module implementing the interface `'api/rest/users:cached'` without actually knowing which implementation was injected.
+**Important rule for extended interfaces**: A module implementing an extended interface must be fully compatible with the module implementing the base interface. E.g. if a module requests `'api/rest/users'` through `exports.inject` it must work well together with the module implementing the interface `'api/rest/users'` as well as the module implementing the interface `'api/rest/users:cached'` without actually knowing which implementation was injected.
 
 A common use case for extended interfaces are **decorators / wrappers**: For example the module implementing the extended interface `'api/rest/users:cached'`would get the module implementing the base interface `'api/rest/users'`injected and adds caching:
 
 ``` js
 // Fire me up!
 
-module.exports = function (users) {
+module.exports = {
+  implements: 'api/rest/users:cached',
+  inject: 'api/rest/users'
+};
+
+module.exports.factory = function (users) {
 
   var cache = {};
 
@@ -514,18 +481,13 @@ module.exports = function (users) {
   };
 
 };
-
-module.exports.__module = {
-  implements: 'api/rest/users:cached',
-  inject: 'api/rest/users'
-};
 ```
 
-#### __module.inject
+#### exports.inject
 
 **Takes either a string or an array of strings** to announce which interfaces the module depends on and for which module instances will be injected by Fire Up! The order in this array corresponds to the order of the arguments of the factory method.
 
-Usually you will list interface names following the notation as described above for the `__module.implements` property. In addition you can add so called **static arguments** which are passed as additional arguments to the factory method of the module being injected. The following notation is used for static arguments:
+Usually you will list interface names following the notation as described above for the `exports.implements` property. In addition you can add so called **static arguments** which are passed as additional arguments to the factory method of the module being injected. The following notation is used for static arguments:
 
 ``` js
 'myInterface(static arg)', "myInterface('static arg')", 'myInterface("static arg")'  // strings
@@ -541,27 +503,27 @@ Unquoted strings get trimmed:
 'myInterface( static arg 1, static arg 2 )' --> 'static arg 1', 'static arg 2'
 ```
 
-A module that allows to be requested including static args must be of type `'multiple instances'` (see [__module.type section](#__moduletype) below) and looks like this:
+A module that allows to be requested including static args must be of type `'multiple instances'` (see [exports.type section](#exportstype) below) and looks like this:
 
 ``` js
 // Fire me up!
 
-module.exports = function(injectedDependency1, injectedDependency2, staticArg1, staticArg2) {
-
-  // Initialize and return a new module instance
-
-};
-
-module.exports.__module = {
+module.exports = {
   implements: 'example/staticArg',
   inject: ['dependency1', 'dependency2'],
   type: 'multiple instances'
+};
+
+module.exports.factory = function(injectedDep1, injectedDep2, staticArg1, staticArg2) {
+
+  // Initialize and return a new module instance
+
 };
 ```
 
 This module could be referenced through `'example/staticArg(foo, bar)'`. Since the module announces two dependencies Fire Up! will inject the dependencies as the first and second argument and pass `'foo'` as the third and `'bar'` as the fourth argument into the factory method. If you reference the module through `'example/staticArg(foo)'` the fourth argument will be `undefined`.
 
-#### __module.type
+#### exports.type
 
 A Fire Up! module can be either instantiated as a `'singleton'` (default) or as `'multiple instances'`.
 
@@ -571,18 +533,18 @@ To configure a module as `'singleton'` the following choices are available:
 
 ``` js
 // No type attribute to use the default
-module.exports.__module = {
+module.exports = {
   implements: 'mySingletonModule'
 };
 
 // Type attribute as string
-module.exports.__module = {
+module.exports = {
   implements: 'mySingletonModule',
   type: 'singleton'
 };
 
 // Type attribute using the constant
-module.exports.__module = {
+module.exports = {
   implements: 'mySingletonModule',
   type: require('fire-up').constants.MODULE_TYPE_SINGLETON
 };
@@ -596,17 +558,54 @@ To configure a module as `'multiple instances'` the following choices are availa
 
 ``` js
 // Type attribute as string
-module.exports.__module = {
+module.exports = {
   implements: 'myMultipleInstancesModule',
   type: 'multiple instances'
 };
 
 // Type attribute using the constant
-module.exports.__module = {
+module.exports = {
   implements: 'myMultipleInstancesModule',
   type: require('fire-up').constants.MODULE_TYPE_MULTIPLE_INSTANCES
 };
 ```
+
+#### The factory method
+
+A Fire Up! module must export a function that takes the injected dependencies and static arguments (see [exports.inject section](#exportsinject) above) as arguments and return a new module instance.
+
+The returned module instance can be anything - a simple type like a string, an array, an object, a function etc. If the new module instance needs to be initialized asynchronously a promise must be returned that will be resolved with the new module instance once its initialization is done. Only after the promise is resolved Fire Up! will inject the new module instance into other modules.
+
+Asynchronous initialization by returning a [bluebird](https://github.com/petkaantonov/bluebird) promise is done like this:
+
+``` js
+// Fire me up!
+
+module.exports = {
+  implements: 'expressApp',
+  inject: ['require(bluebird)', 'require(express)', 'config', 'routes']
+};
+
+module.exports.factory = function(Promise, express, config, routes) {  // The factory method...
+
+  return new Promise(function (resolve) {                              // ...returns a promise...
+
+    var app = express();
+
+    config(app);
+    routes.register(app);
+
+    app.listen(3000, function () {
+      console.log('Express server started on port 3000');
+      resolve(app);                                                    // ...and resolves it with
+    });                                                                // the new module instance.
+
+  });
+
+};
+```
+
+Instead of [bluebird](https://github.com/petkaantonov/bluebird) you can also use another [Promises/A+ compliant](http://promisesaplus.com) library if you prefer. There are easy to read [test modules for all major promise libraries](https://github.com/analog-nico/fire-up/tree/master/test/fixtures/modules/instantiation/promises) which apply them to initialize a module asynchronously.
 
 ### fireUpLib.newInjector(options) -> fireUp
 
@@ -654,7 +653,7 @@ fireUp('expressApp', {
   });
 ```
 
-**Returns a promise that resolves to an instance of the module qualified by the `moduleReference`.** The `moduleReference` must follow the same notation as the entries in the `__module.inject` property of Fire Up! modules. See the [respective section](#__moduleinject) above for details.
+**Returns a promise that resolves to an instance of the module qualified by the `moduleReference`.** The `moduleReference` must follow the same notation as the entries in the `exports.inject` property of Fire Up! modules. See the [respective section](#exportsinject) above for details.
 
 The returned promise is implemented by [bluebird](https://github.com/petkaantonov/bluebird) which is [Promises/A+ compliant](http://promisesaplus.com). Thus the promise can be processed by any other Promises/A+ compliant library if you choose to. The promise is either resolved with the initialized module instance or rejected with an error. All possible error types are defined within `fireUp.errors` and can be used to choose the error handling strategy:
 
@@ -693,25 +692,25 @@ Optionally, the `use` option and any other custom properties can be passed to th
 
 The `use` option is the most important feature of Fire Up! that distinguishes it from `require` as well as service locators: It allows to switch the "used" implementation for the injected dependencies during runtime. The prevalent use case is to replace a module by a mock for unit testing. However, this mechanism is not restricted to unit testing but may also be used in production to build sub components with varying composition. E.g. a sophisticated user session may be instantiated with an unsecured connection by default. Depending on the circumstances some sessions may be instantiated with a secured connection instead.
 
-To be able to switch implementations, the replacing and replaced implementation must both implement the same interface to ensure that the composed component still works. Thus Fire Up! will replace an implementation for some base interface only by implementations for interfaces that extend the base interface. Following the [notation for interfaces](#__moduleimplements) as used to announce the implementing interfaces of a module through `__module.implements` the following cases explain the use of the `use` option:
+To be able to switch implementations, the replacing and replaced implementation must both implement the same interface to ensure that the composed component still works. Thus Fire Up! will replace an implementation for some base interface only by implementations for interfaces that extend the base interface. Following the [notation for interfaces](#exportsimplements) as used to announce the implementing interfaces of a module through `exports.implements` the following cases explain the use of the `use` option:
 
 - **Straight forward replacement**
   - The replaced and replacing modules implement 'dbConnector' and 'dbConnector:mock':
     ``` js
     // db-connector.js
-    module.exports.__module = {
+    module.exports = {
       implements: 'dbConnector'
     };
 
     // db-connector.mock.js
-    module.exports.__module = {
+    module.exports = {
       implements: 'dbConnector:mock'
     };
     ```
   - Another module implementing 'statisticsAggregator' requests 'dbConnector' for injection:
     ``` js
     // statistics-aggregator.js
-    module.exports.__module = {
+    module.exports = {
       implements: 'statisticsAggregator',
       inject: 'dbConnector'
     };
@@ -765,14 +764,14 @@ The `use` option is also available in the `fireUpLib.newInjector(options)` call.
 
 ## Built-in Modules
 
-The following interfaces are implemented by modules available out-of-the-box and can be requested by a module through its `__module.inject` property.
+The following interfaces are implemented by modules available out-of-the-box and can be requested by a module through its `exports.inject` property.
 
 ### require(id)
 
 Even though a Fire Up! module still can use native require calls this is not recommended. To allow switching the required dependencies e.g. for unit testing these dependencies should be injected using the built-in `require(id)` module. The notation reproduces native require calls:
 
 ``` js
-module.exports.__module = {
+module.exports = {
   implements: 'iUseRequire',
   inject: [
     'require("util")',             // Internal node.js module
@@ -812,18 +811,18 @@ The Fire Up! instance is injected that was used to instantiate the module that r
 ``` js
 // Fire me up!
 
-module.exports = function (weather, fireUp) {
+module.exports = {
+  implements: 'relaxingDay:atTheBeach',
+  inject: ['weather(local)', 'fireUp/currentInjector']
+};
+
+module.exports.factory = function (weather, fireUp) {
 
   if (weather.sunSetsAfterABeautifulSummersDay()) {
     return fireUp('theGrill');
   }
 
   return 'home';
-};
-
-module.exports.__module = {
-  implements: 'relaxingDay:atTheBeach',
-  inject: ['weather(local)', 'fireUp/currentInjector']
 };
 ```
 
@@ -863,6 +862,43 @@ If you want to debug a test you should use `grunt jasmine_node_no_coverage` to r
 
 ## Change History
 
+- v0.2.0 (2014-05-01)
+  - **Braking Change:** Redesigned the Fire Up! module pattern
+    - Old module pattern:
+      ``` js
+      // Fire me up!
+
+      module.exports = function (dependency1, dependency2) {
+
+        // The module code goes here.
+
+      };
+
+      module.exports.__module = {
+        implements: 'interface',
+        inject: ['dependency1', 'dependency2']
+      };
+      ```
+    - New module pattern:
+      ``` js
+      // Fire me up!
+
+      module.exports = {
+        implements: 'interface',
+        inject: ['dependency1', 'dependency2']
+      };
+
+      module.exports.factory = function (dependency1, dependency2) {
+
+        // The module code goes here.
+
+      };
+      ```
+    - Textual explanation:
+      - The `module.exports.__module` object is directly assigned to `module.exports` now.
+      - The factory method previously assigned to `module.exports` is assigned to `module.exports.factory` now.
+      - There are no semantic changes.
+    - **Reason for the change**: The old module pattern forced the module configuration properties to be defined at the bottom of the source file. If the developer wants to check if the factory method parameters are in sync with the `inject` array he/she would have to scroll up and down. The new module pattern allows to define the module configuration properties at the top nearby the parameters of the factory method.
 - v0.1.1 (2014-04-29)
   - Improved robustness
   - Updated dependencies
