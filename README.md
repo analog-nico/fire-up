@@ -696,6 +696,7 @@ To be able to switch implementations, the replacing and replaced implementation 
 
 - **Straight forward replacement**
   - The replaced and replacing modules implement 'dbConnector' and 'dbConnector:mock':
+
     ``` js
     // db-connector.js
     module.exports = {
@@ -707,7 +708,9 @@ To be able to switch implementations, the replacing and replaced implementation 
       implements: 'dbConnector:mock'
     };
     ```
+
   - Another module implementing 'statisticsAggregator' requests 'dbConnector' for injection:
+
     ``` js
     // statistics-aggregator.js
     module.exports = {
@@ -715,10 +718,13 @@ To be able to switch implementations, the replacing and replaced implementation 
       inject: 'dbConnector'
     };
     ```
+
   - We fire up the 'statisticsAggregator' using 'dbConnector:mock':
+
     ``` js
     fireUp('statisticsAggregator', { use: [ 'dbConnector:mock' ] });
     ```
+
     **Result**: The implementation of 'dbConnector:mock' in db-connector.mock.js is used for injection.
 
 - **Straight forward replacement with overlapping use option entries**
