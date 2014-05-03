@@ -1,6 +1,6 @@
 # Fire Up! Dependency Injector
 
-[![Build Status](https://travis-ci.org/analog-nico/fire-up.svg?branch=master)](https://travis-ci.org/analog-nico/fire-up) [![Coverage Status](http://img.shields.io/badge/coverage-far%20beyond%20100%25-brightgreen.svg)](https://coveralls.io/r/analog-nico/fire-up?branch=master) [![Dependencies up to date](https://david-dm.org/analog-nico/fire-up.png)](https://david-dm.org/analog-nico/fire-up)
+[![Build Status](https://travis-ci.org/analog-nico/fire-up.svg?branch=master)](https://travis-ci.org/analog-nico/fire-up) [![Coverage Status](http://img.shields.io/badge/coverage-far%20beyond%20100%25-brightgreen.svg)](https://coveralls.io/r/analog-nico/fire-up?branch=master) [![Dependency Status](https://david-dm.org/analog-nico/fire-up.svg)](https://david-dm.org/analog-nico/fire-up)
 
 Fire Up! is a dependency injection container designed specifically for node.js with a powerful but sleek API.
 
