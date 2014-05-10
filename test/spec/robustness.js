@@ -20,11 +20,30 @@ describe('Regarding its robustness, FireUp', function () {
       modules: ['../fixtures/modules/instantiation/failing/*.js']
     });
 
-    fireUp('inv(al)id')
+    Promise.resolve()
         .then(function () {
-          done(new Error('fireUp should have rejected the promise.'));
+
+          return fireUp('inv(al)id')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.ConfigError, function (e) {
+                // This is expected to be called.
+              });
+
         })
-        .catch(fireUp.errors.ConfigError, function (e) {
+        .then(function () {
+
+          return fireUp('test:*(not supported)')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.ConfigError, function (e) {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
           done();
         })
         .catch(function (e) {

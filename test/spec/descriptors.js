@@ -42,6 +42,12 @@ describe('The descriptor module', function () {
     expect(descriptor.validateInterfaceName("t :test")).toBe(false);
     expect(descriptor.validateInterfaceName(" est:test")).toBe(false);
     expect(descriptor.validateInterfaceName("t st:test")).toBe(false);
+    expect(descriptor.validateInterfaceName("*")).toBe(false);
+    expect(descriptor.validateInterfaceName("h*llo")).toBe(false);
+    expect(descriptor.validateInterfaceName("*:test")).toBe(false);
+    expect(descriptor.validateInterfaceName("test:*")).toBe(false);
+    expect(descriptor.validateInterfaceName("t*st:test")).toBe(false);
+    expect(descriptor.validateInterfaceName("test:t*st")).toBe(false);
 
     expect(descriptor.validateInterfaceName("test")).toBe(true);
     expect(descriptor.validateInterfaceName("test/test")).toBe(true);
@@ -120,6 +126,15 @@ describe('The descriptor module', function () {
     expect(descriptor.validateModuleReference("t :test")).toBe(false);
     expect(descriptor.validateModuleReference(" est:test")).toBe(false);
     expect(descriptor.validateModuleReference("t st:test")).toBe(false);
+    expect(descriptor.validateModuleReference("*")).toBe(false);
+    expect(descriptor.validateModuleReference("h*llo")).toBe(false);
+    expect(descriptor.validateModuleReference("*:test")).toBe(false);
+    expect(descriptor.validateModuleReference("t*st:test")).toBe(false);
+    expect(descriptor.validateModuleReference("test:t*st")).toBe(false);
+    expect(descriptor.validateModuleReference("test:test*")).toBe(false);
+    expect(descriptor.validateModuleReference("test:*(test)")).toBe(false);
+    expect(descriptor.validateModuleReference("test:test:*(test)")).toBe(false);
+    expect(descriptor.validateModuleReference("test:test(test:*")).toBe(false);
 
     expect(descriptor.validateModuleReference("test")).toBe(true);
     expect(descriptor.validateModuleReference("test/test")).toBe(true);
@@ -136,6 +151,8 @@ describe('The descriptor module', function () {
     expect(descriptor.validateModuleReference("test/foo:test/bar(x)")).toBe(true);
     expect(descriptor.validateModuleReference("€(x)")).toBe(true);
     expect(descriptor.validateModuleReference("test(\"test\",'test' ,true, false, 0, 0.5, hello world!,hello world!, hello world! )")).toBe(true);
+    expect(descriptor.validateModuleReference("test:*")).toBe(true);
+    expect(descriptor.validateModuleReference("test:test:*")).toBe(true);
 
   });
 

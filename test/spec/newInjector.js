@@ -303,6 +303,11 @@ describe("Regarding its instantiation, FireUp", function () {
       modules: ['../fixtures/modules/wrongConfig/injectEmptyRefAsArray.js']
     }); }).toThrowOfType(fireUpLib.errors.ConfigError);
 
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/invalidStarPatternReference.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
 
     expect(function () { fireUpLib.newInjector({
       basePath: __dirname,
