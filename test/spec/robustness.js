@@ -162,7 +162,7 @@ describe('Regarding its robustness, FireUp', function () {
         })
         .then(function () {
 
-          return fireUp('fireUp/currentInjector');
+          return fireUp('fireUp/notAvailable');
 
         })
         .then(function () {
