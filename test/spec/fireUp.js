@@ -678,18 +678,48 @@ describe('Regarding injection, FireUp', function () {
       option2: 'option2'
     });
 
-    fireUp('injection/fireUp/options', { option2: 'overwritten' })
-        .then(function (instance) {
-          var options = {
-            option1: instance.option1,
-            option2: instance.option2
-          };
-          expect(options).toEqual({
-            option1: 'option1',
-            option2: 'overwritten'
-          });
+    Promise.resolve()
+        .then(function () {
 
+          return fireUp('injection/fireUp/options', { option2: 'overwritten', option3: 'extra' })
+              .then(function (instance) {
+                var options = {
+                  option1: instance.option1,
+                  option2: instance.option2,
+                  option3: instance.option3
+                };
+                expect(options).toEqual({
+                  option1: 'option1',
+                  option2: 'overwritten',
+                  option3: 'extra'
+                });
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('injection/fireUp/options', { option1: 'overwritten2', option4: 'extra2' })
+              .then(function (instance) {
+                var options = {
+                  option1: instance.option1,
+                  option2: instance.option2,
+                  option3: instance.option3,
+                  option4: instance.option4
+                };
+                expect(options).toEqual({
+                  option1: 'overwritten2',
+                  option2: 'option2',
+                  option3: undefined,
+                  option4: 'extra2'
+                });
+              });
+
+        })
+        .then(function () {
           done();
+        })
+        .catch(function (err) {
+          done(err);
         });
 
   });
