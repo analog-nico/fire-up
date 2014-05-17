@@ -127,4 +127,43 @@ describe('Regarding the star selector, FireUp', function () {
 
   });
 
+  it('should throw if no implementation is available', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/starSelector/basic/*.js']
+    });
+
+    Promise.resolve()
+        .then(function () {
+
+          return fireUp('unknownInterface:*')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.NoImplementationError, function () {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('starSelector/basic/injectWithStarSelector:*')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.NoImplementationError, function () {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
+          done();
+        })
+        .catch(function (err) {
+          done(err);
+        });
+
+  });
+
 });
