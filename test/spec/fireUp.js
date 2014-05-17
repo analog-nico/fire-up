@@ -681,6 +681,53 @@ describe('Regarding injection, FireUp', function () {
     Promise.resolve()
         .then(function () {
 
+          return fireUp('fireUp/options')
+              .then(function (instance) {
+                var options = {
+                  option1: instance.option1,
+                  option2: instance.option2
+                };
+                expect(options).toEqual({
+                  option1: 'option1',
+                  option2: 'option2'
+                });
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('fireUp/options', { option2: 'overwritten', option3: 'extra' })
+              .then(function (instance) {
+                var options = {
+                  option1: instance.option1,
+                  option2: instance.option2,
+                  option3: instance.option3
+                };
+                expect(options).toEqual({
+                  option1: 'option1',
+                  option2: 'overwritten',
+                  option3: 'extra'
+                });
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('injection/fireUp/options')
+              .then(function (instance) {
+                var options = {
+                  option1: instance.option1,
+                  option2: instance.option2
+                };
+                expect(options).toEqual({
+                  option1: 'option1',
+                  option2: 'option2'
+                });
+              });
+
+        })
+        .then(function () {
+
           return fireUp('injection/fireUp/options', { option2: 'overwritten', option3: 'extra' })
               .then(function (instance) {
                 var options = {
@@ -734,11 +781,19 @@ describe('Regarding injection, FireUp', function () {
     Promise.resolve()
         .then(function () {
 
-          return fireUp('injection/fireUp/currentInjector');
+          return fireUp('injection/fireUp/currentInjector')
+              .then(function (instance) {
+                expect(instance).toBe(fireUp);
+              });
 
         })
-        .then(function (instance) {
-          expect(instance).toBe(fireUp);
+        .then(function () {
+
+          return fireUp('fireUp/currentInjector')
+              .then(function (instance) {
+                expect(instance).toBe(fireUp);
+              });
+
         })
         .then(function () {
           done();
