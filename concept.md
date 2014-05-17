@@ -3,7 +3,6 @@
 ## TODO
 
 - Test cases for using `'fireUp/currentInjector'` to fire up modules dynamically while initializing the module itself
-- Rename the terms parent interface and sub interface to base interface and extended interface in the code and debug output
 - Implement logging adapter
 - Circular dependency detection for modules of type 'multiple instances' and for singletons in case nested fireUp calls with 'fireUp/currentInjector' are used
 
