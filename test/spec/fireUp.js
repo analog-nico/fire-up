@@ -5,6 +5,7 @@ describe('Regarding injection, FireUp', function () {
   var path = require('path');
   var Promise = require('bluebird');
   var fireUpLib = require('../../lib/index.js');
+  var _ = require('lodash');
 
   it('should load modules with direct (not cascading) dependencies', function (done) {
 
@@ -681,6 +682,17 @@ describe('Regarding injection, FireUp', function () {
     Promise.resolve()
         .then(function () {
 
+          return fireUp('fireUp/options:unknown')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.NoImplementationError, function () {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
+
           return fireUp('fireUp/options')
               .then(function (instance) {
                 var options = {
@@ -781,7 +793,18 @@ describe('Regarding injection, FireUp', function () {
     Promise.resolve()
         .then(function () {
 
-          return fireUp('injection/fireUp/currentInjector')
+          return fireUp('fireUp/currentInjector:unknown')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.NoImplementationError, function () {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('fireUp/currentInjector')
               .then(function (instance) {
                 expect(instance).toBe(fireUp);
               });
@@ -789,7 +812,7 @@ describe('Regarding injection, FireUp', function () {
         })
         .then(function () {
 
-          return fireUp('fireUp/currentInjector')
+          return fireUp('injection/fireUp/currentInjector')
               .then(function (instance) {
                 expect(instance).toBe(fireUp);
               });
@@ -804,6 +827,145 @@ describe('Regarding injection, FireUp', function () {
 
   });
 
-  xit('should inject the injectionRequest');
+  it('should inject the injectionRequest', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/injection/fireup/*.js'],
+      option1: 'option1',
+      option2: 'option2'
+    });
+
+    Promise.resolve()
+        .then(function () {
+
+          return fireUp('fireUp/injectionRequest:unknown')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.NoImplementationError, function () {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('fireUp/injectionRequest')
+              .then(function (injectionRequest) {
+                expect(injectionRequest).toBeUndefined();
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('injection/fireUp/injectionRequest')
+              .then(function (injectionRequest) {
+                expect(_.isPlainObject(injectionRequest)).toBe(true);
+                expect(injectionRequest.moduleReference).toEqual('injection/fireUp/injectionRequest');
+                expect(injectionRequest.parsedModuleReference).toEqual({ segments: ['injection/fireUp/injectionRequest'], args: [] });
+                expect(injectionRequest.usedInterface).toEqual('injection/fireUp/injectionRequest');
+                expect(injectionRequest.implementedByVirtualModule).toBe(false);
+                expect(injectionRequest.cachedModule).toBe(require('../fixtures/modules/injection/fireup/injectionRequest.js'));
+                expect(injectionRequest.parent).toBeUndefined();
+                expect(injectionRequest.nestingLevel).toEqual(0);
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('injection/fireUp/injectionRequest(test, 2)')
+              .then(function (injectionRequest) {
+                expect(injectionRequest.moduleReference).toEqual('injection/fireUp/injectionRequest(test, 2)');
+                expect(injectionRequest.parsedModuleReference).toEqual({ segments: ['injection/fireUp/injectionRequest'], args: ['test', 2] });
+                expect(injectionRequest.usedInterface).toEqual('injection/fireUp/injectionRequest');
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('injection/fireUp/nestedInjectionRequest')
+              .then(function (injectionRequest) {
+                expect(injectionRequest.moduleReference).toEqual('injection/fireUp/injectionRequest');
+                expect(injectionRequest.usedInterface).toEqual('injection/fireUp/injectionRequest');
+                expect(injectionRequest.cachedModule).toBe(require('../fixtures/modules/injection/fireup/injectionRequest.js'));
+                expect(injectionRequest.nestingLevel).toEqual(1);
+
+                expect(_.isPlainObject(injectionRequest.parent)).toBe(true);
+                expect(injectionRequest.parent.moduleReference).toEqual('injection/fireUp/nestedInjectionRequest');
+                expect(injectionRequest.parent.parsedModuleReference).toEqual({ segments: ['injection/fireUp/nestedInjectionRequest'], args: [] });
+                expect(injectionRequest.parent.usedInterface).toEqual('injection/fireUp/nestedInjectionRequest');
+                expect(injectionRequest.parent.implementedByVirtualModule).toBe(false);
+                expect(injectionRequest.parent.cachedModule).toBe(require('../fixtures/modules/injection/fireup/nestedInjectionRequest.js'));
+                expect(injectionRequest.parent.parent).toBeUndefined();
+                expect(injectionRequest.parent.nestingLevel).toEqual(0);
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('injection/fireUp/injectionRequest:*')
+              .then(function (instances) {
+                expect(_.isPlainObject(instances['injection/fireUp/injectionRequest:plain'])).toBe(true);
+                expect(instances['injection/fireUp/injectionRequest:plain'].moduleReference).toEqual('injection/fireUp/injectionRequest:plain');
+                expect(instances['injection/fireUp/injectionRequest:plain'].parsedModuleReference).toEqual({ segments: ['injection/fireUp/injectionRequest', 'plain'], args: [] });
+                expect(instances['injection/fireUp/injectionRequest:plain'].usedInterface).toEqual('injection/fireUp/injectionRequest:plain');
+                expect(instances['injection/fireUp/injectionRequest:plain'].implementedByVirtualModule).toBe(false);
+                expect(instances['injection/fireUp/injectionRequest:plain'].cachedModule).toBe(require('../fixtures/modules/injection/fireup/injectionRequest.js'));
+                expect(instances['injection/fireUp/injectionRequest:plain'].parent).not.toBeUndefined();
+                expect(instances['injection/fireUp/injectionRequest:plain'].nestingLevel).toEqual(1);
+
+                expect(_.isPlainObject(instances['injection/fireUp/injectionRequest:plain'].parent)).toBe(true);
+                expect(instances['injection/fireUp/injectionRequest:plain'].parent.moduleReference).toEqual('injection/fireUp/injectionRequest:*');
+                expect(instances['injection/fireUp/injectionRequest:plain'].parent.parsedModuleReference).toEqual({ segments: ['injection/fireUp/injectionRequest', '*'], args: [] });
+                expect(instances['injection/fireUp/injectionRequest:plain'].parent.usedInterface).toBeUndefined();
+                expect(instances['injection/fireUp/injectionRequest:plain'].parent.implementedByVirtualModule).toBe(true);
+                expect(instances['injection/fireUp/injectionRequest:plain'].parent.cachedModule).toBeUndefined();
+                expect(instances['injection/fireUp/injectionRequest:plain'].parent.parent).toBeUndefined();
+                expect(instances['injection/fireUp/injectionRequest:plain'].parent.nestingLevel).toEqual(0);
+
+                expect(instances['injection/fireUp/injectionRequest:nested'].moduleReference).toEqual('injection/fireUp/injectionRequest');
+                expect(instances['injection/fireUp/injectionRequest:nested'].usedInterface).toEqual('injection/fireUp/injectionRequest');
+                expect(instances['injection/fireUp/injectionRequest:nested'].cachedModule).toBe(require('../fixtures/modules/injection/fireup/injectionRequest.js'));
+                expect(instances['injection/fireUp/injectionRequest:nested'].nestingLevel).toEqual(2);
+
+                expect(_.isPlainObject(instances['injection/fireUp/injectionRequest:nested'].parent)).toBe(true);
+                expect(instances['injection/fireUp/injectionRequest:nested'].parent.moduleReference).toEqual('injection/fireUp/injectionRequest:nested');
+                expect(instances['injection/fireUp/injectionRequest:nested'].parent.parsedModuleReference).toEqual({ segments: ['injection/fireUp/injectionRequest', 'nested'], args: [] });
+                expect(instances['injection/fireUp/injectionRequest:nested'].parent.usedInterface).toEqual('injection/fireUp/injectionRequest:nested');
+                expect(instances['injection/fireUp/injectionRequest:nested'].parent.implementedByVirtualModule).toBe(false);
+                expect(instances['injection/fireUp/injectionRequest:nested'].parent.cachedModule).toBe(require('../fixtures/modules/injection/fireup/nestedInjectionRequest.js'));
+                expect(instances['injection/fireUp/injectionRequest:nested'].parent.parent).not.toBeUndefined();
+                expect(instances['injection/fireUp/injectionRequest:nested'].parent.nestingLevel).toEqual(1);
+
+                expect(instances['injection/fireUp/injectionRequest:nested'].parent.parent).toEqual(instances['injection/fireUp/injectionRequest:plain'].parent);
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('injection/fireUp/injectionRequest/base')
+              .then(function (injectionRequest) {
+                expect(injectionRequest.moduleReference).toEqual('injection/fireUp/injectionRequest/base');
+                expect(injectionRequest.usedInterface).toEqual('injection/fireUp/injectionRequest/base');
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('injection/fireUp/injectionRequest/base', { use: ['injection/fireUp/injectionRequest/base:plain'] })
+              .then(function (injectionRequest) {
+                expect(injectionRequest.moduleReference).toEqual('injection/fireUp/injectionRequest/base');
+                expect(injectionRequest.usedInterface).toEqual('injection/fireUp/injectionRequest/base:plain');
+              });
+
+        })
+        .then(function () {
+          done();
+        })
+        .catch(function (err) {
+          done(err);
+        });
+
+  });
 
 });
