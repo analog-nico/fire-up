@@ -158,6 +158,17 @@ describe('Regarding the star selector, FireUp', function () {
 
         })
         .then(function () {
+
+          return fireUp('starSelector/basic/failingInjectionWithStarSelector')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.NoImplementationError, function () {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
           done();
         })
         .catch(function (err) {
