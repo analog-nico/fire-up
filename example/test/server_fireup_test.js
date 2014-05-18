@@ -20,6 +20,7 @@ try {
 fireUp('expressApp', { use: ['routes:mock'] })
   .then(function(expressApp) {
     console.log('App initialized');
+    process.send('running'); // Used for automated test for this example.
   }).catch(function (e) {
     console.error(e);
     process.exit(1);
