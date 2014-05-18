@@ -766,7 +766,9 @@ To be able to switch implementations, the replacing and replaced implementation 
 
     **Result**: The `fireUp(...)` call fails because two compatible implementations ('api/rest/users:cached:lazy:profiled:likeCrazy1' and 'api/rest/users:cached:lazy:profiled:likeCrazy2') exist and Fire Up! does not know which one to choose.
 
-The `use` option is also available in the `fireUpLib.newInjector(options)` call. If an array of interface names is provided through the `newInjector(...)` call as well as through the `fireUp(...)` call both arrays are merged.
+The `use` option is available in the `fireUpLib.newInjector(options)` call, too. If an array of interface names is provided through the `newInjector(...)` call as well as through the `fireUp(...)` call both arrays are merged.
+
+**A common mistake** when using the `use` option with multiple `fireUp(...)` calls (to the same injector) is to overlook the `'singleton'` type of a module. For the first `fireUp(...)` call the `use` options are correctly applied. However, since the module is cached now this cached singleton instance is returned in any additional `fireUp(...)` calls. If those calls have different `use` options it seems as if they are not applied. To resolve this the module must be of type `'multiple instances'` so that it can be instantiated multiple times and varying `use` options are applied as expected.
 
 ## Built-in Modules
 
