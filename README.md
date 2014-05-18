@@ -17,6 +17,7 @@ Fire Up! is a dependency injection container designed specifically for node.js w
   - [fireUpLib.newInjector(options) -> fireUp](#fireuplibnewinjectoroptions---fireup)
   - [fireUp(moduleReference, [options] ) -> Promise](#fireupmodulereference-options----promise)
   - [The "use" option](#the-use-option)
+  - [The star selector](#the-star-selector)
 - [Built-in Modules](#built-in-modules)
 - [What you should know about Fire Up!'s own dependencies](#what-you-should-know-about-fire-ups-own-dependencies)
 - [Contributing](#contributing)
@@ -25,10 +26,11 @@ Fire Up! is a dependency injection container designed specifically for node.js w
 
 ## What you can expect
 
-- Fire Up! has a well designed API that allows you to get rid of any hardcoded require call.
-- A module requires minimal boilerplate code and remains highly maintainable.
-- You can easily implement and inject decorators / wrappers. E.g. replace a socket by a secure socket.
-- You can implement your automated tests by easily injecting your mocks and spies.
+- Fire Up! has a well designed API that allows you to get rid of [any hardcoded require call](#requireid).
+- A module requires [minimal boilerplate](#the-fire-up-module-pattern) code and remains highly maintainable.
+- You can easily [structure your application](#the-star-selector) by using an plug-in architectural approach.
+- You can easily implement and [inject decorators / wrappers](#the-use-option). E.g. replace a socket by a secure socket.
+- You can implement your automated tests by easily [injecting your mocks and spies](#the-use-option).
 - Fire Up! is a functional and robust library with very high test coverage far beyond the 100% a test coverage tool can measure.
 - If you configure something wrong you will always get a helpful error message.
 
@@ -371,6 +373,10 @@ fireUp# INFO  |-- Requested: config, implemented in: example/lib/config.js
 fireUp# INFO      |-- Requested: require(morgan)
 fireUp# INFO  |-- Requested: routes, but using: routes:mock, implemented in: example/test/fixtures/routes_mock.js
 ```
+
+### Using an Plug-In Architectural Approach
+
+Description forthcoming.
 
 ## Recommended Application Architecture
 
@@ -770,6 +776,10 @@ The `use` option is available in the `fireUpLib.newInjector(options)` call, too.
 
 **A common mistake** when using the `use` option with multiple `fireUp(...)` calls (to the same injector) is to overlook the `'singleton'` type of a module. For the first `fireUp(...)` call the `use` options are correctly applied. However, since the module is cached now this cached singleton instance is returned in any additional `fireUp(...)` calls. If those calls have different `use` options it seems as if they are not applied. To resolve this the module must be of type `'multiple instances'` so that it can be instantiated multiple times and varying `use` options are applied as expected.
 
+### The star selector
+
+Description forthcoming.
+
 ## Built-in Modules
 
 The following interfaces are implemented by modules available out-of-the-box and can be requested by a module through its `exports.inject` property.
@@ -870,6 +880,8 @@ If you want to debug a test you should use `grunt jasmine_node_no_coverage` to r
 
 ## Change History
 
+- v0.2.1 (upcoming)
+  - Introduced a star selector to load all implementations of extended interfaces, e.g.: `fireUp('routes:*')`
 - v0.2.0 (2014-05-01)
   - **Braking Change:** Redesigned the Fire Up! module pattern
     - Old module pattern:
