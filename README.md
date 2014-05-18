@@ -437,7 +437,7 @@ Even though you could diligently define in the options of `fireUpLib.newInjector
 
 **Takes either a string or an array of strings** to announce one or multiple interfaces the module implements.
 
-An interface name may contain any character except `:`, `(`, and `)`:
+An interface name may contain any character except whitespaces, `:`, `*`, `(`, and `)`:
 
 ``` js
 'myInterface', 'my-interface'  // Name your interface whatever you like.
@@ -749,7 +749,7 @@ To be able to switch implementations, the replacing and replaced implementation 
     });
     ```
 
-    **Result**: The implementation of 'api/rest/users:cached:lazy:profiled:likeCrazy' is used because this implementation is compatible with both interfaces given in the use option.
+    **Result**: The implementation of 'api/rest/users:cached:lazy:profiled:likeCrazy' is used because this interface is the more specific one of both overlapping interfaces given in the `use` option.
 
 - **Straight forward replacement with only an extended interface available**
   - Implementations are available for the following interfaces:
