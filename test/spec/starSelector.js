@@ -127,7 +127,7 @@ describe('Regarding the star selector, FireUp', function () {
 
   });
 
-  it('should throw if no implementation is available', function (done) {
+  it('should return an empty object if no implementation is available', function (done) {
 
     var fireUp = fireUpLib.newInjector({
       basePath: __dirname,
@@ -138,33 +138,24 @@ describe('Regarding the star selector, FireUp', function () {
         .then(function () {
 
           return fireUp('unknownInterface:*')
-              .then(function () {
-                done(new Error('fireUp should have rejected the promise.'));
-              })
-              .catch(fireUp.errors.NoImplementationError, function () {
-                // This is expected to be called.
+              .then(function (instances) {
+                expect(instances).toEqual({});
               });
 
         })
         .then(function () {
 
           return fireUp('starSelector/basic/injectWithStarSelector:*')
-              .then(function () {
-                done(new Error('fireUp should have rejected the promise.'));
-              })
-              .catch(fireUp.errors.NoImplementationError, function () {
-                // This is expected to be called.
+              .then(function (instances) {
+                expect(instances).toEqual({});
               });
 
         })
         .then(function () {
 
-          return fireUp('starSelector/basic/failingInjectionWithStarSelector')
-              .then(function () {
-                done(new Error('fireUp should have rejected the promise.'));
-              })
-              .catch(fireUp.errors.NoImplementationError, function () {
-                // This is expected to be called.
+          return fireUp('starSelector/basic/emptyInjectionWithStarSelector')
+              .then(function (instances) {
+                expect(instances).toEqual([{}, {}]);
               });
 
         })
