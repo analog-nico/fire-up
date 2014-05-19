@@ -1,15 +1,12 @@
 'use strict';
 
-var fireUpLib = require('../../lib/index.js');
+var fireUpLib = require('../lib/index.js');
 
 try {
 
   var fireUp = fireUpLib.newInjector({
     basePath: __dirname,
-    modules: [
-      '../lib/**/*.js',
-      './fixtures/**/*.js'
-    ]
+    modules: ['./lib/**/*.js', './plugins/**/*.js']
   });
 
 } catch (e) {
@@ -17,7 +14,7 @@ try {
   process.exit(1);
 }
 
-fireUp('expressApp', { use: ['routes:mock'] })
+fireUp('expressApp', { use: ['routes:extendable'] })
   .then(function(expressApp) {
     console.log('App initialized');
     if (process.send) { process.send('running'); } // Used for automated test for this example.

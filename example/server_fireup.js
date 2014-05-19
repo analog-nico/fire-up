@@ -17,7 +17,7 @@ try {
 fireUp('expressApp')
   .then(function(expressApp) {
     console.log('App initialized');
-    process.send('running'); // Used for automated test for this example.
+    if (process.send) { process.send('running'); } // Used for automated test for this example.
   }).catch(function (e) {
     console.error(e);
     process.exit(1);

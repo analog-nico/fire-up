@@ -12,5 +12,5 @@ app.get('/', function(req, res){
 
 app.listen(3000, function () {
   console.log('Express server started on port 3000');
-  process.send('running'); // Used for automated test for this example.
+  if (process.send) { process.send('running'); } // Used for automated test for this example.
 });
