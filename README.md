@@ -937,7 +937,30 @@ The `use` option is available in the `fireUpLib.newInjector(options)` call, too.
 
 ### The star selector
 
-Description forthcoming.
+The star selector allows to load all modules that implement an extended interface of a given base interface. E.g. for the base interface `'routes'` the respective module reference with the star selector `'routes:*'` will load all available modules that implement an extended interface like `'routes:users'`. The star selector is especially useful when implementing a [plug-in architecture](#using-a-plug-in-architectural-approach).
+
+The star selector can be applied either in a `fireUp('routes:*')` call or through `inject: 'routes:*'` in a Fire Up! module. In both cases an object with the resolved module instances will be returned / injected:
+
+``` js
+{
+  'routes:places': 'instance of the routes:places module',
+  'routes:users':  'instance of the routes:users module'
+}
+```
+
+The object may be empty if no matching modules were found. The keys are the interfaces names which matched the original module reference using the star selector. The values are the instantiated module instances.
+
+Assume that modules implementing the following interfaces are available then the module reference `'routes:*'` will match the interfaces as follows:
+
+| Interface name       | Matched by `'routes:*'`?                                                                                               |
+|----------------------|------------------------------------------------------------------------------------------------------------------------|
+| routes               | No. Only interfaces **extending** the base interface `'routes'` match.                                                 |
+| routes2:users        | No. This interface extends a different base interface.                                                                 |
+| routes:users         | Yes. This interface extends the base interface `'routes'`.                                                             |
+| routes:users:cached  | No. Although it extends the correct base interface it is overshadowed by the implementation of `'routes:users'`.       |
+| routes:places:cached | Yes. Since no implementation for the interface `'routes:places'` is available it is not overshadowed and thus matches. |
+
+It is possible to apply the "use" option along with the star selector. E.g. the `fireUp('routes:*', { use: ['routes:users:cached'] })` call will return the implementation of `'routes:users:cached'` instead of the implementation of `'routes:users'`.
 
 ## Built-in Modules
 
@@ -1040,7 +1063,7 @@ If you want to debug a test you should use `grunt jasmine_node_no_coverage` to r
 ## Change History
 
 - v0.3.0 (upcoming)
-  - Introduced a star selector to load all implementations of extending interfaces, e.g.: `fireUp('routes:*')`
+  - Introduced the [star selector](#the-star-selector) to load all implementations of extending interfaces, e.g.: `fireUp('routes:*')`
 - v0.2.0 (2014-05-01)
   - **Braking Change:** Redesigned the Fire Up! module pattern
     - Old module pattern:
