@@ -281,6 +281,28 @@ describe('Regarding the star selector, FireUp', function () {
 
         })
         .then(function () {
+
+          return fireUp('starSelector/ambiguous/baseInterface:*', { use: ['starSelector/ambiguous/baseInterface:extendedInterface:extended1'] })
+              .then(function (instances) {
+                expect(instances).toEqual({
+                  'starSelector/ambiguous/baseInterface:extendedInterface2': path.join(folder, 'extendedInterface2.js'),
+                  'starSelector/ambiguous/baseInterface:extendedInterface:extended1': path.join(folder, 'extendedInterface.extended1.js')
+                });
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('starSelector/ambiguous/injectExtendedInterface', { use: ['starSelector/ambiguous/baseInterface:extendedInterface:extended1'] })
+              .then(function (instances) {
+                expect(instances).toEqual({
+                  'starSelector/ambiguous/baseInterface:extendedInterface2': path.join(folder, 'extendedInterface2.js'),
+                  'starSelector/ambiguous/baseInterface:extendedInterface:extended1': path.join(folder, 'extendedInterface.extended1.js')
+                });
+              });
+
+        })
+        .then(function () {
           done();
         })
         .catch(function (err) {

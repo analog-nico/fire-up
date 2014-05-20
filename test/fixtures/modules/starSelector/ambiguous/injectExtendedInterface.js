@@ -4,7 +4,8 @@
 
 module.exports = {
   implements: 'starSelector/ambiguous/injectExtendedInterface',
-  inject: 'starSelector/ambiguous/baseInterface:*'
+  inject: 'starSelector/ambiguous/baseInterface:*',
+  type: 'multiple instances'
 };
 
 module.exports.factory = function (modules) {
