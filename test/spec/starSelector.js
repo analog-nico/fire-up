@@ -311,4 +311,45 @@ describe('Regarding the star selector, FireUp', function () {
 
   });
 
+  it('should ignore ambiguous interfaces that extend deeper but not swallow all NoImplementationErrors', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/starSelector/ambiguous/*.js']
+    });
+
+    var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/starSelector/ambiguous/'));
+
+    Promise.resolve()
+        .then(function () {
+
+          return fireUp('starSelector/ambiguous/baseInterface:*', { use: ['starSelector/ambiguous/baseInterface:extendedInterface2:injectFindsNoImpl'] })
+              .then(function (instances) {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.NoImplementationError, function (e) {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('starSelector/ambiguous/injectExtendedInterface', { use: ['starSelector/ambiguous/baseInterface:extendedInterface2:injectFindsNoImpl'] })
+              .then(function (instances) {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.NoImplementationError, function (e) {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
+          done();
+        })
+        .catch(function (err) {
+          done(err);
+        });
+
+  });
+
 });
