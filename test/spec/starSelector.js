@@ -168,4 +168,125 @@ describe('Regarding the star selector, FireUp', function () {
 
   });
 
+  it('should throw an InstanceInitializationError if the initialization of one module fails', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/starSelector/initError/*.js']
+    });
+
+    Promise.resolve()
+        .then(function () {
+
+          return fireUp('starSelector/initError/throwError:*')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.InstanceInitializationError, function (e) {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('starSelector/initError/injectThrowError')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.InstanceInitializationError, function (e) {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
+          done();
+        })
+        .catch(function (err) {
+          done(err);
+        });
+
+  });
+
+  it('should throw an UseOptionConflictError if the use options conflict', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/starSelector/useConflict/*.js'],
+      use: [
+        'starSelector/useConflict/baseInterface:extendedInterface:extended1',
+        'starSelector/useConflict/baseInterface:extendedInterface:extended2'
+      ]
+    });
+
+    Promise.resolve()
+        .then(function () {
+
+          return fireUp('starSelector/useConflict/baseInterface:*')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.UseOptionConflictError, function (e) {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('starSelector/useConflict/injectExtendedInterface')
+              .then(function () {
+                done(new Error('fireUp should have rejected the promise.'));
+              })
+              .catch(fireUp.errors.UseOptionConflictError, function (e) {
+                // This is expected to be called.
+              });
+
+        })
+        .then(function () {
+          done();
+        })
+        .catch(function (err) {
+          done(err);
+        });
+
+  });
+
+  it('should ignore ambiguous interfaces that extend deeper', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/starSelector/ambiguous/*.js']
+    });
+
+    var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/starSelector/ambiguous/'));
+
+    Promise.resolve()
+        .then(function () {
+
+          return fireUp('starSelector/ambiguous/baseInterface:*')
+              .then(function (instances) {
+                expect(instances).toEqual({
+                  'starSelector/ambiguous/baseInterface:extendedInterface2': path.join(folder, 'extendedInterface2.js')
+                });
+              });
+
+        })
+        .then(function () {
+
+          return fireUp('starSelector/ambiguous/injectExtendedInterface')
+              .then(function (instances) {
+                expect(instances).toEqual({
+                  'starSelector/ambiguous/baseInterface:extendedInterface2': path.join(folder, 'extendedInterface2.js')
+                });
+              });
+
+        })
+        .then(function () {
+          done();
+        })
+        .catch(function (err) {
+          done(err);
+        });
+
+  });
+
 });
