@@ -374,9 +374,168 @@ fireUp# INFO      |-- Requested: require(morgan)
 fireUp# INFO  |-- Requested: routes, but using: routes:mock, implemented in: example/test/fixtures/routes_mock.js
 ```
 
-### Using an Plug-In Architectural Approach
+### Using a Plug-In Architectural Approach
 
-Description forthcoming.
+In a typical express app we have multiple routes that are each implemented with plenty of logic. For one route the logic might access a database for another the Twitter API is called and so on. To properly modularize the app it might help to implement each route as a plugin. Such a plugin registers its route and contains all logic that is needed to serve requests to that route.
+
+Let us add two plugins to our example app by adding the following files:
+
+```
+-- example
+   |-- lib                            // Contains all files as shown above without changes
+   |-- plugins
+   |   |
+   |   |-- places                     // Places plugin
+   |   |   |-- routes.js              // Routes of the places plugin
+   |   |   |-- plugin logic...        // Usually the folder would contain logic for db access etc.
+   |   |
+   |   |-- users                      // Users plugin
+   |   |   |-- routes.js
+   |   |   |-- plugin logic...
+   |   |
+   |   |-- routes.extentable.js       // Registers all available plugin routes dynamically
+   |
+   |-- server_fireup_with_plugins.js  // Main script to run from node
+```
+
+(You can find all sources in the [repo](https://github.com/analog-nico/fire-up/tree/master/example).)
+
+#### places/routes.js and users/routes.js - Routes modules of the plugins
+
+All plugin routes modules need to expose the same base interface so that they can later be loaded by the routes.extendable.js module without it knowing which plugins are available beforehand. For that we define that each plugin routes module must extend the interface `'plugins/routes`' and must expose a `register(app)` method:
+
+**plugins/places/routes.js**
+``` js
+// Fire me up!
+
+module.exports = {
+  implements: 'plugins/routes:places'  // Extending 'plugins/routes'
+};
+
+module.exports.factory = function () {
+
+  function register(app) {
+    app.get('/places/:location', function(req, res){
+      res.send('Welcome to ' + req.params.location);
+    });
+  }
+
+  return { register: register };       // Exposing register(app)
+};
+```
+
+**plugins/users/routes.js**
+``` js
+// Fire me up!
+
+module.exports = {
+  implements: 'plugins/routes:users'   // Extending 'plugins/routes'
+};
+
+module.exports.factory = function () {
+
+  function register(app) {
+    app.get('/users/:username', function(req, res){
+      res.send('Hello ' + req.params.username);
+    });
+  }
+
+  return { register: register };       // Exposing register(app)
+};
+```
+
+#### routes.extentable.js - Registering all plugin routes dynamically
+
+Fire Up! provides a [star selector](#the-star-selector) that allows to lookup all available implementations that extend a given base interface. In this example `'plugins/routes:*'` references all interfaces that extend the `'plugins/routes'` interface:
+
+``` js
+// Fire me up!
+
+module.exports = {
+  implements: 'routes:extendable',
+  inject: [
+    'plugins/routes:*',  // Loads all routes modules of all plugins
+    'routes'             // Wraps the standard routes module
+  ]
+};
+
+module.exports.factory = function (pluginRoutesModules, standardRoutesModule) {
+
+  function register(app) {
+    // Registering the routes of all plugin modules
+    for (var interfaceName in pluginRoutesModules) {
+      pluginRoutesModules[interfaceName].register(app);
+    }
+
+    // Finally registering the standard routes
+    standardRoutesModule.register(app);
+  }
+
+  return { register: register };
+
+};
+```
+
+In our example Fire Up! will pass the following object for `pluginRoutesModules`:
+
+``` js
+{
+  'plugins/routes:places': { register: [Function: register] },
+  'plugins/routes:users':  { register: [Function: register] }
+}
+```
+
+The keys are the actual interface names of the modules and the values are the instances of the respective module. Thus routes.extendable.js can easily iterate through this object to register all plugin routes.
+
+#### server_fireup_with_plugins.js - Firing up the app with the plugins included
+
+Compared to the original server_fireup.js main script small changes were made to also include the plugins:
+
+``` js
+var fireUpLib = require('fire-up');
+
+try {
+
+  var fireUp = fireUpLib.newInjector({
+    basePath: __dirname,
+    modules: [
+	  './lib/**/*.js',
+	  './plugins/**/*.js'            // All modules in the plugin folder are made available, too.
+	]
+  });
+
+} catch (e) {
+  console.error(e);
+  process.exit(1);
+}
+
+fireUp('expressApp',
+    { use: ['routes:extendable'] })  // Instead of the standard routes module the module that
+	                                 // also loads the plugin routes modules will be injected.
+  .then(function(expressApp) {
+    console.log('App initialized');
+  }).catch(function (e) {
+    console.error(e);
+    process.exit(1);
+  });
+```
+
+When we run this script in node we get the following console output which gets interesting at line 6:
+
+```
+fireUp# INFO  Requested: expressApp, implemented in: example/lib/app.js
+fireUp# INFO  |-- Requested: require(bluebird)
+fireUp# INFO  |-- Requested: require(express)
+fireUp# INFO  |-- Requested: config, implemented in: example/lib/config.js
+fireUp# INFO      |-- Requested: require(morgan)
+fireUp# INFO  |-- Requested: routes, but using: routes:extendable, implemented in: example/plugins/routes.extendable.js
+fireUp# INFO      |-- Requested: plugins/routes:*
+fireUp# INFO          |-- Requested: plugins/routes:places, implemented in: example/plugins/places/routes.js
+fireUp# INFO          |-- Requested: plugins/routes:users, implemented in: example/plugins/users/routes.js
+fireUp# INFO      |-- Requested: routes, implemented in: example/lib/routes.js
+```
+
+Since we now set up support for plugins it is easy to add a third plugin: We only need to create another plugin routes module that implements an extended interface of `'plugins/routes'`, save it in a new folder under the plugins folder, and it will be loaded automatically. There will be no changes required to server_fireup_with_plugins.js or routes.extentable.js.
 
 ## Recommended Application Architecture
 
@@ -880,8 +1039,8 @@ If you want to debug a test you should use `grunt jasmine_node_no_coverage` to r
 
 ## Change History
 
-- v0.2.1 (upcoming)
-  - Introduced a star selector to load all implementations of extended interfaces, e.g.: `fireUp('routes:*')`
+- v0.3.0 (upcoming)
+  - Introduced a star selector to load all implementations of extending interfaces, e.g.: `fireUp('routes:*')`
 - v0.2.0 (2014-05-01)
   - **Braking Change:** Redesigned the Fire Up! module pattern
     - Old module pattern:

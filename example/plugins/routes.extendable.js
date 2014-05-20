@@ -5,12 +5,12 @@
 module.exports = {
   implements: 'routes:extendable',
   inject: [
-    'routes',           // Wraps the standard routes module
-    'plugins/routes:*'  // Loads all routes modules of all plugins
+    'plugins/routes:*',  // Loads all routes modules of all plugins
+    'routes'             // Wraps the standard routes module
   ]
 };
 
-module.exports.factory = function (standardRoutesModule, pluginRoutesModules) {
+module.exports.factory = function (pluginRoutesModules, standardRoutesModule) {
 
   function register(app) {
     // Registering the routes of all plugin modules
