@@ -959,8 +959,20 @@ Assume that modules implementing the following interfaces are available then the
 | routes:users         | Yes. This interface extends the base interface `'routes'`.                                                             |
 | routes:users:cached  | No. Although it extends the correct base interface it is overshadowed by the implementation of `'routes:users'`.       |
 | routes:places:cached | Yes. Since no implementation for the interface `'routes:places'` is available it is not overshadowed and thus matches. |
+| routes:tasks:sorted  | No. Although it is not overshadowed since no implementation exists for the interface `'routes:tasks'` it conflicts, however, with the interface `'routes:tasks:cached'` because both interfaces extend the same `'routes:tasks'` interface. To load both interfaces the module reference `'routes:tasks:*'` must be used. |
+| routes:tasks:cached  | No. Same reason as for the interface `'routes:tasks:sorted'`.                                                          |
 
-It is possible to apply the "use" option along with the star selector. E.g. the `fireUp('routes:*', { use: ['routes:users:cached'] })` call will return the implementation of `'routes:users:cached'` instead of the implementation of `'routes:users'`.
+It is possible to apply the "use" option along with the star selector. E.g. the `fireUp('routes:*', { use: ['routes:users:cached', 'routes:tasks:sorted'] })` will return implementations for the interfaces as follows:
+
+| Interface name       | Returned by `fireUp('routes:*', { use: ['routes:users:cached', 'routes:tasks:sorted'] })`?                             |
+|----------------------|------------------------------------------------------------------------------------------------------------------------|
+| routes               | No.                                                                                                                    |
+| routes2:users        | No.                                                                                                                    |
+| routes:users         | No. `'routes:users:cached'` shall be used instead.                                                                     |
+| routes:users:cached  | Yes. Replaces the interface `'routes:users'` according to the "use" option.                                            |
+| routes:places:cached | Yes.                                                                                                                   |
+| routes:tasks:sorted  | Yes. The "use" option resolves the conflict with the interface `'routes:tasks:cached'`.                                |
+| routes:tasks:cached  | No.                                                                                                                    |
 
 ## Built-in Modules
 
