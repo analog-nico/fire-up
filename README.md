@@ -1074,6 +1074,8 @@ If you want to debug a test you should use `grunt jasmine_node_no_coverage` to r
 
 ## Change History
 
+- v0.3.1 (2014-06-01)
+  - Slightly improved the logging output
 - v0.3.0 (2014-05-20)
   - Introduced the [star selector](#the-star-selector) to load all implementations of extending interfaces, e.g.: `fireUp('routes:*')`
 - v0.2.0 (2014-05-01)
