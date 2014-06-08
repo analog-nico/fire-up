@@ -31,7 +31,7 @@
     "node": ">=0.10.0"
   },
   "dependencies": {
-    "bluebird": "~1.2.4",
+    "bluebird": "~2.0.6",
     "lodash": "~2.4.1",
     "simple-glob": "~0.1.1"
   },
@@ -39,7 +39,7 @@
     "avow": "~2.0.1",
     "deferred": "~0.7.1",
     "deferreds": "~1.1.0",
-    "express": "~4.4.0",
+    "express": "~4.4.1",
     "grunt": "~0.4.5",
     "grunt-cli": "~0.1.13",
     "grunt-contrib-clean": "~0.5.0",
@@ -49,16 +49,16 @@
     "grunt-jasmine-node-coverage": "~0.1.11",
     "grunt-run": "~0.2.2",
     "kew": "~0.4.0",
-    "lie": "~2.7.4",
+    "lie": "~2.7.6",
     "morgan": "~1.1.1",
     "mpromise": "~0.5.4",
     "node-promise": "~0.5.10",
     "p-promise": "~0.2.5",
     "promise": "~5.0.0",
     "q": "~1.0.1",
-    "rsvp": "~3.0.6",
+    "rsvp": "~3.0.8",
     "supertest": "~0.13.0",
-    "vow": "~0.4.3",
-    "when": "~3.2.2"
+    "vow": "~0.3.13",
+    "when": "~3.2.3"
   }
 }
