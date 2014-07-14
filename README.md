@@ -393,7 +393,7 @@ Let us add two plugins to our example app by adding the following files:
    |   |   |-- routes.js
    |   |   |-- plugin logic...
    |   |
-   |   |-- routes.extentable.js       // Registers all available plugin routes dynamically
+   |   |-- routes.extendable.js       // Registers all available plugin routes dynamically
    |
    |-- server_fireup_with_plugins.js  // Main script to run from node
 ```
@@ -444,7 +444,7 @@ module.exports.factory = function () {
 };
 ```
 
-#### routes.extentable.js - Registering all plugin routes dynamically
+#### routes.extendable.js - Registering all plugin routes dynamically
 
 Fire Up! provides a [star selector](#the-star-selector) that allows to lookup all available implementations that extend a given base interface. In this example `'plugins/routes:*'` references all interfaces that extend the `'plugins/routes'` interface:
 
@@ -535,7 +535,7 @@ fireUp# INFO          |-- Requested: plugins/routes:users, implemented in: examp
 fireUp# INFO      |-- Requested: routes, implemented in: example/lib/routes.js
 ```
 
-Since we now set up support for plugins it is easy to add a third plugin: We only need to create another plugin routes module that implements an extended interface of `'plugins/routes'`, save it in a new folder under the plugins folder, and it will be loaded automatically. There will be no changes required to server_fireup_with_plugins.js or routes.extentable.js.
+Since we now set up support for plugins it is easy to add a third plugin: We only need to create another plugin routes module that implements an extended interface of `'plugins/routes'`, save it in a new folder under the plugins folder, and it will be loaded automatically. There will be no changes required to server_fireup_with_plugins.js or routes.extendable.js.
 
 ## Recommended Application Architecture
 
