@@ -1074,6 +1074,8 @@ If you want to debug a test you should use `grunt jasmine_node_no_coverage` to r
 
 ## Change History
 
+- v0.4.0 (forthcoming)
+  - **Minor Braking Change:** Renamed `FILE_STATUS_...` constants to `MODULE_STATUS_...`.
 - v0.3.2 (2014-07-01)
   - Updated dependencies
 - v0.3.1 (2014-06-01)

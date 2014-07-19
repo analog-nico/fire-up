@@ -121,8 +121,8 @@ describe("Regarding its instantiation, FireUp", function () {
     expect(_.isPlainObject(fireUp._internal.registry.modules[filePathToLoad])).toBe(true);
     expect(_.isPlainObject(fireUp._internal.registry.modules[filePathToIgnore])).toBe(true);
 
-    expect(fireUp._internal.registry.modules[filePathToLoad].status).toBe(fireUp.constants.FILE_STATUS_REGISTERED);
-    expect(fireUp._internal.registry.modules[filePathToIgnore].status).toBe(fireUp.constants.FILE_STATUS_TO_IGNORE);
+    expect(fireUp._internal.registry.modules[filePathToLoad].status).toBe(fireUp.constants.MODULE_STATUS_REGISTERED);
+    expect(fireUp._internal.registry.modules[filePathToIgnore].status).toBe(fireUp.constants.MODULE_STATUS_TO_IGNORE);
 
     expect(_.isFunction(fireUp._internal.registry.modules[filePathToLoad].cache.module.factory)).toBe(true);
 
@@ -144,9 +144,9 @@ describe("Regarding its instantiation, FireUp", function () {
     var pathSingleAsListJs = path.join(moduleFolder, 'singleAsList.js');
     var pathMultipleJs = path.join(moduleFolder, 'multiple.js');
 
-    expect(fireUp._internal.registry.modules[pathSingleAsStringJs].status).toBe(fireUp.constants.FILE_STATUS_REGISTERED);
-    expect(fireUp._internal.registry.modules[pathSingleAsListJs].status).toBe(fireUp.constants.FILE_STATUS_REGISTERED);
-    expect(fireUp._internal.registry.modules[pathMultipleJs].status).toBe(fireUp.constants.FILE_STATUS_REGISTERED);
+    expect(fireUp._internal.registry.modules[pathSingleAsStringJs].status).toBe(fireUp.constants.MODULE_STATUS_REGISTERED);
+    expect(fireUp._internal.registry.modules[pathSingleAsListJs].status).toBe(fireUp.constants.MODULE_STATUS_REGISTERED);
+    expect(fireUp._internal.registry.modules[pathMultipleJs].status).toBe(fireUp.constants.MODULE_STATUS_REGISTERED);
 
     expect(fireUp._internal.registry.interfaces['interfaces/unnested/singleAsString'].file).toEqual(pathSingleAsStringJs);
     expect(fireUp._internal.registry.interfaces['interfaces/unnested/singleAsList'].file).toEqual(pathSingleAsListJs);
@@ -176,16 +176,16 @@ describe("Regarding its instantiation, FireUp", function () {
     var pathSubSubInterfaceOfSubInterfaceJs = path.join(moduleFolder, 'subSubInterfaceOfSubInterface.js');
     var pathSubSubInterfaceWithoutBaseJs = path.join(moduleFolder, 'subSubInterfaceWithoutBase.js');
 
-    expect(fireUp._internal.registry.modules[pathBaseAndSubInterfaceJs].status).toBe(fireUp.constants.FILE_STATUS_REGISTERED);
-    expect(fireUp._internal.registry.modules[pathBaseInterface1Js].status).toBe(fireUp.constants.FILE_STATUS_REGISTERED);
-    expect(fireUp._internal.registry.modules[pathBaseInterface2Js].status).toBe(fireUp.constants.FILE_STATUS_REGISTERED);
-    expect(fireUp._internal.registry.modules[pathSubInterface1Js].status).toBe(fireUp.constants.FILE_STATUS_REGISTERED);
-    expect(fireUp._internal.registry.modules[pathSubInterface2Js].status).toBe(fireUp.constants.FILE_STATUS_REGISTERED);
-    expect(fireUp._internal.registry.modules[pathSubInterfaceWithoutBase1Js].status).toBe(fireUp.constants.FILE_STATUS_REGISTERED);
-    expect(fireUp._internal.registry.modules[pathSubInterfaceWithoutBase2Js].status).toBe(fireUp.constants.FILE_STATUS_REGISTERED);
-    expect(fireUp._internal.registry.modules[pathSubSubInterfaceOfBaseInterfaceJs].status).toBe(fireUp.constants.FILE_STATUS_REGISTERED);
-    expect(fireUp._internal.registry.modules[pathSubSubInterfaceOfSubInterfaceJs].status).toBe(fireUp.constants.FILE_STATUS_REGISTERED);
-    expect(fireUp._internal.registry.modules[pathSubSubInterfaceWithoutBaseJs].status).toBe(fireUp.constants.FILE_STATUS_REGISTERED);
+    expect(fireUp._internal.registry.modules[pathBaseAndSubInterfaceJs].status).toBe(fireUp.constants.MODULE_STATUS_REGISTERED);
+    expect(fireUp._internal.registry.modules[pathBaseInterface1Js].status).toBe(fireUp.constants.MODULE_STATUS_REGISTERED);
+    expect(fireUp._internal.registry.modules[pathBaseInterface2Js].status).toBe(fireUp.constants.MODULE_STATUS_REGISTERED);
+    expect(fireUp._internal.registry.modules[pathSubInterface1Js].status).toBe(fireUp.constants.MODULE_STATUS_REGISTERED);
+    expect(fireUp._internal.registry.modules[pathSubInterface2Js].status).toBe(fireUp.constants.MODULE_STATUS_REGISTERED);
+    expect(fireUp._internal.registry.modules[pathSubInterfaceWithoutBase1Js].status).toBe(fireUp.constants.MODULE_STATUS_REGISTERED);
+    expect(fireUp._internal.registry.modules[pathSubInterfaceWithoutBase2Js].status).toBe(fireUp.constants.MODULE_STATUS_REGISTERED);
+    expect(fireUp._internal.registry.modules[pathSubSubInterfaceOfBaseInterfaceJs].status).toBe(fireUp.constants.MODULE_STATUS_REGISTERED);
+    expect(fireUp._internal.registry.modules[pathSubSubInterfaceOfSubInterfaceJs].status).toBe(fireUp.constants.MODULE_STATUS_REGISTERED);
+    expect(fireUp._internal.registry.modules[pathSubSubInterfaceWithoutBaseJs].status).toBe(fireUp.constants.MODULE_STATUS_REGISTERED);
 
     expect(fireUp._internal.registry.interfaces['interfaces/nested/baseAndSubInterface1'].file).toEqual(pathBaseAndSubInterfaceJs);
     expect(fireUp._internal.registry.interfaces['interfaces/nested/baseAndSubInterface1'].interfaces['subInterface'].file).toEqual(pathBaseAndSubInterfaceJs);
