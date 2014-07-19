@@ -48,7 +48,15 @@ describe('Regarding injection with use, FireUp', function () {
 
     var fireUp = fireUpLib.newInjector({
       basePath: __dirname,
-      modules: ['../fixtures/modules/interfaces/**/*.js', '!../fixtures/modules/interfaces/conflicts/*.js', '../fixtures/modules/injection/use/*.js']
+      modules: [
+        '../fixtures/modules/interfaces/**/*.js',
+        '!../fixtures/modules/interfaces/conflicts/*.js',
+        '../fixtures/modules/injection/use/*.js',
+        {
+          implements: 'interfaces/nested/baseInterface1:subInterfaceCustom',
+          factory: function () { return 'custom module'; }
+        }
+      ]
     });
 
     var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/use/'));
@@ -58,9 +66,17 @@ describe('Regarding injection with use, FireUp', function () {
         .then(function () {
 
           return fireUp('interfaces/nested/baseInterface1', { use: ['interfaces/nested/baseInterface1:subInterface1'] })
-              .then(function (instance) {
-                expect(instance).toEqual(path.join(folderInterfaces, 'nested/subInterface1.js'));
-              });
+            .then(function (instance) {
+              expect(instance).toEqual(path.join(folderInterfaces, 'nested/subInterface1.js'));
+            });
+
+        })
+        .then(function () {
+
+          return fireUp('interfaces/nested/baseInterface1', { use: ['interfaces/nested/baseInterface1:subInterfaceCustom'] })
+            .then(function (instance) {
+              expect(instance).toEqual('custom module');
+            });
 
         })
         .then(function () {

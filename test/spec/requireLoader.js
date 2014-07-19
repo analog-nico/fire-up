@@ -107,6 +107,32 @@ describe('The require standard module', function () {
 
   });
 
+  it('should be able to require local files for a custom module', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: [{
+        implements: 'injection/require/requireLocalFile',
+        inject: 'require(../fixtures/modules/injection/require/localFile.js)',
+        factory: function (localFile) {
+          return localFile;
+        }
+      }]
+    });
+
+    var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/require/'));
+
+    fireUp('injection/require/requireLocalFile')
+      .then(function (instance) {
+        expect(instance).toEqual(path.join(folder, 'localFile.js'));
+        done();
+      })
+      .catch(function (e) {
+        done(e);
+      });
+
+  });
+
   it('should throw an error if the required local file is not found', function (done) {
 
     var fireUp = fireUpLib.newInjector({

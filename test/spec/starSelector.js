@@ -17,7 +17,10 @@ describe('Regarding the star selector, FireUp', function () {
 
     var fireUp = fireUpLib.newInjector({
       basePath: __dirname,
-      modules: ['../fixtures/modules/starSelector/basic/*.js']
+      modules: ['../fixtures/modules/starSelector/basic/*.js', {
+        implements: 'starSelector/basic:candidateInterface/customModule',
+        factory: function () { return 'custom module'; }
+      }]
     });
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/starSelector/basic/'));
@@ -30,7 +33,8 @@ describe('Regarding the star selector, FireUp', function () {
                 expect(instances).toEqual({
                   'starSelector/basic:candidateInterface1': path.join(folder, 'candidateInterface1.js'),
                   'starSelector/basic:candidateInterface2': path.join(folder, 'candidateInterface2.js'),
-                  'starSelector/basic:candidateInterface:extended': path.join(folder, 'extendedCandidateInterface.js')
+                  'starSelector/basic:candidateInterface:extended': path.join(folder, 'extendedCandidateInterface.js'),
+                  'starSelector/basic:candidateInterface/customModule': 'custom module'
                 });
               });
 
@@ -42,7 +46,8 @@ describe('Regarding the star selector, FireUp', function () {
                 expect(instances).toEqual({
                   'starSelector/basic:candidateInterface1': path.join(folder, 'candidateInterface1.js'),
                   'starSelector/basic:candidateInterface2': path.join(folder, 'candidateInterface2.js'),
-                  'starSelector/basic:candidateInterface:extended': path.join(folder, 'extendedCandidateInterface.js')
+                  'starSelector/basic:candidateInterface:extended': path.join(folder, 'extendedCandidateInterface.js'),
+                  'starSelector/basic:candidateInterface/customModule': 'custom module'
                 });
               });
 
