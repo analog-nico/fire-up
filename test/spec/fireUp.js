@@ -11,7 +11,18 @@ describe('Regarding injection, FireUp', function () {
 
     var fireUp = fireUpLib.newInjector({
       basePath: __dirname,
-      modules: ['../fixtures/modules/interfaces/**/*.js', '!../fixtures/modules/interfaces/conflicts/*.js', '../fixtures/modules/injection/direct/*.js']
+      modules: [
+        '../fixtures/modules/interfaces/**/*.js',
+        '!../fixtures/modules/interfaces/conflicts/*.js',
+        '../fixtures/modules/injection/direct/*.js',
+        {
+          implements: 'injection/direct/singleDependencyAsString/customModule',
+          inject: 'interfaces/unnested/singleAsString',
+          factory: function (singleAsString) {
+            return [singleAsString];
+          }
+        }
+      ]
     });
 
     var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/direct/'));
@@ -29,6 +40,14 @@ describe('Regarding injection, FireUp', function () {
         .then(function () {
 
           return fireUp('injection/direct/singleDependencyAsString');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual([path.join(folderInterfaces, 'unnested/singleAsString.js')]);
+        })
+        .then(function () {
+
+          return fireUp('injection/direct/singleDependencyAsString/customModule');
 
         })
         .then(function (instance) {
@@ -99,7 +118,19 @@ describe('Regarding injection, FireUp', function () {
 
     var fireUp = fireUpLib.newInjector({
       basePath: __dirname,
-      modules: ['../fixtures/modules/interfaces/**/*.js', '!../fixtures/modules/interfaces/conflicts/*.js', '../fixtures/modules/injection/direct/*.js', '../fixtures/modules/injection/cascading/*.js']
+      modules: [
+        '../fixtures/modules/interfaces/**/*.js',
+        '!../fixtures/modules/interfaces/conflicts/*.js',
+        '../fixtures/modules/injection/direct/*.js',
+        '../fixtures/modules/injection/cascading/*.js',
+        {
+          implements: 'injection/direct/singleDependencyAsString/customModule',
+          inject: 'interfaces/unnested/singleAsString',
+          factory: function (singleAsString) {
+            return [singleAsString];
+          }
+        }
+      ]
     });
 
     var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/direct/'));
@@ -109,6 +140,7 @@ describe('Regarding injection, FireUp', function () {
         .then(function (instance) {
           expect(instance).toEqual([
             path.join(folderInjection, 'noDependencies.js'),
+            [path.join(folderInterfaces, 'unnested/singleAsString.js')],
             [path.join(folderInterfaces, 'unnested/singleAsString.js')],
             [path.join(folderInterfaces, 'unnested/singleAsList.js')],
             [
@@ -147,13 +179,27 @@ describe('Regarding injection, FireUp', function () {
 
     var fireUp = fireUpLib.newInjector({
       basePath: __dirname,
-      modules: ['../fixtures/modules/instantiation/staticargs/*.js']
+      modules: ['../fixtures/modules/instantiation/staticargs/*.js', {
+        implements: 'instantiation/staticargs/takesStaticArgs/customModule',
+        type: fireUpLib.constants.MODULE_TYPE_MULTIPLE_INSTANCES,
+        factory: function (arg1, arg2, arg3, arg4) {
+          return [arg1, arg2, arg3, arg4];
+        }
+      }]
     });
 
     Promise.resolve()
         .then(function () {
 
           return fireUp('instantiation/staticargs/takesStaticArgs(a string, false, 1, 1.5)');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual(['a string', false, 1, 1.5]);
+        })
+        .then(function () {
+
+          return fireUp('instantiation/staticargs/takesStaticArgs/customModule(a string, false, 1, 1.5)');
 
         })
         .then(function (instance) {
@@ -180,7 +226,15 @@ describe('Regarding injection, FireUp', function () {
 
     var fireUp = fireUpLib.newInjector({
       basePath: __dirname,
-      modules: ['../fixtures/modules/instantiation/type/*.js']
+      modules: [
+        '../fixtures/modules/instantiation/type/*.js',
+        {
+          implements: 'instantiation/type/singleton/customModule',
+          type: fireUpLib.constants.MODULE_TYPE_SINGLETON,
+          counter: 0,
+          factory: function () { this.counter += 1; return this.counter; }
+        }
+      ]
     });
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/type/'));
@@ -233,6 +287,22 @@ describe('Regarding injection, FireUp', function () {
         })
         .then(function (instance) {
           expect(instance).toEqual([path.join(folder, 'multiInstances.js'), 3]);
+        })
+        .then(function () {
+
+          return fireUp('instantiation/type/singleton/customModule');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual(1);
+        })
+        .then(function () {
+
+          return fireUp('instantiation/type/singleton/customModule');
+
+        })
+        .then(function (instance) {
+          expect(instance).toEqual(1);
         })
         .then(function () {
           done();
@@ -667,6 +737,50 @@ describe('Regarding injection, FireUp', function () {
         .catch(function (e) {
           done(e);
         });
+
+  });
+
+  it('should invoke the factory method with correct this pointer', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: [
+        '../fixtures/modules/special/thisPointer.js',
+        {
+          implements: 'special/thisPointer/customModule',
+          property: 'custom module',
+          factory: function () {
+            return this.property;
+          }
+        }
+      ]
+    });
+
+    var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/special/'));
+
+    Promise.resolve()
+      .then(function () {
+
+        return fireUp('special/thisPointer')
+          .then(function (instance) {
+            expect(instance).toEqual(path.join(folder, 'thisPointer.js'));
+          });
+
+      })
+      .then(function () {
+
+        return fireUp('special/thisPointer/customModule')
+          .then(function (instance) {
+            expect(instance).toEqual('custom module');
+          });
+
+      })
+      .then(function () {
+        done();
+      })
+      .catch(function (e) {
+        done(e);
+      });
 
   });
 
