@@ -75,6 +75,37 @@ describe("Regarding its instantiation, FireUp", function () {
     expect(function () { fireUpLib.newInjector({
       basePath: __dirname, modules: ['test', 42]
     }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname, modules: [{
+        implements: 'custom',
+        factory: function () {}
+      }, 42]
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname, modules: ['test1', 'test2']
+    }); }).not.toThrow();
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname, modules: ['test1', 'test2', {
+        implements: 'custom',
+        factory: function () {}
+      }]
+    }); }).not.toThrow();
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname, modules: [{
+        implements: 'custom',
+        factory: function () {}
+      }]
+    }); }).not.toThrow();
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname, modules: [{
+        implements: 'custom',
+        factory: function () {}
+      },
+      {
+        implements: 'custom2',
+        factory: function () {}
+      }]
+    }); }).not.toThrow();
 
     expect(function () { fireUpLib.newInjector({
       basePath: __dirname, modules: ['test'], use: null
@@ -224,6 +255,43 @@ describe("Regarding its instantiation, FireUp", function () {
 
   });
 
+  it('should register custom modules', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: [{
+        implements: 'custom/module1',
+        factory: function () { return 'module1'; }
+      },
+        {
+          implements: 'custom/module2:sub',
+          factory: function () { return 'module2'; }
+        },
+        {
+          implements: ['custom/module3', 'custom/module3:sub'],
+          factory: function () { return 'module3'; }
+        }]
+    });
+
+    var registryIdModule1 = fireUp._internal.registry.interfaces['custom/module1'].file;
+    var registryIdModule2Sub = fireUp._internal.registry.interfaces['custom/module2'].interfaces['sub'].file;
+    var registryIdModule3 = fireUp._internal.registry.interfaces['custom/module3'].file;
+    var registryIdModule3Sub = fireUp._internal.registry.interfaces['custom/module3'].interfaces['sub'].file;
+
+    expect(registryIdModule3).toEqual(registryIdModule3Sub);
+
+    expect(fireUp._internal.registry.modules[registryIdModule1].status).toBe(fireUp.constants.MODULE_STATUS_REGISTERED);
+    expect(fireUp._internal.registry.modules[registryIdModule2Sub].status).toBe(fireUp.constants.MODULE_STATUS_REGISTERED);
+    expect(fireUp._internal.registry.modules[registryIdModule3].status).toBe(fireUp.constants.MODULE_STATUS_REGISTERED);
+
+    expect(fireUp._internal.registry.modules[registryIdModule1].cache.module.factory()).toEqual('module1');
+    expect(fireUp._internal.registry.modules[registryIdModule2Sub].cache.module.factory()).toEqual('module2');
+    expect(fireUp._internal.registry.modules[registryIdModule3].cache.module.factory()).toEqual('module3');
+
+    done();
+
+  });
+
   it('should validate the modules', function (done) {
 
     expect(function () { fireUpLib.newInjector({
@@ -334,11 +402,45 @@ describe("Regarding its instantiation, FireUp", function () {
 
   });
 
+  it('should validate custom modules', function (done) {
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: [{}]
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: [{ implements: 'custom' }]
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: [{ implements: 'custom', factory: function () {} }]
+    }); }).not.toThrow();
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: [{ implements: 'custom', factory: function () {} }, {}]
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    done();
+
+  });
+
   it('should throw conflicts when registering interfaces', function (done) {
 
     expect(function () { fireUpLib.newInjector({
       basePath: __dirname,
       modules: ['../fixtures/modules/interfaces/conflicts/implementingSameInterface{1,2}.js']
+    }); }).toThrowOfType(fireUpLib.errors.InterfaceRegistrationConflictError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/interfaces/conflicts/implementingSameInterface1.js', {
+        implements: ['interfaces/conflicts/implementingSameInterface'],
+        factory: function () {}
+      }]
     }); }).toThrowOfType(fireUpLib.errors.InterfaceRegistrationConflictError);
 
     // Use internal calls to force more than two conflicting files.
