@@ -59,7 +59,7 @@ I have to admit by implementing my own dependency injector I have the advantage 
 This module is installed via npm:
 
 ``` bash
-$ npm install fire-up
+$ npm install fire-up --save
 ```
 
 ## Getting Started
@@ -559,9 +559,11 @@ As expected from a dependency injection container the way to instantiate modules
 
 ### Migrating your existing node.js app to Fire Up!
 
-If you have a large node.js app that doesn't use a dependency injector yet or does use another one you certainly do not have the option to rewrite your whole app to use Fire Up! at once. Fortunately, Fire Up! does not enforce an all-or-nothing approach. You can just migrate a small area of your app and use an injector for instantiating the code in just that area. It is even possible that the migrated modules still use regular require calls.
+If you have a large node.js app that doesn't use a dependency injector yet or does use another one you certainly won't have the option to rewrite your whole app to use Fire Up! at once. Fortunately, Fire Up! does not enforce an all-or-nothing approach. You can just migrate a small area of your app and use an injector for instantiating the code in just that area. It is even possible that the migrated modules still use regular require calls.
 
 If you use a hybrid approach where you just use Fire Up! for certain areas of your app you should, however, pay attention to the modules' singleton nature: In traditional node.js development you are used to getting a singleton instance of a module when you require it. Fire Up! retains that singleton nature per default. For that a Fire Up! injector has a cache which is filled with the object returned by the factory method of a Fire Up! module. Hence, those modules are only singleton within the scope of a single Fire Up! injector instance. If you create multiple Fire Up! injectors or require a Fire Up! module manually you will produce multiple instances of your module. A rule of thumb would be to never require a Fire Up! module manually and if you use multiple Fire Up! injectors make sure they cover distinct groups of the available Fire Up! modules.
+
+To make an existing module available to Fire Up! you would usually add the required code according to [the Fire Up! module pattern](#the-fire-up-module-pattern) and move the existing code into the factory method. However, if that is not a viable solution you may register the unaltered code as a [custom module](#passing-custom-modules).
 
 ## API
 
@@ -801,6 +803,30 @@ try {
 The `newInjector(options)` function will throw an error if a configuration error is detected. This may e.g. be some unexpected value in the options object, an incorrect module configuration, or a conflict when registering the modules. The validation is very strong to ensure that any inconsistency is brought to attention. However, some misconfiguration can only be detected during runtime and will be reported by the `fireUp(...)` call.
 
 Additionally, the `use` option and any other custom properties can be passed with options. The options object is later merged with the options passed to a `fireUp(moduleReference, options)` call. This helps reducing duplicated configuration in multiple `fireUp(...)` calls.
+
+#### Passing Custom Modules
+
+In cases where implementing a module in a separate js file which follows the Fire Up! module pattern is not preferable the object that would otherwise be exported can be passed to the `options.modules` array directly. E.g.:
+
+``` js
+var myCustomModuleInstance = ...;              // E.g. a module instance is already available.
+
+var fireUp = fireUpLib.newInjector({
+  basePath: __dirname,
+  modules: [
+    '../lib/**/*.js',                          // Strings still provide paths to module files.
+    '!../lib/templates/**/*.js',
+    {                                          // Objects provide custom modules.
+      implements: 'myCustomModule',
+      factory: function () {
+        return myCustomModuleInstance;
+      }
+    }
+  ]
+});
+```
+
+The passed object can contain the same keys as `module.exports` according to [the Fire Up! module pattern](#the-fire-up-module-pattern). Fire Up! processes custom modules exactly the same way as modules loaded through the given paths.
 
 ### fireUp(moduleReference, [options] ) -> Promise
 
@@ -1074,8 +1100,10 @@ If you want to debug a test you should use `grunt jasmine_node_no_coverage` to r
 
 ## Change History
 
-- v0.4.0 (forthcoming)
+- v0.4.0 (2014-07-20)
+  - Support for [passing custom modules](#passing-custom-modules) to `fireUpLib.newInjector(...)`.
   - `this` within the factory method of a module now points to `module.exports`.
+  - Updated dependencies
   - **Minor Braking Change:** Renamed `FILE_STATUS_...` constants to `MODULE_STATUS_...`.
 - v0.3.2 (2014-07-01)
   - Updated dependencies
@@ -1129,7 +1157,7 @@ If you want to debug a test you should use `grunt jasmine_node_no_coverage` to r
 
 ## License (MIT)
 
-Copyright (c) analog-nico
+Copyright (c) Nicolai Kamenzky (https://github.com/analog-nico)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

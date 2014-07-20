@@ -1,6 +1,6 @@
 {
   "name": "fire-up",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Fire Up! is a dependency injection container designed specifically for node.js with a powerful but sleek API.",
   "main": "lib/index.js",
   "scripts": {
@@ -31,7 +31,7 @@
     "node": ">=0.10.0"
   },
   "dependencies": {
-    "bluebird": "~2.2.1",
+    "bluebird": "~2.2.2",
     "lodash": "~2.4.1",
     "simple-glob": "~0.1.0"
   },
@@ -39,7 +39,7 @@
     "avow": "~2.0.1",
     "deferred": "~0.7.1",
     "deferreds": "~1.1.0",
-    "express": "~4.5.1",
+    "express": "~4.6.1",
     "grunt": "~0.4.5",
     "grunt-cli": "~0.1.13",
     "grunt-contrib-clean": "~0.5.0",
@@ -51,15 +51,15 @@
     "jasmine-reporters": "~1.0.0",
     "kew": "~0.4.0",
     "lie": "~2.7.7",
-    "morgan": "~1.1.1",
+    "morgan": "~1.2.0",
     "mpromise": "~0.5.1",
     "node-promise": "~0.5.10",
-    "p-promise": "~0.3.4",
+    "p-promise": "~0.3.8",
     "promise": "~5.0.0",
     "q": "~1.0.1",
     "rsvp": "~3.0.9",
     "supertest": "~0.13.0",
     "vow": "~0.4.5",
-    "when": "~3.3.1"
+    "when": "~3.4.1"
   }
 }
