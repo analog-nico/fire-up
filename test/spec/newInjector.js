@@ -302,12 +302,37 @@ describe("Regarding its instantiation, FireUp", function () {
 
     expect(function () { fireUpLib.newInjector({
       basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/noFactory.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/factoryAndConstructor.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/factoryAndInstance.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/constructorAndInstance.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/factoryAndConstructorAndInstance.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
       modules: ['../fixtures/modules/wrongConfig/notAFactory.js']
     }); }).toThrowOfType(fireUpLib.errors.ConfigError);
 
     expect(function () { fireUpLib.newInjector({
       basePath: __dirname,
-      modules: ['../fixtures/modules/wrongConfig/noFactory.js']
+      modules: ['../fixtures/modules/wrongConfig/notAConstructor.js']
     }); }).toThrowOfType(fireUpLib.errors.ConfigError);
 
     expect(function () { fireUpLib.newInjector({
