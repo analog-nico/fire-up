@@ -9,16 +9,10 @@ describe('Regarding injection, FireUp', function () {
 
   it('should load instance modules with no dependencies', function (done) {
 
-    var myInstance = { test: '===' };
-
     var fireUp = fireUpLib.newInjector({
       basePath: __dirname,
       modules: [
-        '../fixtures/modules/instantiation/factoryAdapters/*.js',
-        {
-          implements: 'myInstance',
-          instance: myInstance
-        }
+        '../fixtures/modules/instantiation/factoryAdapters/instance.js'
       ]
     });
 
@@ -30,14 +24,6 @@ describe('Regarding injection, FireUp', function () {
       })
       .then(function (instance) {
         expect(instance).toEqual({ me: 'instantiation/factoryAdapters/instance' });
-      })
-      .then(function () {
-
-        return fireUp('myInstance');
-
-      })
-      .then(function (instance) {
-        expect(instance).toBe(myInstance);
       })
       .then(function () {
         done();
@@ -694,6 +680,91 @@ describe('Regarding injection, FireUp', function () {
         .catch(function (e) {
           done(e);
         });
+
+  });
+
+  it('should load instance modules according to their type', function (done) {
+
+    var myInstance = { test: '===' };
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: [
+        {
+          implements: 'myInstance',
+          instance: myInstance
+        },
+        {
+          implements: 'myInstance2',
+          instance: myInstance,
+          type: fireUpLib.constants.MODULE_TYPE_SINGLETON
+        },
+        '../fixtures/modules/instantiation/factoryAdapters/instanceMultiple.js'
+      ]
+    });
+
+    Promise.resolve()
+      .then(function () {
+
+        return fireUp('myInstance');
+
+      })
+      .then(function (instance) {
+        expect(instance).toBe(myInstance);
+      })
+      .then(function () {
+
+        return fireUp('myInstance2');
+
+      })
+      .then(function (instance) {
+        expect(instance).toBe(myInstance);
+      })
+      .then(function () {
+
+        return Promise.all([
+          fireUp('myInstance'),
+          fireUp('myInstance'),
+          fireUp('myInstance2')
+        ]);
+
+      })
+      .then(function (instances) {
+        expect(instances[0]).toBe(instances[1]);
+        expect(instances[1]).toBe(instances[2]);
+
+        instances[0].attr = 'xyz';
+        expect(instances[0]).toEqual(instances[1]);
+      })
+      .then(function () {
+
+        return fireUp('instantiation/factoryAdapters/instanceMultiple');
+
+      })
+      .then(function (instance) {
+        expect(instance).toEqual({ me: 'instantiation/factoryAdapters/instanceMultiple' });
+      })
+      .then(function () {
+
+        return Promise.all([
+          fireUp('instantiation/factoryAdapters/instanceMultiple'),
+          fireUp('instantiation/factoryAdapters/instanceMultiple')
+        ]);
+
+      })
+      .then(function (instances) {
+        expect(instances[0]).not.toBe(instances[1]);
+        expect(instances[0]).toEqual(instances[1]);
+
+        instances[0].attr = 'xyz';
+        expect(instances[0]).not.toEqual(instances[1]);
+      })
+      .then(function () {
+        done();
+      })
+      .catch(function (e) {
+        done(e);
+      });
 
   });
 
