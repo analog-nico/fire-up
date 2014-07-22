@@ -7,6 +7,47 @@ describe('Regarding injection, FireUp', function () {
   var fireUpLib = require('../../lib/index.js');
   var _ = require('lodash');
 
+  it('should load instance modules with no dependencies', function (done) {
+
+    var myInstance = { test: '===' };
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: [
+        '../fixtures/modules/instantiation/factoryAdapters/*.js',
+        {
+          implements: 'myInstance',
+          instance: myInstance
+        }
+      ]
+    });
+
+    Promise.resolve()
+      .then(function () {
+
+        return fireUp('instantiation/factoryAdapters/instance');
+
+      })
+      .then(function (instance) {
+        expect(instance).toEqual({ me: 'instantiation/factoryAdapters/instance' });
+      })
+      .then(function () {
+
+        return fireUp('myInstance');
+
+      })
+      .then(function (instance) {
+        expect(instance).toBe(myInstance);
+      })
+      .then(function () {
+        done();
+      })
+      .catch(function (e) {
+        done(e);
+      });
+
+  });
+
   it('should load modules with direct (not cascading) dependencies', function (done) {
 
     var fireUp = fireUpLib.newInjector({
