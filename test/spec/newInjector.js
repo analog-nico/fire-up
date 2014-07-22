@@ -337,6 +337,12 @@ describe("Regarding its instantiation, FireUp", function () {
 
     expect(function () { fireUpLib.newInjector({
       basePath: __dirname,
+      modules: ['../fixtures/modules/wrongConfig/thenableInstance.js']
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+
+
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname,
       modules: ['../fixtures/modules/wrongConfig/wrongModuleConfig.js']
     }); }).toThrowOfType(fireUpLib.errors.ConfigError);
 
