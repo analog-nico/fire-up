@@ -469,6 +469,33 @@ describe("Regarding its instantiation, FireUp", function () {
 
   });
 
+  it('should be able to register non-factory modules in multiple injectors', function () {
+
+    var injector1, injector2;
+    var moduleFolder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/factoryAdapters/'));
+
+    expect(function () { injector1 = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/instantiation/factoryAdapters/*.js']
+    }); }).not.toThrow();
+
+    expect(injector1._internal.registry.modules[path.join(moduleFolder, 'instance.js')].status).toBe(fireUpLib.constants.MODULE_STATUS_REGISTERED);
+    expect(injector1._internal.registry.modules[path.join(moduleFolder, 'instanceMultiple.js')].status).toBe(fireUpLib.constants.MODULE_STATUS_REGISTERED);
+    expect(injector1._internal.registry.modules[path.join(moduleFolder, 'constructor.js')].status).toBe(fireUpLib.constants.MODULE_STATUS_REGISTERED);
+    expect(injector1._internal.registry.modules[path.join(moduleFolder, 'constructorMultiple.js')].status).toBe(fireUpLib.constants.MODULE_STATUS_REGISTERED);
+
+    expect(function () { injector2 = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/instantiation/factoryAdapters/*.js']
+    }); }).not.toThrow();
+
+    expect(injector2._internal.registry.modules[path.join(moduleFolder, 'instance.js')].status).toBe(fireUpLib.constants.MODULE_STATUS_REGISTERED);
+    expect(injector2._internal.registry.modules[path.join(moduleFolder, 'instanceMultiple.js')].status).toBe(fireUpLib.constants.MODULE_STATUS_REGISTERED);
+    expect(injector2._internal.registry.modules[path.join(moduleFolder, 'constructor.js')].status).toBe(fireUpLib.constants.MODULE_STATUS_REGISTERED);
+    expect(injector2._internal.registry.modules[path.join(moduleFolder, 'constructorMultiple.js')].status).toBe(fireUpLib.constants.MODULE_STATUS_REGISTERED);
+
+  });
+
   it('should throw conflicts when registering interfaces', function (done) {
 
     expect(function () { fireUpLib.newInjector({
