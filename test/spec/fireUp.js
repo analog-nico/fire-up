@@ -267,14 +267,14 @@ describe('Regarding injection, FireUp', function () {
         .then(function (instance) {
           expect(instance.staticArg).toBe(42);
         })
-//        .then(function () {
-//
-//          return fireUp('instantiation/factoryAdapters/constructorDateMultiple(2014, 7, 23, 20, 22, 30, 101)');
-//
-//        })
-//        .then(function (instance) {
-//          expect(instance.toISOString()).toEqual('2014-07-23T20:22:30.101Z');
-//        })
+        .then(function () {
+
+          return fireUp('instantiation/factoryAdapters/constructorDateMultiple(2014, 6, 23, 20, 22, 30, 101)');
+
+        })
+        .then(function (instance) {
+          expect(instance.toISOString()).toEqual((new Date(2014, 6, 23, 20, 22, 30, 101)).toISOString());
+        })
         .then(function () {
           done();
         })
