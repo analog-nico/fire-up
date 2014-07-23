@@ -12,7 +12,14 @@ describe('Regarding injection, FireUp', function () {
     var fireUp = fireUpLib.newInjector({
       basePath: __dirname,
       modules: [
-        '../fixtures/modules/instantiation/factoryAdapters/instance.js'
+        '../fixtures/modules/instantiation/factoryAdapters/instance.js',
+        {
+          implements: 'dependentOn/instance',
+          inject: 'instantiation/factoryAdapters/instance',
+          factory: function (instance) {
+            return instance;
+          }
+        }
       ]
     });
 
@@ -20,6 +27,14 @@ describe('Regarding injection, FireUp', function () {
       .then(function () {
 
         return fireUp('instantiation/factoryAdapters/instance');
+
+      })
+      .then(function (instance) {
+        expect(instance).toEqual({ me: 'instantiation/factoryAdapters/instance' });
+      })
+      .then(function () {
+
+        return fireUp('dependentOn/instance');
 
       })
       .then(function (instance) {
