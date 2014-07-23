@@ -221,13 +221,17 @@ describe('Regarding injection, FireUp', function () {
 
     var fireUp = fireUpLib.newInjector({
       basePath: __dirname,
-      modules: ['../fixtures/modules/instantiation/staticargs/*.js', {
-        implements: 'instantiation/staticargs/takesStaticArgs/customModule',
-        type: fireUpLib.constants.MODULE_TYPE_MULTIPLE_INSTANCES,
-        factory: function (arg1, arg2, arg3, arg4) {
-          return [arg1, arg2, arg3, arg4];
-        }
-      }]
+      modules: [
+        '../fixtures/modules/instantiation/staticargs/*.js',
+        {
+          implements: 'instantiation/staticargs/takesStaticArgs/customModule',
+          type: fireUpLib.constants.MODULE_TYPE_MULTIPLE_INSTANCES,
+          factory: function (arg1, arg2, arg3, arg4) {
+            return [arg1, arg2, arg3, arg4];
+          }
+        },
+        '../fixtures/modules/instantiation/factoryAdapters/*.js'
+      ]
     });
 
     Promise.resolve()
@@ -255,6 +259,22 @@ describe('Regarding injection, FireUp', function () {
         .then(function (instance) {
           expect(instance).toEqual(['string', true, 0, 0.5]);
         })
+        .then(function () {
+
+          return fireUp('instantiation/factoryAdapters/constructorMultipleStaticArg(42)');
+
+        })
+        .then(function (instance) {
+          expect(instance.staticArg).toBe(42);
+        })
+//        .then(function () {
+//
+//          return fireUp('instantiation/factoryAdapters/constructorDateMultiple(2014, 7, 23, 20, 22, 30, 101)');
+//
+//        })
+//        .then(function (instance) {
+//          expect(instance.toISOString()).toEqual('2014-07-23T20:22:30.101Z');
+//        })
         .then(function () {
           done();
         })
@@ -773,6 +793,94 @@ describe('Regarding injection, FireUp', function () {
 
         instances[0].attr = 'xyz';
         expect(instances[0]).not.toEqual(instances[1]);
+      })
+      .then(function () {
+        done();
+      })
+      .catch(function (e) {
+        done(e);
+      });
+
+  });
+
+  it('should load constructor modules according to their type', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: [
+        '../fixtures/modules/instantiation/factoryAdapters/*.js',
+        {
+          implements: 'dependsOn/constructor',
+          inject: 'instantiation/factoryAdapters/constructor',
+          factory: function (instance) {
+            return instance;
+          }
+        }
+      ]
+    });
+
+    Promise.resolve()
+      .then(function () {
+
+        return fireUp('instantiation/factoryAdapters/constructor');
+
+      })
+      .then(function (instance) {
+        expect(instance.getMe()).toEqual('instantiation/factoryAdapters/constructor');
+        expect(instance.index).toBe(0);
+      })
+      .then(function () {
+
+        return fireUp('dependsOn/constructor');
+
+      })
+      .then(function (instance) {
+        expect(instance.getMe()).toEqual('instantiation/factoryAdapters/constructor');
+        expect(instance.index).toBe(0);
+      })
+      .then(function () {
+
+        return Promise.all([
+          fireUp('instantiation/factoryAdapters/constructor'),
+          fireUp('instantiation/factoryAdapters/constructor'),
+          fireUp('dependsOn/constructor')
+        ]);
+
+      })
+      .then(function (instances) {
+        expect(instances[0]).toBe(instances[1]);
+        expect(instances[1]).toBe(instances[2]);
+      })
+      .then(function () {
+
+        return fireUp('instantiation/factoryAdapters/constructorMultiple');
+
+      })
+      .then(function (instance) {
+        expect(instance.getMe()).toEqual('instantiation/factoryAdapters/constructorMultiple');
+        expect(instance.index).toBe(0);
+      })
+      .then(function () {
+
+        return fireUp('instantiation/factoryAdapters/constructorMultiple');
+
+      })
+      .then(function (instance) {
+        expect(instance.getMe()).toEqual('instantiation/factoryAdapters/constructorMultiple');
+        expect(instance.index).toBe(1);
+      })
+      .then(function () {
+
+        return Promise.all([
+          fireUp('instantiation/factoryAdapters/constructorMultiple'),
+          fireUp('instantiation/factoryAdapters/constructor')
+        ]);
+
+      })
+      .then(function (instances) {
+        expect(instances[0]).not.toBe(instances[1]);
+        instances[0].test = 'x';
+        expect(instances[1].test).not.toBeDefined();
       })
       .then(function () {
         done();
