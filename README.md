@@ -1100,6 +1100,8 @@ If you want to debug a test you should use `grunt jasmine_node_no_coverage` to r
 
 ## Change History
 
+- v0.4.1 (forthcoming)
+  - Alternatives to `module.exports.factory`: `module.exports.instance` and `modules.exports._constructor`
 - v0.4.0 (2014-07-20)
   - Support for [passing custom modules](#passing-custom-modules) to `fireUpLib.newInjector(...)`.
   - `this` within the factory method of a module now points to `module.exports`.
