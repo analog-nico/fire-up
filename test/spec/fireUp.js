@@ -63,7 +63,8 @@ describe('Regarding injection, FireUp', function () {
           factory: function (singleAsString) {
             return [singleAsString];
           }
-        }
+        },
+        '../fixtures/modules/instantiation/factoryAdapters/*.js'
       ]
     });
 
@@ -145,6 +146,18 @@ describe('Regarding injection, FireUp', function () {
           expect(instance).toEqual([
             path.join(folderInterfaces, 'unnested/singleAsList.js'),
             'staticArg'
+          ]);
+        })
+        .then(function () {
+
+          return fireUp('instantiation/factoryAdapters/constructorWithDependencies');
+
+        })
+        .then(function (instance) {
+          expect(instance.getMe()).toEqual([
+            'instantiation/factoryAdapters/constructorWithDependencies',
+            'instantiation/factoryAdapters/constructor',
+            'instantiation/factoryAdapters/constructorMultiple'
           ]);
         })
         .then(function () {
@@ -827,7 +840,7 @@ describe('Regarding injection, FireUp', function () {
       })
       .then(function (instance) {
         expect(instance.getMe()).toEqual('instantiation/factoryAdapters/constructor');
-        expect(instance.index).toBe(0);
+        expect(instance.index).toBe(1);
       })
       .then(function () {
 
@@ -836,7 +849,7 @@ describe('Regarding injection, FireUp', function () {
       })
       .then(function (instance) {
         expect(instance.getMe()).toEqual('instantiation/factoryAdapters/constructor');
-        expect(instance.index).toBe(0);
+        expect(instance.index).toBe(1);
       })
       .then(function () {
 
@@ -858,7 +871,7 @@ describe('Regarding injection, FireUp', function () {
       })
       .then(function (instance) {
         expect(instance.getMe()).toEqual('instantiation/factoryAdapters/constructorMultiple');
-        expect(instance.index).toBe(0);
+        expect(instance.index).toBe(1);
       })
       .then(function () {
 
@@ -867,7 +880,7 @@ describe('Regarding injection, FireUp', function () {
       })
       .then(function (instance) {
         expect(instance.getMe()).toEqual('instantiation/factoryAdapters/constructorMultiple');
-        expect(instance.index).toBe(1);
+        expect(instance.index).toBe(2);
       })
       .then(function () {
 
