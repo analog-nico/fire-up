@@ -6,10 +6,6 @@
 - Implement logging adapter
 - Circular dependency detection for modules of type 'multiple instances' and for singletons in case nested fireUp calls with 'fireUp/currentInjector' are used
 
-## Enhancements
-
-- Extend the module pattern to alternatively take `instance` or `constructor` instead of `factory`.
-
 ## Missing Features
 
 - Destroy support

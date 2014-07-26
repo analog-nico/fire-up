@@ -34,7 +34,7 @@ Fire Up! is a dependency injection container designed specifically for node.js w
 	- with [mocks and spies injected](#the-use-option) as needed
 - And your application architecture may make good use of
 	- modules that [decorate / wrap](#the-use-option) other modules
-	- the startegy pattern to choose an appropriate implementation
+	- the strategy pattern to choose an appropriate implementation
 	- hooks that [dynamically load multiple modules](#the-star-selector) (think plug-ins)
 
 Fire Up! does all that
@@ -777,6 +777,44 @@ module.exports.factory = function(Promise, express, config, routes) {  // The fa
 ```
 
 Instead of [bluebird](https://github.com/petkaantonov/bluebird) you can also use another [Promises/A+ compliant](http://promisesaplus.com) library if you prefer. There are easy to read [test modules for all major promise libraries](https://github.com/analog-nico/fire-up/tree/master/test/fixtures/modules/instantiation/promises) which apply them to initialize a module asynchronously.
+
+#### Alternatives to using a factory method
+
+Although a factory provides the greatest flexibility sometimes the following two alternatives may come in handy:
+- **A constructor** will be invoked with `new`. Besides that a constructor and a factory are used identically. To define a constructor export the `_constructor` property:
+
+  ``` js
+  // Fire me up!
+
+  module.exports = {
+    implements: 'moduleWithConstructor',
+	inject: 'someOtherModule'
+  };
+
+  modules.exports._constructor = Object; // Or any other constructor...
+  ```
+
+  Fire Up! will instantiate this module with something like:
+
+  ``` js
+  var instanceOfModuleWithConstructor = new Object(instanceOfSomeOtherModule);
+  ```
+
+- **An instance** of a module that is created with custom code can be registered through the `instance` property:
+
+  ``` js
+  // Fire me up!
+
+  var myInstance;
+  // Your custom code here
+
+  module.exports = {
+    implements: 'moduleWithInstance',
+	instance: myInstance
+  };
+  ```
+
+  This alternative does neither allow to inject dependencies nor to use static arguments. If the module is declared as `type: 'multiple instances'` Fire Up! will create a [deep clone](http://lodash.com/docs#cloneDeep) of the instance every time another module requests the injection of this module.
 
 ### fireUpLib.newInjector(options) -> fireUp
 
