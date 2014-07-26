@@ -26,17 +26,21 @@ Fire Up! is a dependency injection container designed specifically for node.js w
 
 ## What you can expect
 
-- Fire Up! has a well designed API that allows you to get rid of [any hardcoded require call](#requireid).
-- A module requires [minimal boilerplate](#the-fire-up-module-pattern) code and remains highly maintainable.
-- You can easily [structure your application](#the-star-selector) by using an plug-in architectural approach.
-- You can easily implement and [inject decorators / wrappers](#the-use-option). E.g. replace a socket by a secure socket.
-- You can implement your automated tests by easily [injecting your mocks and spies](#the-use-option).
-- Fire Up! is a functional and robust library with very high test coverage far beyond the 100% a test coverage tool can measure.
-- If you configure something wrong you will always get a helpful error message.
+- In general you benefit from
+	- loose coupling of your modules by eliminating [all hardcoded require calls](#requireid) which would otherwise produce tight coupling
+	- easily providing, replacing, and wrapping the implementation of required dependencies
+- During testing you benefit from
+	- firing up just the component you want to test
+	- with [mocks and spies injected](#the-use-option) as needed
+- And your application architecture may make good use of
+	- modules that [decorate / wrap](#the-use-option) other modules
+	- the startegy pattern to choose an appropriate implementation
+	- hooks that [dynamically load multiple modules](#the-star-selector) (think plug-ins)
 
-However, do not expect:
+Fire Up! does all that
 
-- Aspect-oriented programming
+- by requiring [minimal boilerplate](#the-fire-up-module-pattern) code for a module
+- and if you configure something wrong you will always get a helpful error message.
 
 ## Why I decided to write my own dependency injector
 
