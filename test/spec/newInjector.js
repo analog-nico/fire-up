@@ -135,6 +135,16 @@ describe("Regarding its instantiation, FireUp", function () {
       basePath: __dirname, modules: ['test'], use: ['test:mock', 'test:mock2']
     }); }).not.toThrow();
 
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname, modules: ['test'], bustRequireCache: 42
+    }); }).toThrowOfType(fireUpLib.errors.ConfigError);
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname, modules: ['test'], bustRequireCache: true
+    }); }).not.toThrow();
+    expect(function () { fireUpLib.newInjector({
+      basePath: __dirname, modules: ['test'], bustRequireCache: false
+    }); }).not.toThrow();
+
     done();
 
   });
