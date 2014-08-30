@@ -309,7 +309,8 @@ describe('Regarding injection, FireUp', function () {
           counter: 0,
           factory: function () { this.counter += 1; return this.counter; }
         }
-      ]
+      ],
+      bustRequireCache: true
     });
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/type/'));
