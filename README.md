@@ -828,6 +828,7 @@ try {
   var fireUp = fireUpLib.newInjector({
     basePath: __dirname,
     modules: [ '../lib/**/*.js', '!../lib/templates/**/*.js' ],
+	bustRequireCache: true,
     use: ['config:dev'],
     myCustomOption: 'Hello world!'
   });
@@ -841,6 +842,7 @@ try {
 
 - `basePath`: An absolute path that serves as the base path for the relative paths given in `modules`.
 - `modules`: An array of relative paths to include / exclude source files that are considered to be registered as Fire Up! modules. The notation follows the globbing and include / exclude pattern as known from grunt. See the README of [simple-glob](https://github.com/jedmao/simple-glob) for more details. Fire Up! uses this npm package to resolve the paths given in `modules`. All source files that are included are loaded by Fire Up! if they contain the `// Fire me up!` comment.
+- `bustRequireCache`: Set this option to `true` (defaults to `false` otherwise) to activate busting of the require cache. Then all registered Fire Up! modules will be freshly loaded from their source files. This option is helpful in a [grunt](http://gruntjs.com) or [gulp](http://gulpjs.com) environment where the source files are watched and e.g. tests are executed repeatedly in the same node process.
 
 The `newInjector(options)` function will throw an error if a configuration error is detected. This may e.g. be some unexpected value in the options object, an incorrect module configuration, or a conflict when registering the modules. The validation is very strong to ensure that any inconsistency is brought to attention. However, some misconfiguration can only be detected during runtime and will be reported by the `fireUp(...)` call.
 
@@ -1142,6 +1144,8 @@ If you want to debug a test you should use `grunt jasmine_node_no_coverage` to r
 
 ## Change History
 
+- v0.4.2 (2014-08-30)
+  - Added the [`bustRequireCache` option](#fireuplibnewinjectoroptions---fireup) to `fireUpLib.newInjector(...)`
 - v0.4.1 (2014-07-26)
   - [Alternatives](#alternatives-to-using-a-factory-method) to `module.exports.factory`: `module.exports.instance` and `modules.exports._constructor`
 - v0.4.0 (2014-07-20)
