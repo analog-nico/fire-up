@@ -1146,6 +1146,7 @@ If you want to debug a test you should use `grunt jasmine_node_no_coverage` to r
 
 - v0.4.2 (2014-08-30)
   - Added the [`bustRequireCache` option](#fireuplibnewinjectoroptions---fireup) to `fireUpLib.newInjector(...)`
+  - Updated dependencies
 - v0.4.1 (2014-07-26)
   - [Alternatives](#alternatives-to-using-a-factory-method) to `module.exports.factory`: `module.exports.instance` and `modules.exports._constructor`
 - v0.4.0 (2014-07-20)
