@@ -3,7 +3,7 @@
 describe('Regarding the star selector, FireUp', function () {
 
   var path = require('path');
-  var Promise = require('bluebird');
+  var BPromise = require('bluebird');
   var fireUpLib = require('../../lib/index.js');
   var matchers = require('../matchers.js');
 
@@ -25,7 +25,7 @@ describe('Regarding the star selector, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/starSelector/basic/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('starSelector/basic:*')
@@ -74,7 +74,7 @@ describe('Regarding the star selector, FireUp', function () {
     var folderBasic = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/starSelector/basic/'));
     var folderWithUse = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/starSelector/withUse/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('starSelector/basic:*', { use: ['starSelector/basic:candidateInterface1'] })
@@ -139,7 +139,7 @@ describe('Regarding the star selector, FireUp', function () {
       modules: ['../fixtures/modules/starSelector/basic/*.js']
     });
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('unknownInterface:*')
@@ -180,7 +180,7 @@ describe('Regarding the star selector, FireUp', function () {
       modules: ['../fixtures/modules/starSelector/initError/*.js']
     });
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('starSelector/initError/throwError:*')
@@ -223,7 +223,7 @@ describe('Regarding the star selector, FireUp', function () {
       ]
     });
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('starSelector/useConflict/baseInterface:*')
@@ -264,7 +264,7 @@ describe('Regarding the star selector, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/starSelector/ambiguous/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('starSelector/ambiguous/baseInterface:*')
@@ -325,7 +325,7 @@ describe('Regarding the star selector, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/starSelector/ambiguous/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('starSelector/ambiguous/baseInterface:*', { use: ['starSelector/ambiguous/baseInterface:extendedInterface2:injectFindsNoImpl'] })

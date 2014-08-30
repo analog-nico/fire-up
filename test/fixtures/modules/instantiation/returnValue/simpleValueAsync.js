@@ -2,7 +2,7 @@
 
 // Fire me up!
 
-var Promise = require('bluebird');
+var BPromise = require('bluebird');
 
 module.exports = {
   implements: 'instantiation/returnValue/simpleValueAsync',
@@ -11,7 +11,7 @@ module.exports = {
 
 module.exports.factory = function () {
 
-  return new Promise(function (resolve) {
+  return new BPromise(function (resolve) {
     setTimeout(function () {
       resolve(require('path').relative(process.cwd(), __filename));
     }, 10);

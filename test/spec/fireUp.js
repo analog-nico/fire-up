@@ -3,7 +3,7 @@
 describe('Regarding injection, FireUp', function () {
 
   var path = require('path');
-  var Promise = require('bluebird');
+  var BPromise = require('bluebird');
   var fireUpLib = require('../../lib/index.js');
   var _ = require('lodash');
 
@@ -23,7 +23,7 @@ describe('Regarding injection, FireUp', function () {
       ]
     });
 
-    Promise.resolve()
+    BPromise.resolve()
       .then(function () {
 
         return fireUp('instantiation/factoryAdapters/instance');
@@ -71,7 +71,7 @@ describe('Regarding injection, FireUp', function () {
     var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/direct/'));
     var folderInterfaces = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/interfaces/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('injection/direct/noDependencies');
@@ -247,7 +247,7 @@ describe('Regarding injection, FireUp', function () {
       ]
     });
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/staticargs/takesStaticArgs(a string, false, 1, 1.5)');
@@ -315,7 +315,7 @@ describe('Regarding injection, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/type/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/type/singleton/interface1');
@@ -398,7 +398,7 @@ describe('Regarding injection, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/type/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/type/injectAllTypes');
@@ -432,7 +432,7 @@ describe('Regarding injection, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/type/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/type/singletonAsync/interface1');
@@ -499,7 +499,7 @@ describe('Regarding injection, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/type/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/type/injectAllTypesAsync');
@@ -533,7 +533,7 @@ describe('Regarding injection, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/type/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/type/injectAllTypesMixed');
@@ -567,7 +567,7 @@ describe('Regarding injection, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/type/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/type/injectAllTypesMixedCascading');
@@ -627,7 +627,7 @@ describe('Regarding injection, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/type/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/type/injectAndFireUp');
@@ -659,7 +659,7 @@ describe('Regarding injection, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/type/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/type/injectAllTypesTwiceSync');
@@ -703,7 +703,7 @@ describe('Regarding injection, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/type/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/type/injectSingletonsWithDependencyTwiceSync');
@@ -752,7 +752,7 @@ describe('Regarding injection, FireUp', function () {
       ]
     });
 
-    Promise.resolve()
+    BPromise.resolve()
       .then(function () {
 
         return fireUp('myInstance');
@@ -771,7 +771,7 @@ describe('Regarding injection, FireUp', function () {
       })
       .then(function () {
 
-        return Promise.all([
+        return BPromise.all([
           fireUp('myInstance'),
           fireUp('myInstance'),
           fireUp('myInstance2')
@@ -795,7 +795,7 @@ describe('Regarding injection, FireUp', function () {
       })
       .then(function () {
 
-        return Promise.all([
+        return BPromise.all([
           fireUp('instantiation/factoryAdapters/instanceMultiple'),
           fireUp('instantiation/factoryAdapters/instanceMultiple')
         ]);
@@ -833,7 +833,7 @@ describe('Regarding injection, FireUp', function () {
       ]
     });
 
-    Promise.resolve()
+    BPromise.resolve()
       .then(function () {
 
         return fireUp('instantiation/factoryAdapters/constructor');
@@ -854,7 +854,7 @@ describe('Regarding injection, FireUp', function () {
       })
       .then(function () {
 
-        return Promise.all([
+        return BPromise.all([
           fireUp('instantiation/factoryAdapters/constructor'),
           fireUp('instantiation/factoryAdapters/constructor'),
           fireUp('dependsOn/constructor')
@@ -885,7 +885,7 @@ describe('Regarding injection, FireUp', function () {
       })
       .then(function () {
 
-        return Promise.all([
+        return BPromise.all([
           fireUp('instantiation/factoryAdapters/constructorMultiple'),
           fireUp('instantiation/factoryAdapters/constructor')
         ]);
@@ -914,7 +914,7 @@ describe('Regarding injection, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/returnValue/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/returnValue/simpleValue')
@@ -1007,7 +1007,7 @@ describe('Regarding injection, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/special/'));
 
-    Promise.resolve()
+    BPromise.resolve()
       .then(function () {
 
         return fireUp('special/thisPointer')
@@ -1042,7 +1042,7 @@ describe('Regarding injection, FireUp', function () {
       option2: 'option2'
     });
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('fireUp/options:unknown')
@@ -1153,7 +1153,7 @@ describe('Regarding injection, FireUp', function () {
       modules: ['../fixtures/modules/injection/fireup/*.js']
     });
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('fireUp/currentInjector:unknown')
@@ -1199,7 +1199,7 @@ describe('Regarding injection, FireUp', function () {
       option2: 'option2'
     });
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('fireUp/injectionRequest:unknown')

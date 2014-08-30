@@ -3,7 +3,7 @@
 describe('Regarding injection with use, FireUp', function () {
 
   var path = require('path');
-  var Promise = require('bluebird');
+  var BPromise = require('bluebird');
   var fireUpLib = require('../../lib/index.js');
 
 
@@ -18,7 +18,7 @@ describe('Regarding injection with use, FireUp', function () {
     var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/use/'));
     var folderInterfaces = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/interfaces/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('interfaces/nested/baseInterface1')
@@ -62,7 +62,7 @@ describe('Regarding injection with use, FireUp', function () {
     var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/use/'));
     var folderInterfaces = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/interfaces/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('interfaces/nested/baseInterface1', { use: ['interfaces/nested/baseInterface1:subInterface1'] })
@@ -107,7 +107,7 @@ describe('Regarding injection with use, FireUp', function () {
     var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/use/'));
     var folderInterfaces = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/interfaces/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('interfaces/nested/baseInterface1')
@@ -190,7 +190,7 @@ describe('Regarding injection with use, FireUp', function () {
     var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/use/'));
     var folderInterfaces = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/interfaces/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('interfaces/nested/baseInterface2')
@@ -227,7 +227,7 @@ describe('Regarding injection with use, FireUp', function () {
     var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/use/'));
     var folderInterfaces = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/interfaces/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('interfaces/nested/baseInterface2')
@@ -264,7 +264,7 @@ describe('Regarding injection with use, FireUp', function () {
     var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/use/'));
     var folderInterfaces = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/interfaces/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('interfaces/nested/baseInterface1', { use: ['interfaces/nested/baseInterface1:subInterface1:subSubInterface'] })
@@ -300,7 +300,7 @@ describe('Regarding injection with use, FireUp', function () {
     var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/use/'));
     var folderInterfaces = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/interfaces/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('interfaces/nested/baseInterface1', { use: ['interfaces/nested/baseInterface1:implementationNotExisting'] })
@@ -364,7 +364,7 @@ describe('Regarding injection with use, FireUp', function () {
     var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/use/'));
     var folderInterfaces = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/interfaces/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('interfaces/nested/baseInterface1', {
@@ -480,7 +480,7 @@ describe('Regarding injection with use, FireUp', function () {
     var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/use/'));
     var folderInterfaces = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/interfaces/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('interfaces/nested/baseInterface1', {
@@ -602,7 +602,7 @@ describe('Regarding injection with use, FireUp', function () {
     var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/use/'));
     var folderInterfaces = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/interfaces/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('interfaces/nested/baseInterface1:subInterface1')
@@ -638,7 +638,7 @@ describe('Regarding injection with use, FireUp', function () {
     var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/use/'));
     var folderInterfaces = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/interfaces/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('injection/use/injectBaseInterface1:wrapper')
@@ -707,7 +707,7 @@ describe('Regarding injection with use, FireUp', function () {
     var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/use/'));
     var folderInterfaces = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/interfaces/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('injection/use/injectBaseInterface1Wrapper2')

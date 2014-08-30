@@ -3,7 +3,7 @@
 describe('Regarding its nested use, FireUp', function () {
 
   var path = require('path');
-  var Promise = require('bluebird');
+  var BPromise = require('bluebird');
   var fireUpLib = require('../../lib/index.js');
 
   it('should allow fireUp(...) calls in the factory method', function (done) {
@@ -18,7 +18,7 @@ describe('Regarding its nested use, FireUp', function () {
 
     var folderSimple = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/simple/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/useFireUpInFactory/simple')

@@ -2,7 +2,7 @@
 
 // Fire me up!
 
-var Promise = require('bluebird');
+var BPromise = require('bluebird');
 
 module.exports = {
   implements: 'instantiation/type/injectAndFireUp',
@@ -15,7 +15,7 @@ module.exports = {
 };
 
 module.exports.factory = function (singleton1, multi1, fireUp) {
-  return Promise.all([fireUp('instantiation/type/singleton/interface1'), fireUp('instantiation/type/multiInstances/interface1')])
+  return BPromise.all([fireUp('instantiation/type/singleton/interface1'), fireUp('instantiation/type/multiInstances/interface1')])
       .then(function (results) {
         return [singleton1, results[0], multi1, results[1]];
       });

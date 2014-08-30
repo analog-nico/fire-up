@@ -5,7 +5,7 @@ describe('Examples', function () {
   var fork = require('child_process').fork;
   var path = require('path');
   var request = require('supertest');
-  var Promise = require('bluebird');
+  var BPromise = require('bluebird');
 
   var url = 'http://localhost:3000';
 
@@ -88,10 +88,10 @@ describe('Examples', function () {
         return;
       }
 
-      Promise.resolve()
+      BPromise.resolve()
           .then(function () {
 
-            return new Promise(function (resolve, reject) {
+            return new BPromise(function (resolve, reject) {
 
               request(url)
                   .get('/')
@@ -109,7 +109,7 @@ describe('Examples', function () {
           })
           .then(function () {
 
-            return new Promise(function (resolve, reject) {
+            return new BPromise(function (resolve, reject) {
 
               request(url)
                   .get('/users/john')
@@ -127,7 +127,7 @@ describe('Examples', function () {
           })
           .then(function () {
 
-            return new Promise(function (resolve, reject) {
+            return new BPromise(function (resolve, reject) {
 
               request(url)
                   .get('/places/paris')

@@ -3,7 +3,7 @@
 describe('Regarding its robustness, FireUp', function () {
 
   var path = require('path');
-  var Promise = require('bluebird');
+  var BPromise = require('bluebird');
   var fireUpLib = require('../../lib/index.js');
   var matchers = require('../matchers.js');
 
@@ -20,7 +20,7 @@ describe('Regarding its robustness, FireUp', function () {
       modules: ['../fixtures/modules/instantiation/failing/*.js']
     });
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('inv(al)id')
@@ -59,7 +59,7 @@ describe('Regarding its robustness, FireUp', function () {
       modules: ['../fixtures/modules/instantiation/failing/*.js']
     });
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('test', 'options of invalid type')
@@ -153,7 +153,7 @@ describe('Regarding its robustness, FireUp', function () {
       modules: ['../fixtures/modules/instantiation/failing/*.js']
     });
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('unknownInterface');
@@ -223,7 +223,7 @@ describe('Regarding its robustness, FireUp', function () {
       modules: ['../fixtures/modules/interfaces/unnested/*.js', '../fixtures/modules/interfaces/nested/*.js', '../fixtures/modules/injection/ambiguous/*.js']
     });
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('interfaces/unnested/singleAsString:sub')
@@ -289,7 +289,7 @@ describe('Regarding its robustness, FireUp', function () {
       fireUp._internal.registry.registerInterface('test/fixtures/modules/interfaces/conflicts/implementingSameSubInterface2.js', 'interfaces/conflicts/implementingSameSubInterface:sub');
     }).toThrowOfType(fireUpLib.errors.InterfaceRegistrationConflictError);
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('interfaces/conflicts/implementingSameInterface')
@@ -331,7 +331,7 @@ describe('Regarding its robustness, FireUp', function () {
       modules: ['../fixtures/modules/interfaces/unnested/*.js', '../fixtures/modules/interfaces/nested/*.js', '../fixtures/modules/injection/ambiguous/*.js']
     });
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('interfaces/nested/noBaseInterface1')
@@ -378,7 +378,7 @@ describe('Regarding its robustness, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/failing/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/failing/throwError');
@@ -462,7 +462,7 @@ describe('Regarding its robustness, FireUp', function () {
       modules: ['../fixtures/modules/interfaces/unnested/*.js', '../fixtures/modules/wrongConfig/staticArgsForSingleton.js']
     });
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('wrongConfig/staticArgsForSingleton');
@@ -497,7 +497,7 @@ describe('Regarding its robustness, FireUp', function () {
       ]
     });
 
-    Promise.resolve()
+    BPromise.resolve()
       .then(function () {
 
         return fireUp('instantiation/factoryAdapters/instanceMultiple(not allowed)');
@@ -539,7 +539,7 @@ describe('Regarding its robustness, FireUp', function () {
       modules: ['../fixtures/modules/injection/circular/singleton/**/*.js']
     });
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('injection/circular/small/moduleADependingOnB')

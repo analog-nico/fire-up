@@ -3,7 +3,7 @@
 describe('Regarding promises, FireUp', function () {
 
   var fireUpLib = require('../../lib/index.js');
-  var Promise = require('bluebird');
+  var BPromise = require('bluebird');
   var path = require('path');
 
 
@@ -17,7 +17,7 @@ describe('Regarding promises, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/promises/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/promises/avow(0,1)');
@@ -76,7 +76,7 @@ describe('Regarding promises, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/promises/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/promises/bluebird(0,1)');
@@ -135,7 +135,7 @@ describe('Regarding promises, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/promises/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/promises/deferred(0,1)');
@@ -180,7 +180,7 @@ describe('Regarding promises, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/promises/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/promises/deferreds(0,1)');
@@ -225,7 +225,7 @@ describe('Regarding promises, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/promises/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/promises/kew(0,1)');
@@ -270,7 +270,7 @@ describe('Regarding promises, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/promises/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/promises/lie(0,1)');
@@ -329,7 +329,7 @@ describe('Regarding promises, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/promises/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/promises/mpromise(0,1)');
@@ -374,7 +374,7 @@ describe('Regarding promises, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/promises/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/promises/node-promise(0,1)');
@@ -419,7 +419,7 @@ describe('Regarding promises, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/promises/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/promises/p(0,1)');
@@ -464,7 +464,7 @@ describe('Regarding promises, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/promises/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/promises/promise(0,1)');
@@ -523,7 +523,7 @@ describe('Regarding promises, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/promises/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/promises/q(0,1)');
@@ -582,7 +582,7 @@ describe('Regarding promises, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/promises/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/promises/rsvp(0,1)');
@@ -641,7 +641,7 @@ describe('Regarding promises, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/promises/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/promises/vow(0,1)');
@@ -700,7 +700,7 @@ describe('Regarding promises, FireUp', function () {
 
     var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/instantiation/promises/'));
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('instantiation/promises/when(0,1)');

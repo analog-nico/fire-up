@@ -3,7 +3,7 @@
 describe('The require standard module', function () {
 
   var fireUpLib = require('../../lib/index.js');
-  var Promise = require('bluebird');
+  var BPromise = require('bluebird');
   var path = require('path');
   var matchers = require('../matchers.js');
 
@@ -40,7 +40,7 @@ describe('The require standard module', function () {
       modules: ['../fixtures/modules/injection/require/*.js']
     });
 
-    Promise.resolve()
+    BPromise.resolve()
         .then(function () {
 
           return fireUp('injection/require/noStaticArg');

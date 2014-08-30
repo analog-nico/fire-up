@@ -2,12 +2,12 @@
 
 // Fire me up!
 
-var Promise = require('bluebird');
+var BPromise = require('bluebird');
 
 module.exports = {
   implements: 'instantiation/failing/throwErrorAsync'
 };
 
 module.exports.factory = function () {
-  return Promise.reject(new Error(require('path').relative(process.cwd(), __filename)));
+  return BPromise.reject(new Error(require('path').relative(process.cwd(), __filename)));
 };

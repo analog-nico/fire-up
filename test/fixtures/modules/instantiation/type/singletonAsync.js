@@ -2,7 +2,7 @@
 
 // Fire me up!
 
-var Promise = require('bluebird');
+var BPromise = require('bluebird');
 
 var counter = 0;
 
@@ -13,7 +13,7 @@ module.exports = {
 
 module.exports.factory = function () {
   counter += 1;
-  return Promise.resolve()
+  return BPromise.resolve()
       .then(function () {
         return [require('path').relative(process.cwd(), __filename), counter];
       });
