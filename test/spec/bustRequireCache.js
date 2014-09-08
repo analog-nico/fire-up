@@ -194,4 +194,7 @@ describe('Regarding the bustRequireCache option, FireUp', function () {
 
   });
 
+  // TODO
+  xit('should bust the cache for modules matching a star selector');
+
 });
