@@ -289,7 +289,7 @@ describe('Parallel FireUp calls', function () {
 
   });
 
-  it('should be independent for one injectors and with dependent modules', function (done) {
+  it('should be independent for one injector and with dependent modules', function (done) {
 
     var injector = fireUpLib.newInjector({
       basePath: __dirname,
@@ -432,6 +432,178 @@ describe('Parallel FireUp calls', function () {
         .then(function (module) {
           module = removeCounters(module);
           expect(module).toEqual(modules[k % modules.length]);
+        });
+    }
+
+    for ( var k = 0; k < 100; k+=1 ) {
+      instantiationPromises[k] = invokeFireUp(k);
+    }
+
+    BPromise.all(instantiationPromises)
+      .then(function () {
+        done();
+      })
+      .catch(done);
+
+  });
+
+  it('should be independent for multiple injectors and with dependent modules and submodules', function (done) {
+
+    var injectors = [];
+
+    var customModule = {
+      implements: 'injection/direct/singleDependencyAsString/customModule',
+      inject: 'interfaces/unnested/singleAsString',
+      factory: function (singleAsString) {
+        return [singleAsString];
+      }
+    };
+
+    for ( var i = 0; i < 100; i+=1 ) {
+      injectors[i] = fireUpLib.newInjector({
+        basePath: __dirname,
+        modules: [
+          '../fixtures/modules/interfaces/**/*.js',
+          '!../fixtures/modules/interfaces/conflicts/*.js',
+          '../fixtures/modules/injection/direct/*.js',
+          '../fixtures/modules/injection/cascading/*.js',
+          customModule
+        ]
+      });
+    }
+
+    var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/direct/'));
+    var folderInterfaces = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/interfaces/'));
+
+    var expectedModule = [
+      path.join(folderInjection, 'noDependencies.js'),
+      [path.join(folderInterfaces, 'unnested/singleAsString.js')],
+      [path.join(folderInterfaces, 'unnested/singleAsString.js')],
+      [path.join(folderInterfaces, 'unnested/singleAsList.js')],
+      [
+        path.join(folderInterfaces, 'unnested/singleAsList.js'),
+        path.join(folderInterfaces, 'unnested/multiple.js'),
+        path.join(folderInterfaces, 'nested/baseAndSubInterface.js'),
+        path.join(folderInterfaces, 'nested/baseAndSubInterface.js'),
+        path.join(folderInterfaces, 'nested/baseInterface1.js'),
+        path.join(folderInterfaces, 'nested/baseInterface2.js'),
+        path.join(folderInterfaces, 'nested/subSubInterfaceWithoutBase.js')
+      ],
+      [
+        path.join(folderInterfaces, 'nested/baseAndSubInterface.js'),
+        path.join(folderInterfaces, 'nested/baseAndSubInterface.js'),
+        path.join(folderInterfaces, 'nested/baseAndSubInterface.js'),
+        path.join(folderInterfaces, 'nested/subInterface1.js'),
+        path.join(folderInterfaces, 'nested/subInterface2.js'),
+        path.join(folderInterfaces, 'nested/subInterfaceWithoutBase1.js'),
+        path.join(folderInterfaces, 'nested/subSubInterfaceWithoutBase.js'),
+        path.join(folderInterfaces, 'nested/subSubInterfaceWithoutBase.js')
+      ],
+      path.join(folderInterfaces, 'unnested/singleAsList.js')
+    ];
+
+    var instantiationPromises = [];
+
+    function removeCounters(module) {
+      if (_.isArray(module)) {
+        if (module.length === 2 && _.isString(module[0]) && _.isNumber(module[1])) {
+          return module[0];
+        } else {
+          return _.map(module, removeCounters);
+        }
+      } else {
+        return module;
+      }
+    }
+
+    function invokeFireUp(k) {
+      return injectors[k]('injection/cascading/injectAllDirect')
+        .then(function (module) {
+          module = removeCounters(module);
+          expect(module).toEqual(expectedModule);
+        });
+    }
+
+    for ( var k = 0; k < 100; k+=1 ) {
+      instantiationPromises[k] = invokeFireUp(k);
+    }
+
+    BPromise.all(instantiationPromises)
+      .then(function () {
+        done();
+      })
+      .catch(done);
+
+  });
+
+  it('should be independent for one injector and with dependent modules and submodules', function (done) {
+
+    var injector = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: [
+        '../fixtures/modules/interfaces/**/*.js',
+        '!../fixtures/modules/interfaces/conflicts/*.js',
+        '../fixtures/modules/injection/direct/*.js',
+        '../fixtures/modules/injection/cascading/*.js',
+        {
+          implements: 'injection/direct/singleDependencyAsString/customModule',
+          inject: 'interfaces/unnested/singleAsString',
+          factory: function (singleAsString) {
+            return [singleAsString];
+          }
+        }
+      ]
+    });
+
+    var folderInjection = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/direct/'));
+    var folderInterfaces = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/interfaces/'));
+
+    var expectedModule = [
+      path.join(folderInjection, 'noDependencies.js'),
+      [path.join(folderInterfaces, 'unnested/singleAsString.js')],
+      [path.join(folderInterfaces, 'unnested/singleAsString.js')],
+      [path.join(folderInterfaces, 'unnested/singleAsList.js')],
+      [
+        path.join(folderInterfaces, 'unnested/singleAsList.js'),
+        path.join(folderInterfaces, 'unnested/multiple.js'),
+        path.join(folderInterfaces, 'nested/baseAndSubInterface.js'),
+        path.join(folderInterfaces, 'nested/baseAndSubInterface.js'),
+        path.join(folderInterfaces, 'nested/baseInterface1.js'),
+        path.join(folderInterfaces, 'nested/baseInterface2.js'),
+        path.join(folderInterfaces, 'nested/subSubInterfaceWithoutBase.js')
+      ],
+      [
+        path.join(folderInterfaces, 'nested/baseAndSubInterface.js'),
+        path.join(folderInterfaces, 'nested/baseAndSubInterface.js'),
+        path.join(folderInterfaces, 'nested/baseAndSubInterface.js'),
+        path.join(folderInterfaces, 'nested/subInterface1.js'),
+        path.join(folderInterfaces, 'nested/subInterface2.js'),
+        path.join(folderInterfaces, 'nested/subInterfaceWithoutBase1.js'),
+        path.join(folderInterfaces, 'nested/subSubInterfaceWithoutBase.js'),
+        path.join(folderInterfaces, 'nested/subSubInterfaceWithoutBase.js')
+      ],
+      path.join(folderInterfaces, 'unnested/singleAsList.js')
+    ];
+
+    var instantiationPromises = [];
+
+    function removeCounters(module) {
+      if (_.isArray(module)) {
+        if (module.length === 2 && _.isString(module[0]) && _.isNumber(module[1])) {
+          return module[0];
+        } else {
+          return _.map(module, removeCounters);
+        }
+      } else {
+        return module;
+      }
+    }
+
+    function invokeFireUp(k) {
+      return injector('injection/cascading/injectAllDirect')
+        .then(function (module) {
+          module = removeCounters(module);
+          expect(module).toEqual(expectedModule);
         });
     }
 
