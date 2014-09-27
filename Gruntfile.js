@@ -7,6 +7,13 @@ module.exports = function (grunt) {
       jasmine_node_with_coverage: {
         cmd: 'node_modules/.bin/grunt',
         args: ['jasmine_node_with_coverage']
+      },
+      jasmine_node_with_coverage_quiet: {
+        cmd: 'node_modules/.bin/grunt',
+        args: ['jasmine_node_with_coverage'],
+        options: {
+          quiet: true
+        }
       }
     },
     clean: {
@@ -81,7 +88,7 @@ module.exports = function (grunt) {
 
   // 'jasmine-node' needs to run in a separate task the second time it is executed so that es-sequence freshly required.
   // The unit tests assume that es-sequence is not initialized in the beginning.
-  grunt.registerTask('ci', ['clean', 'jshint', 'jasmine_node_no_coverage', 'run:jasmine_node_with_coverage', 'coveralls']);
+  grunt.registerTask('ci', ['clean', 'jshint', 'jasmine_node_no_coverage', 'run:jasmine_node_with_coverage_quiet', 'coveralls']);
 
   grunt.registerTask('default', ['test']);
 };
