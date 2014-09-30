@@ -51,6 +51,7 @@ describe('The require standard module', function () {
         })
         .catch(fireUp.errors.InstanceInitializationError, function (e) {
           // This is expected to be called.
+          expect(e.cause.name).toEqual(fireUp.errors.ConfigError.name);
         })
         .catch(function (e) {
           done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
@@ -65,6 +66,7 @@ describe('The require standard module', function () {
         })
         .catch(fireUp.errors.InstanceInitializationError, function (e) {
           // This is expected to be called.
+          expect(e.cause.name).toEqual(fireUp.errors.ConfigError.name);
         })
         .catch(function (e) {
           done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
@@ -79,6 +81,7 @@ describe('The require standard module', function () {
         })
         .catch(fireUp.errors.InstanceInitializationError, function (e) {
           // This is expected to be called.
+          expect(e.cause.name).toEqual(fireUp.errors.ConfigError.name);
         })
         .catch(function (e) {
           done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
