@@ -118,6 +118,7 @@ describe('The descriptor module', function () {
     expect(descriptor.validateModuleReference("test:test()")).toBe(false);
     expect(descriptor.validateModuleReference("test:test(test) ")).toBe(false);
     expect(descriptor.validateModuleReference("test:test(test);")).toBe(false);
+    expect(descriptor.validateModuleReference("test(test):test")).toBe(false);
     expect(descriptor.validateModuleReference("test: ")).toBe(false);
     expect(descriptor.validateModuleReference("test:t ")).toBe(false);
     expect(descriptor.validateModuleReference("test: est")).toBe(false);
