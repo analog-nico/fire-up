@@ -286,10 +286,127 @@ describe('The require mock standard module', function () {
 
   });
 
-  xit('should inject mapped Fire Up! modules');
-  // TODO: Proper error message when no implementation error.
+  // TODO: Options should merge requireMockMapping passed through 'newInjector' and 'fireUp'
 
-  xit('should inject mapped Fire Up! modules with respecting the use option');
+  it('should inject mapped Fire Up! modules', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: [
+        '../fixtures/modules/injection/require/**/*.js',
+        '../fixtures/modules/interfaces/unnested/**/*.js'
+      ],
+      use: ['require:mock'],
+      require: require,
+      requireMockMapping: {
+        'whatever': 'interfaces/unnested/singleAsList',
+        'lodash': 'interfaces/unnested/multiple1',
+        'unknown': 'interfaces/unknown',
+        'notinstalled': 'interfaces/unknown2'
+      }
+    });
+
+    var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/interfaces/unnested/'));
+
+    BPromise.resolve()
+      .then(function () {
+
+        return fireUp('require(whatever)')
+          .then(function (instance) {
+            expect(instance).toEqual(path.join(folder, 'singleAsList.js'));
+          });
+
+      })
+      .then(function () {
+
+        return fireUp('injection/require/requireLodash')
+          .then(function (instance) {
+            expect(instance).toEqual(path.join(folder, 'multiple.js'));
+          });
+
+      })
+      .then(function () {
+
+        return fireUp('require(unknown)')
+          .then(function () {
+            throw new Error('fireUp should have rejected the promise.');
+          })
+          .catch(fireUp.errors.InstanceInitializationError, function (e) {
+            // This is expected to be called.
+            expect(e.cause.name).toEqual(fireUp.errors.NoImplementationError.name);
+          })
+          .catch(function (e) {
+            throw new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')');
+          });
+
+      })
+      .then(function () {
+
+        return fireUp('injection/require/requireNonexistingModule')
+          .then(function () {
+            throw new Error('fireUp should have rejected the promise.');
+          })
+          .catch(fireUp.errors.InstanceInitializationError, function (e) {
+            // This is expected to be called.
+            expect(e.cause.name).toEqual(fireUp.errors.NoImplementationError.name);
+          })
+          .catch(function (e) {
+            throw new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')');
+          });
+
+      })
+      .then(function () {
+        done();
+      })
+      .catch(done);
+
+  });
+
+  it('should inject mapped Fire Up! modules with respecting the use option', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: [
+        '../fixtures/modules/injection/require/**/*.js',
+        '../fixtures/modules/interfaces/nested/**/*.js'
+      ],
+      use: [
+        'require:mock',
+        'interfaces/nested/baseInterface1:subInterface1',
+        'interfaces/nested/baseInterface2:subInterface:subSubInterface'
+      ],
+      require: require,
+      requireMockMapping: {
+        'whatever': 'interfaces/nested/baseInterface1',
+        'lodash': 'interfaces/nested/baseInterface2'
+      }
+    });
+
+    var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/interfaces/nested/'));
+
+    BPromise.resolve()
+      .then(function () {
+
+        return fireUp('require(whatever)')
+          .then(function (instance) {
+            expect(instance).toEqual(path.join(folder, 'subInterface1.js'));
+          });
+
+      })
+      .then(function () {
+
+        return fireUp('injection/require/requireLodash')
+          .then(function (instance) {
+            expect(instance).toEqual(path.join(folder, 'subSubInterfaceOfBaseInterface.js'));
+          });
+
+      })
+      .then(function () {
+        done();
+      })
+      .catch(done);
+
+  });
 
   it('should inject mapped node.js modules', function (done) {
 
