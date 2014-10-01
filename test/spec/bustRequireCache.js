@@ -50,7 +50,9 @@ describe('Regarding the bustRequireCache option, FireUp', function () {
         cacheKeysThree = _.keys(require.cache);
         expect(_.difference(cacheKeysTwo, cacheKeysThree)).toEqual([]);
       })
-      .then(done)
+      .then(function () {
+        done();
+      })
       .catch(function (e) {
         done(e);
       });
@@ -102,7 +104,9 @@ describe('Regarding the bustRequireCache option, FireUp', function () {
         cacheKeysThree = _.keys(require.cache);
         expect(_.difference(cacheKeysTwo, cacheKeysThree)).toEqual([]);
       })
-      .then(done)
+      .then(function () {
+        done();
+      })
       .catch(function (e) {
         done(e);
       });
@@ -187,7 +191,9 @@ describe('Regarding the bustRequireCache option, FireUp', function () {
 
         expect(_.contains(_.keys(require.cache), path.join(__dirname, '../../lib/index.js'))).toBe(true);
       })
-      .then(done)
+      .then(function () {
+        done();
+      })
       .catch(function (e) {
         done(e);
       });
