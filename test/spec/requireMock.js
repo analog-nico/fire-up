@@ -124,17 +124,39 @@ describe('The require mock standard module', function () {
       use: ['require:mock']
     });
 
-    fireUp('injection/require/requireLodash')
+    BPromise.resolve()
       .then(function () {
-        done(new Error('fireUp should have rejected the promise.'));
+
+        return fireUp('injection/require/requireLodash')
+          .then(function () {
+            throw new Error('fireUp should have rejected the promise.');
+          })
+          .catch(fireUp.errors.InstanceInitializationError, function (e) {
+            expect(e.cause.name).toEqual(fireUp.errors.ConfigError.name);
+          })
+          .catch(function (e) {
+            throw new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')');
+          });
+
       })
-      .catch(fireUp.errors.InstanceInitializationError, function (e) {
-        expect(e.cause.name).toEqual(fireUp.errors.ConfigError.name);
+      .then(function () {
+
+        return fireUp('injection/require/requireLodash', { requireMockMapping: "wrong type" })
+          .then(function () {
+            throw new Error('fireUp should have rejected the promise.');
+          })
+          .catch(fireUp.errors.InstanceInitializationError, function (e) {
+            expect(e.cause.name).toEqual(fireUp.errors.ConfigError.name);
+          })
+          .catch(function (e) {
+            throw new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')');
+          });
+
+      })
+      .then(function () {
         done();
       })
-      .catch(function (e) {
-        done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
-      });
+      .catch(done);
 
   });
 
