@@ -166,6 +166,7 @@ describe('The require mock standard module', function () {
     var fireUp = fireUpLib.newInjector({
       basePath: __dirname,
       modules: ['../fixtures/modules/injection/require/**/*.js'],
+      require: require,
       use: ['require:mock']
     });
 
@@ -193,6 +194,24 @@ describe('The require mock standard module', function () {
         return fireUp('injection/require/requireLodash', {
           requireMockMapping: {
             'lodash': 'in(va)lid'
+          }
+        })
+          .then(function () {
+            throw new Error('fireUp should have rejected the promise.');
+          })
+          .catch(fireUp.errors.InstanceInitializationError, function (e) {
+            expect(e.cause.name).toEqual(fireUp.errors.ConfigError.name);
+          })
+          .catch(function (e) {
+            throw new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')');
+          });
+
+      })
+      .then(function () {
+
+        return fireUp('injection/require/requireLodash', {
+          requireMockMapping: {
+            'lodash': 'star:selector:*'
           }
         })
           .then(function () {
@@ -262,5 +281,15 @@ describe('The require mock standard module', function () {
       .catch(done);
 
   });
+
+  xit('should detect injection circles introduced through mocking');
+
+  xit('should inject mapped Fire Up! modules');
+  // TODO: Proper error message when no implementation error.
+
+  xit('should inject mapped Fire Up! modules with repsecting the use option');
+
+  xit('should inject mapped node.js modules');
+  // TODO: local file paths must be relative to this source file!
 
 });
