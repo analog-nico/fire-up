@@ -46,9 +46,8 @@ describe('The require mock standard module', function () {
             throw new Error('fireUp should have rejected the promise.');
           })
           .catch(fireUp.errors.InstanceInitializationError, function (e) {
-            expect(e.cause.name).toEqual(fireUp.errors.InstanceInitializationError.name);
-            expect(e.cause.cause.name).toEqual(fireUp.errors.ConfigError.name);
-            expect(e.cause.cause.message).toEqual("Calling fireUp('require(...)') for relative paths is not supported. 'require(...)' with a relative path is only available through injection.");
+            expect(e.cause.name).toEqual(fireUp.errors.ConfigError.name);
+            expect(e.cause.message).toEqual("The id 'util' in the requireMockMapping maps to a require injection with a relative path which is not supported: require(./local.js)");
           })
           .catch(function (e) {
             throw new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')');
@@ -355,11 +354,6 @@ describe('The require mock standard module', function () {
 
   });
 
-  xit('should inject mapped local files');
-  // TODO: local file paths must be relative to this source file!
-
   xit('should detect injection circles introduced through mocking');
-
-  // TODO: ids in the requireMockMapping which refer to relative paths must be normalized
 
 });
