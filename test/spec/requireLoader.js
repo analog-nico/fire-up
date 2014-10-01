@@ -25,6 +25,7 @@ describe('The require standard module', function () {
           done(new Error('fireUp should have rejected the promise.'));
         })
         .catch(fireUp.errors.InstanceInitializationError, function (e) {
+          expect(e.cause.name).toEqual(fireUp.errors.ConfigError.name);
           done();
         })
         .catch(function (e) {
@@ -86,7 +87,9 @@ describe('The require standard module', function () {
         .catch(function (e) {
           done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
         })
-        .then(done);
+        .then(function () {
+          done();
+        });
 
   });
 
