@@ -13,14 +13,14 @@ describe('The require standard module', function () {
   });
 
 
-  it('should throw an error when using require directly in the fireUp call', function (done) {
+  it('should throw an error when using require directly in the fireUp call with a relative path', function (done) {
 
     var fireUp = fireUpLib.newInjector({
       basePath: __dirname,
       modules: ['../fixtures/modules/injection/require/*.js']
     });
 
-    fireUp('require(util)')
+    fireUp('require(./relative/path)')
         .then(function () {
           done(new Error('fireUp should have rejected the promise.'));
         })
@@ -31,6 +31,38 @@ describe('The require standard module', function () {
         .catch(function (e) {
           done(new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')'));
         });
+
+  });
+
+  it('should allow using require directly in the fireUp call when refencing a package', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/injection/require/*.js'],
+      require: require
+    });
+
+    BPromise.resolve()
+      .then(function () {
+
+        return fireUp('require(util)')
+          .then(function (instance) {
+            expect(instance).toBe(require('util'));
+          });
+
+      })
+      .then(function () {
+
+        return fireUp('require(lodash)')
+          .then(function (instance) {
+            expect(instance).toBe(require('lodash'));
+          });
+
+      })
+      .then(function () {
+        done();
+      })
+      .catch(done);
 
   });
 
