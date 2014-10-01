@@ -27,15 +27,15 @@ Fire Up! is a dependency injection container designed specifically for node.js w
 ## What you can expect
 
 - In general you benefit from
-	- loose coupling of your modules by eliminating [all hardcoded require calls](#requireid) which would otherwise produce tight coupling
-	- easily providing, replacing, and wrapping the implementation of required dependencies
+  - loose coupling of your modules by eliminating [all hardcoded require calls](#requireid) which would otherwise produce tight coupling
+  - easily providing, replacing, and wrapping the implementation of required dependencies
 - During testing you benefit from
-	- firing up just the component you want to test
-	- with [mocks and spies injected](#the-use-option) as needed
+  - firing up just the component you want to test
+  - with [mocks and spies injected](#the-use-option) as needed
 - And your application architecture may make good use of
-	- modules that [decorate / wrap](#the-use-option) other modules
-	- the strategy pattern to choose an appropriate implementation
-	- hooks that [dynamically load multiple modules](#the-star-selector) (think plug-ins)
+  - modules that [decorate / wrap](#the-use-option) other modules
+  - the strategy pattern to choose an appropriate implementation
+  - hooks that [dynamically load multiple modules](#the-star-selector) (think plug-ins)
 
 Fire Up! does all that
 
@@ -503,9 +503,9 @@ try {
   var fireUp = fireUpLib.newInjector({
     basePath: __dirname,
     modules: [
-	  './lib/**/*.js',
-	  './plugins/**/*.js'            // All modules in the plugin folder are made available, too.
-	]
+      './lib/**/*.js',
+      './plugins/**/*.js'            // All modules in the plugin folder are made available, too.
+    ]
   });
 
 } catch (e) {
@@ -515,7 +515,7 @@ try {
 
 fireUp('expressApp',
     { use: ['routes:extendable'] })  // Instead of the standard routes module the module that
-	                                 // also loads the plugin routes modules will be injected.
+                                     // also loads the plugin routes modules will be injected.
   .then(function(expressApp) {
     console.log('App initialized');
   }).catch(function (e) {
@@ -788,7 +788,7 @@ Although a factory provides the greatest flexibility sometimes the following two
 
   module.exports = {
     implements: 'moduleWithConstructor',
-	inject: 'someOtherModule'
+    inject: 'someOtherModule'
   };
 
   modules.exports._constructor = Object; // Or any other constructor...
@@ -810,7 +810,7 @@ Although a factory provides the greatest flexibility sometimes the following two
 
   module.exports = {
     implements: 'moduleWithInstance',
-	instance: myInstance
+    instance: myInstance
   };
   ```
 
@@ -828,7 +828,7 @@ try {
   var fireUp = fireUpLib.newInjector({
     basePath: __dirname,
     modules: [ '../lib/**/*.js', '!../lib/templates/**/*.js' ],
-	bustRequireCache: true,
+    bustRequireCache: true,
     use: ['config:dev'],
     myCustomOption: 'Hello world!'
   });
@@ -969,7 +969,7 @@ To be able to switch implementations, the replacing and replaced implementation 
     - 'api/rest/users:cached:lazy:profiled:likeCrazy'
   - Another module implementing 'userCache' requests 'api/rest/users:cached' for injection.
   - We fire up the 'userCache' using 'api/rest/users:cached:lazy' and 'api/rest/users:cached:lazy:profiled:likeCrazy':
-	``` js
+    ``` js
     fireUp('statisticsAggregator', {
       use: [
         'api/rest/users:cached:lazy',
