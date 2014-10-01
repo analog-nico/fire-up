@@ -8,5 +8,5 @@ module.exports = {
 };
 
 module.exports.factory = function (path) {
-  return path.relative(process.cwd(), __filename);
+  return path;
 };

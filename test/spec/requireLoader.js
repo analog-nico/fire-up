@@ -231,11 +231,9 @@ describe('The require standard module', function () {
       modules: ['../fixtures/modules/injection/require/*.js']
     });
 
-    var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/require/'));
-
     fireUp('injection/require/requireStandardNodeModule')
         .then(function (instance) {
-          expect(instance).toEqual(path.join(folder, 'requireStandardNodeModule.js'));
+          expect(instance).toBe(require('path'));
           done();
         })
         .catch(function (e) {
@@ -297,11 +295,9 @@ describe('The require standard module', function () {
 
     var fireUp = fireUpLib.newInjector(options);
 
-    var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/require/'));
-
     fireUp('injection/require/requireStandardNodeModule')
         .then(function (instance) {
-          expect(instance).toEqual(path.join(folder, 'requireStandardNodeModule.js'));
+          expect(instance).toBe(require('path'));
           expect(options.require).toHaveBeenCalled();
           done();
         })
