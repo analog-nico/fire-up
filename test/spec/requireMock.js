@@ -4,6 +4,7 @@ describe('The require mock standard module', function () {
 
   var fireUpLib = require('../../lib/index.js');
   var BPromise = require('bluebird');
+  var path = require('path');
   var matchers = require('../matchers.js');
 
 
@@ -199,6 +200,56 @@ describe('The require mock standard module', function () {
           })
           .catch(fireUp.errors.InstanceInitializationError, function (e) {
             expect(e.cause.name).toEqual(fireUp.errors.ConfigError.name);
+          })
+          .catch(function (e) {
+            throw new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')');
+          });
+
+      })
+      .then(function () {
+        done();
+      })
+      .catch(done);
+
+  });
+
+  it('should fall back to a regular require injection if no mapping exists', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/injection/require/**/*.js'],
+      use: ['require:mock'],
+      require: require,
+      requireMockMapping: {}
+    });
+
+    var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/require/'));
+
+    BPromise.resolve()
+      .then(function () {
+
+        return fireUp('injection/require/requireLodash')
+          .then(function (instance) {
+            expect(instance).toBe(require('lodash'));
+          });
+
+      })
+      .then(function () {
+
+        return fireUp('injection/require/requireLocalFile')
+          .then(function (instance) {
+            expect(instance).toEqual(path.join(folder, 'localFile.js'));
+          });
+
+      })
+      .then(function () {
+
+        return fireUp('injection/require/requireNonexistingModule')
+          .then(function () {
+            throw new Error('fireUp should have rejected the promise.');
+          })
+          .catch(fireUp.errors.InstanceInitializationError, function (e) {
+            // This is expected to be called.
           })
           .catch(function (e) {
             throw new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')');
