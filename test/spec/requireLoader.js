@@ -139,6 +139,39 @@ describe('The require standard module', function () {
 
   });
 
+  it('should be able to require local files with shortened path notation', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/injection/require/*.js']
+    });
+
+    var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/require/'));
+
+    BPromise.resolve()
+      .then(function () {
+
+        return fireUp('injection/require/requireLocalFileWithoutExt')
+          .then(function (instance) {
+            expect(instance).toEqual(path.join(folder, 'localFile.js'));
+          });
+
+      })
+      .then(function () {
+
+        return fireUp('injection/require/requireIndexJsInFolder')
+          .then(function (instance) {
+            expect(instance).toEqual(path.join(folder, 'index.js'));
+          });
+
+      })
+      .then(function () {
+        done();
+      })
+      .catch(done);
+
+  });
+
   it('should throw an error if the required local file is not found', function (done) {
 
     var fireUp = fireUpLib.newInjector({
@@ -245,7 +278,5 @@ describe('The require standard module', function () {
         });
 
   });
-
-  // TODO: Use of paths with no .js ending or no filename that defaults to index.js
 
 });
