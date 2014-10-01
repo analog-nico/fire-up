@@ -18,18 +18,21 @@ describe('The require mock standard module', function () {
     var fireUp = fireUpLib.newInjector({
       basePath: __dirname,
       modules: ['../fixtures/modules/injection/require/**/*.js'],
-      use: ['require:mock']
+      bustRequireCache: true,
+      use: ['require:mock'],
+      myCustomOption: 'Hello world!'
     });
 
     BPromise.resolve()
       .then(function () {
 
-        return fireUp('require(util)')
+        return fireUp('require(./local.js)', { requireMockMapping: {} })
           .then(function () {
             throw new Error('fireUp should have rejected the promise.');
           })
           .catch(fireUp.errors.InstanceInitializationError, function (e) {
             expect(e.cause.name).toEqual(fireUp.errors.ConfigError.name);
+            expect(e.cause.message).toEqual("Calling fireUp('require(...)') for relative paths is not supported. 'require(...)' with a relative path is only available through injection.");
           })
           .catch(function (e) {
             throw new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')');
@@ -38,12 +41,14 @@ describe('The require mock standard module', function () {
       })
       .then(function () {
 
-        return fireUp('require(util)', { requireMockMapping: { 'util': 'util2' } })
+        return fireUp('require(util)', { requireMockMapping: { 'util': 'require(./local.js)' } })
           .then(function () {
             throw new Error('fireUp should have rejected the promise.');
           })
           .catch(fireUp.errors.InstanceInitializationError, function (e) {
-            expect(e.cause.name).toEqual(fireUp.errors.ConfigError.name);
+            expect(e.cause.name).toEqual(fireUp.errors.InstanceInitializationError.name);
+            expect(e.cause.cause.name).toEqual(fireUp.errors.ConfigError.name);
+            expect(e.cause.cause.message).toEqual("Calling fireUp('require(...)') for relative paths is not supported. 'require(...)' with a relative path is only available through injection.");
           })
           .catch(function (e) {
             throw new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')');
@@ -285,9 +290,72 @@ describe('The require mock standard module', function () {
   xit('should inject mapped Fire Up! modules');
   // TODO: Proper error message when no implementation error.
 
-  xit('should inject mapped Fire Up! modules with repsecting the use option');
+  xit('should inject mapped Fire Up! modules with respecting the use option');
 
-  xit('should inject mapped node.js modules');
+  it('should inject mapped node.js modules', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/injection/require/**/*.js'],
+      use: ['require:mock'],
+      require: require,
+      requireMockMapping: {
+        'lodash': 'require(simple-glob)',
+        'path': 'require(util)',
+        'notinstalled': 'require(http)',
+        'bluebird': 'require(doesntexist)'
+      }
+    });
+
+    var folder = path.relative(process.cwd(), path.join(__dirname, '../fixtures/modules/injection/require/'));
+
+    BPromise.resolve()
+      .then(function () {
+
+        return fireUp('injection/require/requireLodash')
+          .then(function (instance) {
+            expect(instance).toBe(require('simple-glob'));
+          });
+
+      })
+      .then(function () {
+
+        return fireUp('injection/require/requireStandardNodeModule')
+          .then(function (instance) {
+            expect(instance).toBe(require('util'));
+          });
+
+      })
+      .then(function () {
+
+        return fireUp('injection/require/requireNonexistingModule')
+          .then(function (instance) {
+            expect(instance).toBe(require('http'));
+          });
+
+      })
+      .then(function () {
+
+        return fireUp('injection/require/requireBluebird')
+          .then(function () {
+            throw new Error('fireUp should have rejected the promise.');
+          })
+          .catch(fireUp.errors.InstanceInitializationError, function (e) {
+            // This is expected to be called.
+          })
+          .catch(function (e) {
+            throw new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')');
+          });
+
+      })
+      .then(function () {
+        done();
+      })
+      .catch(done);
+
+  });
+
+  xit('should inject mapped local files');
   // TODO: local file paths must be relative to this source file!
 
   xit('should detect injection circles introduced through mocking');
