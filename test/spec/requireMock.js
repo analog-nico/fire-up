@@ -160,4 +160,56 @@ describe('The require mock standard module', function () {
 
   });
 
+  it('should validate the mappings in the requireMockMapping', function (done) {
+
+    var fireUp = fireUpLib.newInjector({
+      basePath: __dirname,
+      modules: ['../fixtures/modules/injection/require/**/*.js'],
+      use: ['require:mock']
+    });
+
+    BPromise.resolve()
+      .then(function () {
+
+        return fireUp('injection/require/requireLodash', {
+          requireMockMapping: {
+            'lodash': 42
+          }
+        })
+          .then(function () {
+            throw new Error('fireUp should have rejected the promise.');
+          })
+          .catch(fireUp.errors.InstanceInitializationError, function (e) {
+            expect(e.cause.name).toEqual(fireUp.errors.ConfigError.name);
+          })
+          .catch(function (e) {
+            throw new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')');
+          });
+
+      })
+      .then(function () {
+
+        return fireUp('injection/require/requireLodash', {
+          requireMockMapping: {
+            'lodash': 'in(va)lid'
+          }
+        })
+          .then(function () {
+            throw new Error('fireUp should have rejected the promise.');
+          })
+          .catch(fireUp.errors.InstanceInitializationError, function (e) {
+            expect(e.cause.name).toEqual(fireUp.errors.ConfigError.name);
+          })
+          .catch(function (e) {
+            throw new Error('fireUp rejected the promise with an error of type ' + e.name + ' (' + e.message + ')');
+          });
+
+      })
+      .then(function () {
+        done();
+      })
+      .catch(done);
+
+  });
+
 });
