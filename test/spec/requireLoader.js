@@ -246,4 +246,6 @@ describe('The require standard module', function () {
 
   });
 
+  // TODO: Use of paths with no .js ending or no filename that defaults to index.js
+
 });

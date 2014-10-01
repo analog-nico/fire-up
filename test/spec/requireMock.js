@@ -282,8 +282,6 @@ describe('The require mock standard module', function () {
 
   });
 
-  xit('should detect injection circles introduced through mocking');
-
   xit('should inject mapped Fire Up! modules');
   // TODO: Proper error message when no implementation error.
 
@@ -291,5 +289,9 @@ describe('The require mock standard module', function () {
 
   xit('should inject mapped node.js modules');
   // TODO: local file paths must be relative to this source file!
+
+  xit('should detect injection circles introduced through mocking');
+
+  // TODO: ids in the requireMockMapping which refer to relative paths must be normalized
 
 });
