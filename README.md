@@ -1084,7 +1084,36 @@ fireUp('expressApp', {
 
 ### require:mock(id)
 
-Not yet implemented.
+This mocking module is used to actually replace an implementation that is injected using [require(id)](#requireid). The code of all modules requesting their dependencies through `exports.inject = [ 'require(id)' ]` keeps unchanged. Instead the `use` and the `requireMockMapping` options are applied as follows:
+
+``` js
+var fireUpLib = require('fire-up');
+
+// Either passing the options when creating the injector:
+var fireUp = fireUpLib.newInjector({
+  basePath: __dirname,
+  modules: [ '../lib/**/*.js' ],
+  use: [ 'require:mock' ],
+  requireMockMapping: {
+    'mongodb': 'require(nedb)',
+	'fs': 'util/memdisk'
+  }
+});
+
+// And / or when invoking the injector:
+fireUp('expressApp', {
+  use: [ 'require:mock' ],
+  requireMockMapping: {
+    'mongodb': 'require(nedb)',
+	'fs': 'util/memdisk'
+  }
+});
+```
+
+The keys of the `requireMockMapping` objects are the `id`s that are used by the modules. Thus all modules e.g. requesting `'require(mongodb)'` through their `exports.inject` property will get the `nedb` npm module injected. That is as if `'require(mongodb)'` was replaced by `'require(nedb)'` in the module code. Also in this example all modules requesting `'require(fs)'` will get the `'util/memdisk'` Fire Up! module injected.
+If e.g. a module requests `require(express)` and since `'express'` is not listed in the `requireMockMapping` option the module still gets the `express` npm module injected.
+
+Currently, `id`s for relative paths like `../foo/bar.js` are not supported.
 
 ### fireUp/currentInjector
 
@@ -1145,6 +1174,7 @@ If you want to debug a test you should use `grunt jasmine_node_no_coverage` to r
 ## Change History
 
 - v0.4.3 (forthcoming)
+  - Added the [mocking module for require injections](#requiremockid)
   - Updated dependencies
 - v0.4.2 (2014-08-30)
   - Added the [`bustRequireCache` option](#fireuplibnewinjectoroptions---fireup) to `fireUpLib.newInjector(...)`
