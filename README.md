@@ -1173,7 +1173,7 @@ If you want to debug a test you should use `grunt jasmine_node_no_coverage` to r
 
 ## Change History
 
-- v0.4.3 (forthcoming)
+- v0.4.3 (2014-10-01)
   - Added the [mocking module for require injections](#requiremockid)
   - Updated dependencies
 - v0.4.2 (2014-08-30)
