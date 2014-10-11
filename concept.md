@@ -5,6 +5,9 @@
 - Test cases for using `'fireUp/currentInjector'` to fire up modules dynamically while initializing the module itself
 - Implement logging adapter
 - Circular dependency detection for modules of type 'multiple instances' and for singletons in case nested fireUp calls with 'fireUp/currentInjector' are used
+- Circular dependency detection for require injections with the mock in use
+- New type `'multiple chached instances'` that init and cache a module according to the static args. An instance for the same static arg values gets reused.
+- The options passed to the injector are dangerous for singletons because the `use` and `requireMockMapping` settings might change in the next injector call but an already created and differently wired instance is returned.
 
 ## Missing Features
 
