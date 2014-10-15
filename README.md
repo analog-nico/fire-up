@@ -1,4 +1,5 @@
 # Fire Up! Dependency Injector
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/analog-nico/fire-up?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 [![Build Status](https://travis-ci.org/analog-nico/fire-up.svg?branch=master)](https://travis-ci.org/analog-nico/fire-up) [![Coverage Status](http://img.shields.io/badge/coverage-far%20beyond%20100%25-brightgreen.svg)](https://coveralls.io/r/analog-nico/fire-up?branch=master) [![Dependency Status](https://david-dm.org/analog-nico/fire-up.svg)](https://david-dm.org/analog-nico/fire-up)
 
