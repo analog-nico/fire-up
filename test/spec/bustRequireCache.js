@@ -29,6 +29,7 @@ describe('Regarding the bustRequireCache option, FireUp', function () {
 
       })
       .then(function (instance) {
+        instance[0] = instance[0].replace(/\\/g, '/');
         expect(instance).toEqual(['test/fixtures/modules/instantiation/type/singleton.js', 1]);
 
         cacheKeysTwo = _.keys(require.cache);
@@ -45,6 +46,7 @@ describe('Regarding the bustRequireCache option, FireUp', function () {
 
       })
       .then(function (instance) {
+        instance[0] = instance[0].replace(/\\/g, '/');
         expect(instance).toEqual(['test/fixtures/modules/instantiation/type/singleton.js', 2]);
 
         cacheKeysThree = _.keys(require.cache);
@@ -82,6 +84,7 @@ describe('Regarding the bustRequireCache option, FireUp', function () {
 
       })
       .then(function (instance) {
+        instance[0] = instance[0].replace(/\\/g, '/');
         expect(instance).toEqual(['test/fixtures/modules/instantiation/type/singleton.js', 1]);
 
         cacheKeysTwo = _.keys(require.cache);
@@ -99,6 +102,7 @@ describe('Regarding the bustRequireCache option, FireUp', function () {
 
       })
       .then(function (instance) {
+        instance[0] = instance[0].replace(/\\/g, '/');
         expect(instance).toEqual(['test/fixtures/modules/instantiation/type/singleton.js', 1]);
 
         cacheKeysThree = _.keys(require.cache);
@@ -187,6 +191,7 @@ describe('Regarding the bustRequireCache option, FireUp', function () {
 
       })
       .then(function (instance) {
+        instance[0] = instance[0].replace(/\\/g, '/');
         expect(instance).toEqual(['test/fixtures/modules/instantiation/type/singleton.js', 1]);
 
         expect(_.contains(_.keys(require.cache), path.join(__dirname, '../../lib/index.js'))).toBe(true);
