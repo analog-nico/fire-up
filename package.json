@@ -1,6 +1,6 @@
 {
   "name": "fire-up",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Fire Up! is a dependency injection container designed specifically for node.js with a powerful but sleek API.",
   "main": "lib/index.js",
   "scripts": {

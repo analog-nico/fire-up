@@ -1174,7 +1174,7 @@ If you want to debug a test you should use `grunt jasmine_node_no_coverage` to r
 
 ## Change History
 
-- v0.4.4 (forthcoming)
+- v0.4.4 (2015-04-13)
   - Updated dependencies
   - Added Node.js 0.12 and io.js to the CI build
   - Added Windows to the CI build
