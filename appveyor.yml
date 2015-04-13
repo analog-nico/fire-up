@@ -1,0 +1,20 @@
+os: Windows Server 2012
+
+version: "{build}"
+
+environment:
+  matrix:
+    - nodejs_version: "0.10"
+    - nodejs_version: "0.12"
+    - nodejs_version: "1"
+
+install:
+  - ps: Install-Product node $env:nodejs_version
+  - npm install
+
+build: off
+
+test_script:
+  - node --version
+  - npm --version
+  - cmd: node_modules/.bin/grunt ci_no_coverage

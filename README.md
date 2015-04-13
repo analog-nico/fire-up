@@ -1,7 +1,7 @@
 # Fire Up! Dependency Injector
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/analog-nico/fire-up?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Build Status](https://travis-ci.org/analog-nico/fire-up.svg?branch=master)](https://travis-ci.org/analog-nico/fire-up) [![Coverage Status](http://img.shields.io/badge/coverage-far%20beyond%20100%25-brightgreen.svg)](https://coveralls.io/r/analog-nico/fire-up?branch=master) [![Dependency Status](https://david-dm.org/analog-nico/fire-up.svg)](https://david-dm.org/analog-nico/fire-up)
+Linux: [![Linux Build Status](https://travis-ci.org/analog-nico/fire-up.svg?branch=master)](https://travis-ci.org/analog-nico/fire-up) [![Coverage Status](http://img.shields.io/badge/coverage-far%20beyond%20100%25-brightgreen.svg)](https://coveralls.io/r/analog-nico/fire-up?branch=master) Windows: [![Windows Build Status](https://ci.appveyor.com/api/projects/status/7oau3ylb89ob3hx2/branch/master?svg=true)](https://ci.appveyor.com/project/analog-nico/fire-up/branch/master) General: [![Dependency Status](https://david-dm.org/analog-nico/fire-up.svg)](https://david-dm.org/analog-nico/fire-up)
 
 Fire Up! is a dependency injection container designed specifically for node.js with a powerful but sleek API.
 
@@ -1174,6 +1174,9 @@ If you want to debug a test you should use `grunt jasmine_node_no_coverage` to r
 
 ## Change History
 
+- v0.4.4 (forthcoming)
+  - Added Node.js 0.12 and io.js to the CI build
+  - Added Windows to the CI build
 - v0.4.3 (2014-10-01)
   - Added the [mocking module for require injections](#requiremockid)
   - Updated dependencies
