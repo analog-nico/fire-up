@@ -31,9 +31,9 @@
     "node": ">=0.10.0"
   },
   "dependencies": {
-    "bluebird": "^2.3.4",
-    "lodash": "3.6.x",
-    "simple-glob": "0.1.x"
+    "bluebird": "^3.3.4",
+    "lodash": "^4.7.0",
+    "simple-glob": "0.1.1"
   },
   "devDependencies": {
     "avow": "2.0.2",
