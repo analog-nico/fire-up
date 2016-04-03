@@ -5,6 +5,14 @@ Linux: [![Linux Build Status](https://travis-ci.org/analog-nico/fire-up.svg?bran
 
 Fire Up! is a dependency injection container designed specifically for node.js with a powerful but sleek API.
 
+---
+
+## Migration from v0.4 to v1
+
+Fire Up! v1 includes the update of Bluebird from v2 to v3. This won't make a difference for simple use cases. However, if you use advanced Promise chains starting with the Promise returned by Fire Up!, please check [Bluebird's new features and changes](http://bluebirdjs.com/docs/new-in-bluebird-3.html).
+
+---
+
 **Table of Contents**
 
 - [What you can expect](#what-you-can-expect)
@@ -1174,6 +1182,9 @@ If you want to debug a test you should use `grunt jasmine_node_no_coverage` to r
 
 ## Change History
 
+- v1.0.0 (upcoming)
+  - **Breaking Change:** Updated `bluebird` to v3
+  - Added node v5 to CI build
 - v0.4.4 (2015-04-13)
   - Updated dependencies
   - Added Node.js 0.12 and io.js to the CI build
@@ -1190,7 +1201,7 @@ If you want to debug a test you should use `grunt jasmine_node_no_coverage` to r
   - Support for [passing custom modules](#passing-custom-modules) to `fireUpLib.newInjector(...)`.
   - `this` within the factory method of a module now points to `module.exports`.
   - Updated dependencies
-  - **Minor Braking Change:** Renamed `FILE_STATUS_...` constants to `MODULE_STATUS_...`.
+  - **Minor Breaking Change:** Renamed `FILE_STATUS_...` constants to `MODULE_STATUS_...`.
 - v0.3.2 (2014-07-01)
   - Updated dependencies
 - v0.3.1 (2014-06-01)
@@ -1198,7 +1209,7 @@ If you want to debug a test you should use `grunt jasmine_node_no_coverage` to r
 - v0.3.0 (2014-05-20)
   - Introduced the [star selector](#the-star-selector) to load all implementations of extending interfaces, e.g.: `fireUp('routes:*')`
 - v0.2.0 (2014-05-01)
-  - **Braking Change:** Redesigned the Fire Up! module pattern
+  - **Breaking Change:** Redesigned the Fire Up! module pattern
     - Old module pattern:
       ``` js
       // Fire me up!
