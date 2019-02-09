@@ -33,7 +33,7 @@
   "dependencies": {
     "bluebird": "^3.3.4",
     "lodash": "^4.7.0",
-    "simple-glob": "0.1.1"
+    "simple-glob": "0.2.0"
   },
   "devDependencies": {
     "avow": "2.0.2",
