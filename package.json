@@ -4,7 +4,9 @@
   "description": "Fire Up! is a dependency injection container designed specifically for node.js with a powerful but sleek API.",
   "main": "lib/index.js",
   "scripts": {
-    "test": "node_modules/.bin/grunt ci"
+    "test": "node_modules/.bin/grunt ci",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -33,7 +35,8 @@
   "dependencies": {
     "bluebird": "^3.3.4",
     "lodash": "^4.7.0",
-    "simple-glob": "0.1.1"
+    "simple-glob": "0.1.1",
+    "snyk": "^1.192.3"
   },
   "devDependencies": {
     "avow": "2.0.2",
@@ -61,5 +64,6 @@
     "supertest": "0.14.0",
     "vow": "0.4.5",
     "when": "3.5.0"
-  }
+  },
+  "snyk": true
 }
